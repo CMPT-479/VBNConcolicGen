@@ -8,8 +8,9 @@ save resources (and avoid tedious work) using symbolic execution frameworks.
 though this project has currently been set up with Amazon Corretto 8)
 - Gradle (DSL: Groovy)
 - JUnit
-- Z3 (to be added), used by many symbolic execution modules
-- Symbolic execution module itself (TBD)
+- Z3, used by many symbolic execution modules
+- JavaParser
+- SootUp
 
 ## Contributors
 - [Viet-Hung Nguyen](https://github.com/viethung7899) (vhn@sfu.ca)
