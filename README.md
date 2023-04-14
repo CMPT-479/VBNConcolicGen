@@ -10,7 +10,7 @@ though this project has currently been set up with Amazon Corretto 8)
 - JUnit
 - Z3, used by many symbolic execution modules
 - JavaParser
-- SootUp
+- Soot
 
 ## Contributors
 - [Viet-Hung Nguyen](https://github.com/viethung7899) (vhn@sfu.ca)
