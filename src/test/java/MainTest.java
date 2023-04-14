@@ -10,7 +10,7 @@ public class MainTest {
     @BeforeEach
     final void initializeSoot() {
         G.reset();
-        Options.v().set_soot_classpath(".:build/classes:VIRTUAL_FS_FOR_JDK");
+        Options.v().set_soot_classpath(".:target/classes:VIRTUAL_FS_FOR_JDK");
         final var cute = new CuteTransformer();
         final var transform = new Transform("jtp.CuteTransformer", cute);
         PackManager.v().getPack("jtp").add(transform);
