@@ -14,11 +14,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>io.github.p-org.solvers</groupId>
-            <artifactId>z3</artifactId>
-            <version>4.8.14-v5</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>io.github.p-org.solvers</groupId>-->
+<!--            <artifactId>z3</artifactId>-->
+<!--            <version>4.8.14-v5</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.soot-oss</groupId>
             <artifactId>soot</artifactId>
@@ -35,6 +35,17 @@
             <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>tools.aqua</groupId>
+            <artifactId>z3-turnkey</artifactId>
+            <version>4.11.2</version>
+        </dependency>
+
+        <!--        <dependency>-->
+<!--            <groupId>io.github.tudo-aqua</groupId>-->
+<!--            <artifactId>z3-turnkey</artifactId>-->
+<!--            <version>4.8.14</version>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -117,7 +128,6 @@
                         <executable>java</executable>
                         <arguments>
                             <argument>-classpath</argument>
-                            <classpath/>
                             <argument>org.cmpt479.Main</argument>
                             <argument>--soot-classpath</argument>
                             <argument>.:target/classes:VIRTUAL_FS_FOR_JDK</argument>
