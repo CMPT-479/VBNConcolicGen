@@ -27,7 +27,7 @@ public class MainTest {
 
     @Test
     final void basic() {
-        final String[] args = new String[] {"org.cmpt479.examples.Test_00_Basic"};
+        final String[] args = new String[] {"vbn.examples.Test_00_Basic"};
         soot.Main.main(args);
     }
 
