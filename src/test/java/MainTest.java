@@ -1,4 +1,4 @@
-import org.cmpt479.instrument.CuteTransformer;
+import org.cmpt479.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import soot.G;
@@ -11,7 +11,7 @@ public class MainTest {
     final void initializeSoot() {
         G.reset();
         Options.v().set_soot_classpath(".:target/classes:VIRTUAL_FS_FOR_JDK");
-        final var cute = new CuteTransformer();
+        final var cute = new Instrument();
         final var transform = new Transform("jtp.CuteTransformer", cute);
         PackManager.v().getPack("jtp").add(transform);
     }
