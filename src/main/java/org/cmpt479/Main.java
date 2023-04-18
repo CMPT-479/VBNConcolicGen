@@ -4,6 +4,7 @@ import org.cmpt479.instrument.Instrument;
 import soot.G;
 import soot.PackManager;
 import soot.Transform;
+import com.microsoft.z3.*;
 
 public class Main {
     public static void main(String[] args) {
