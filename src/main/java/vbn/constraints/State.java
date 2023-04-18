@@ -3,52 +3,38 @@ package vbn.constraints;
 import java.io.Serializable;
 import java.util.*;
 
+
+//class PushConstaintsVisitor {
+//
+//    public ConstraintItem newConstraintItem;
+//
+//    public ArrayList<Symbol> newSymbols = new ArrayList<>(2);
+//
+//    public void push(ConstraintItemBool constraint) {
+//        newSymbols.clear();
+//        newConstraintItem = constraint;
+//        newSymbols.add(constraint.left, constraint.right);
+//    }
+//
+//    public void push(ConstraintItemInt constraint) {
+//        newSymbols.clear();
+//        newConstraintItem = constraint;
+//        newSymbols.add(constraint.left, constraint.right);
+//    }
+//}
+
 class Symbol implements Serializable {
     String id;
-};
+    Symbol(String id) {
+        this.id = id;
+    }
+}
 
 abstract class ConstraintItem {
 //    void push(PushConstaintsVisitor visitor);
-};
+}
 
-enum BoolOperand {
-    AND,
-    OR,
-    NOT,
-    EQ,
-};
-
-final class ConstraintItemBool extends ConstraintItem {
-    Symbol left;
-    BoolOperand op;
-    Optional<Symbol> right;
-
-//    @Override
-//    void push(PushConstaintsVisitor visitor) {
-//        visitor.push(this);
-//    }
-};
-
-enum IntOperand {
-    LT,
-    LE,
-    EQ,
-    GT,
-    GE,
-};
-
-final class ConstraintItemInt extends ConstraintItem {
-    Symbol left;
-    IntOperand op;
-    Symbol right;
-
-//    @Override
-//    void push(PushConstaintsVisitor visitor) {
-//        visitor.push(this);
-//    }
-};
-
-//class PushConstaintsVisitor {
+//class PushConstraintsVisitor {
 //
 //    public ConstraintItem newConstraintItem;
 //
@@ -71,11 +57,11 @@ final class ConstraintItemInt extends ConstraintItem {
  * This class handles all state necessary to solve an equation at a certain point
  */
 public class State {
-    State() {
+    public State() {
         super();
     }
 
-    private Set<Symbol> symbols = new HashSet<>();
+    private Map<String, Symbol> symbols = new HashMap<>();
 
     private Stack<ConstraintItem> constraints = new Stack<>();
 
@@ -84,14 +70,22 @@ public class State {
     }
 
     public void addSymbol(Symbol symbol) {
-        symbols.add(symbol);
+        symbols.put(symbol.id, symbol);
+    }
+    public void addSymbol(String stringSymbol) {
+        symbols.put(stringSymbol, new Symbol(stringSymbol));
     }
 
     public Stack<ConstraintItem> getConstraints() {
         return constraints;
     }
 
-    public Set<Symbol> getSymbols() {
+    public Map<String, Symbol> getSymbolsMap() {
         return symbols;
     }
+
+    public Symbol getSymbol(String symbolName) {
+        return symbols.get(symbolName);
+    }
+
 }
