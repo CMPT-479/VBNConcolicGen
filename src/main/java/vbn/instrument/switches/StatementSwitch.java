@@ -1,7 +1,6 @@
-package org.cmpt479.instrument.switches;
+package vbn.instrument.switches;
 
-import org.cmpt479.instrument.InstrumentData;
-import soot.*;
+import vbn.instrument.InstrumentData;
 import soot.jimple.*;
 
 public class StatementSwitch extends AbstractStmtSwitch<Object> {

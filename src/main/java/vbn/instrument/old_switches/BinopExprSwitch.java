@@ -1,6 +1,6 @@
-package org.cmpt479.instrument.old_switches;
+package vbn.instrument.old_switches;
 
-import org.cmpt479.instrument.InstrumentData;
+import vbn.instrument.InstrumentData;
 import soot.Scene;
 import soot.Unit;
 import soot.Value;

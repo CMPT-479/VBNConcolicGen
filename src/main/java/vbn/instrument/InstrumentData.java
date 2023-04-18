@@ -1,4 +1,4 @@
-package org.cmpt479.instrument;
+package vbn.instrument;
 
 import soot.Body;
 import soot.Unit;

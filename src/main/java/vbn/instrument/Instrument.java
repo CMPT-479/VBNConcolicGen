@@ -1,10 +1,7 @@
-package org.cmpt479.instrument;
+package vbn.instrument;
 
-import org.cmpt479.instrument.switches.StatementSwitch;
+import vbn.instrument.switches.StatementSwitch;
 import soot.*;
-import soot.jimple.IfStmt;
-import soot.jimple.LookupSwitchStmt;
-import soot.jimple.TableSwitchStmt;
 import soot.util.Chain;
 
 import java.util.Iterator;
@@ -14,7 +11,7 @@ public class Instrument extends BodyTransformer {
     public SymbolTable symbolTable;
     public Instrument() {
         symbolTable = new SymbolTable();
-        // Scene.v().loadClassAndSupport("org.cmpt479.Call");
+        Scene.v().loadClassAndSupport("vbn.Call");
     }
 
     @Override

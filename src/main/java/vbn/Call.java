@@ -1,6 +1,6 @@
-package org.cmpt479;
+package vbn;
 
-import org.cmpt479.constraints.State;
+import vbn.constraints.State;
 
 /**
  *

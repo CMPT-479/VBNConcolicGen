@@ -1,5 +1,5 @@
 import com.microsoft.z3.*;
-import org.cmpt479.instrument.Instrument;
+import vbn.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import soot.G;

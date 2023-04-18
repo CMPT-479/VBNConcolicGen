@@ -128,7 +128,7 @@
                         <executable>java</executable>
                         <arguments>
                             <argument>-classpath</argument>
-                            <argument>org.cmpt479.Main</argument>
+                            <argument>vbn.Main</argument>
                             <argument>--soot-classpath</argument>
                             <argument>.:target/classes:VIRTUAL_FS_FOR_JDK</argument>
                             <argument>${SOOT_TARGET}</argument>
