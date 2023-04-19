@@ -1,8 +1,7 @@
 package vbn.constraints;
 
-public enum BoolOperand {
+public enum BoolBinaryCompare {
     AND,
     OR,
-    NOT,
     EQ,
 }

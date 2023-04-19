@@ -1,9 +1,10 @@
 package vbn.constraints;
 
-public enum IntOperand {
+public enum IntBinaryCompare {
     LT,
     LE,
     EQ,
+    NEQ,
     GT,
     GE,
 }

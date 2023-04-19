@@ -7,12 +7,21 @@ import vbn.constraints.State;
  */
 
 public class Call {
+
+    static State globalState = new State();
+
+    /**
+     * Hello World just to test involving a function
+     */
+    public static void helloWorld() {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+    }
+
     /**
      * When the program begins
-     *
-     * @param globalState The global state passed around
      */
-    public static void init(State globalState) {
+    public static void init() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
@@ -20,71 +29,58 @@ public class Call {
     /**
      * Handle any assignment that we don't control the value of
      * e.g. user input, external functions, etc.
-     *
-     * @param globalState The global state passed around
      */
-    public static void initNewInput(State globalState) {
+    public static void initNewInput() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * Trigger before involving a function
-     *
-     * @param globalState The global state passed around
      */
-    public static void beforeInvokeFunc(State globalState) {
+    public static void beforeInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * Trigger after involving a function
-     *
-     * @param globalState The global state passed around
      */
-    public static void afterInvokeFunc(State globalState) {
+    public static void afterInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * Handle a new assignment (may contain new symbols)
-     *
-     * @param globalState The global state passed around
      */
-    public static void handleAssignment(State globalState) {
+    public static void handleAssignment(String symbol) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
+        System.out.println("\t Symbol = " + symbol);
     }
 
 
     /**
      * Handle new conditionals
-     *
-     * @param globalState The global state passed around
      */
-    public static void handleConditional(State globalState) {
+    public static void handleConditional() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * When the DFS search hits an error, return, etc.
-     *
-     * @param globalState The global state passed around
      */
-    public static void terminatePath(State globalState) {
+    public static void terminatePath() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * After the program is completed
-     *
-     * @param globalState The global state passed around
      */
-    public static void error(State globalState) {
+    public static void error() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }

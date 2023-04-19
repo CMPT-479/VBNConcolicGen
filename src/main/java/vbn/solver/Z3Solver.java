@@ -49,8 +49,8 @@ public class Z3Solver {
                         break;
                     case EQ:
                         break;
-                    case NOT:
-                        break;
+//                    case NOT:
+//                        break;
                 }
                 constraints.add(expr);
             } else if (constraintItem.getClass().equals(ConstraintItemInt.class)) {
