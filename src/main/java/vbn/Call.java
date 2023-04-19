@@ -1,6 +1,9 @@
 package vbn;
 
 import vbn.constraints.State;
+import vbn.instrument.JimpleOperand;
+
+import java.util.Stack;
 
 /**
  *
@@ -9,6 +12,9 @@ import vbn.constraints.State;
 public class Call {
 
     static State globalState = new State();
+
+    static Stack<String> tempSymbolsToCompute;
+    static JimpleOperand tempApplyOperand;
 
     /**
      * Hello World just to test involving a function
@@ -54,10 +60,17 @@ public class Call {
     /**
      * Handle a new assignment (may contain new symbols)
      */
-    public static void handleAssignment(String symbol) {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
-        System.out.println("\t Symbol = " + symbol);
+    public static void pushSym(String symName) {
+        tempSymbolsToCompute.push(symName);
+    }
+
+    public static void applyOperand(JimpleOperand operand) {
+        tempApplyOperand = operand;
+    }
+
+    public static void storeSym(String symName) {
+
+//        globalState.pushConstraints();
     }
 
 
