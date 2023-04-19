@@ -1,8 +1,8 @@
 package vbn.constraints;
 
-public class BinaryConstant extends Symbol {
+public class BooleanConstant extends Symbol {
     public boolean value;
-    public BinaryConstant(String id, boolean value) {
+    public BooleanConstant(String id, boolean value) {
         super(id, SymbolType.BOOL_TYPE);
         this.value = value;
     }
