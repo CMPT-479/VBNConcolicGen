@@ -1,5 +1,6 @@
 package vbn;
 
+import vbn.constraints.Constraint;
 import vbn.constraints.JimpleOperandI;
 import vbn.constraints.State;
 
@@ -93,9 +94,10 @@ public class Call {
     public static void storeSym(String symName) throws Exception {
         var numOfOps = tempComputeExpr.symbols.size();
 
+        Constraint constraint;
         switch (numOfOps) {
             case 2:
-//                globalState.pushConstraints(new Con);
+//                constraint = new BooleanEx
                 break;
             case 1:
                 break;
@@ -105,6 +107,8 @@ public class Call {
             default:
                 throw new Exception("Too many symbols have been pushed on to the stack.");
         }
+
+//        globalState.pushConstraints(constraint);
 
 //        globalState.pushConstraints();
         tempComputeExpr.clear();
