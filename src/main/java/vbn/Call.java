@@ -2,6 +2,7 @@ package vbn;
 
 import vbn.constraints.*;
 import vbn.constraints.helpers.ComputeConstraints;
+import vbn.constraints.helpers.ComputeConstraintsException;
 import vbn.constraints.helpers.TooManyOperandsException;
 
 /**
@@ -65,7 +66,7 @@ public class Call {
     public static void pushSym(String symName) {
         try {
             tempComputeConstraints.pushSymbol(symName);
-        } catch (TooManyOperandsException e) {
+        } catch (SymbolMissingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -73,19 +74,17 @@ public class Call {
     public static void pushSym(int objectId, int fieldId) {
         long id = objectId;
         id = (id << 32) | fieldId;
-        pushSym(String.format("v%d", id));
-    }
-
-    public static void pushSym(Object object, int fieldId) {
-        pushSym(object.hashCode(), fieldId);
+        pushSym(String.format("sym%d", id));
     }
 
     /**
-     * Push symbols used in the computation.
-     * The left operand is pushed first for binary operations.
+     * For both variables and constants
+     * TODO: track the value of constants later on.
+     * @param object the object to generate an id on
+     * @param fieldId the optional offset of an array or field of a class id
      */
-    public static void pushConstant(Object constant) {
-        tempComputeConstraints.pushConstant(constant);
+    public static void pushSym(Object object, int fieldId) {
+        pushSym(object.hashCode(), fieldId);
     }
 
     /**
@@ -108,7 +107,7 @@ public class Call {
     public static void finalizeStore(int objectId, int fieldId) {
         long id = objectId;
         id = (id << 32) | fieldId;
-        finalizeStore(String.format("v%d", id));
+        finalizeStore(String.format("sym%d", id));
     }
 
     public static void finalizeStore(Object object, int fieldId) {

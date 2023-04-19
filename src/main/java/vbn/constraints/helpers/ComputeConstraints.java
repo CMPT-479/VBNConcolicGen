@@ -1,44 +1,30 @@
 package vbn.constraints.helpers;
 
-import vbn.constraints.*;
+import vbn.constraints.BinaryOperand;
+import vbn.constraints.State;
+import vbn.constraints.SymbolMissingException;
+import vbn.constraints.UnaryOperand;
 
 import java.util.Stack;
 
 public class ComputeConstraints {
 
-    private final Stack<Object> symbols = new Stack<>();
+    private Stack<String> symbols = new Stack<>();
 
     private Object operand = null;
 
     /**
      * Add a symbol to be later used for constraints.
      * Left goes first.
-     *
-     * @param constant the value of the constant
-     */
-    public void pushConstant(Object constant) {
-        symbols.push(constant);
-    }
-
-    /**
-     * Add a symbol to be later used for constraints.
-     * Left goes first.
-     *
      * @param symName the name of the symbol
      */
-    public void pushSymbol(String symName) throws TooManyOperandsException {
-        if (symbols.size() == 2) {
-            throw new TooManyOperandsException("Too many symbols have been pushed on to the stack.");
+    public void pushSymbol(String symName) throws SymbolMissingException {
+        var result = symbols.push(symName);
+
+        if (result == null) {
+            throw new SymbolMissingException("The symbol can not be found");
         }
-
-        symbols.push(symName);
     }
-
-    /**
-     * Set the operand
-     *
-     * @param operand the operand to apply to the (max two symbols)
-     */
     public void setOperand(Object operand) {
         this.operand = operand;
     }
@@ -53,8 +39,7 @@ public class ComputeConstraints {
 
     /**
      * Generate constraints based on the calls
-     *
-     * @param globalState       the global state to store the newly generated constraints
+     * @param globalState the global state to store the newly generated constraints
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
     public void generateConstraint(State globalState, final String assignmentSymName) {
@@ -71,54 +56,13 @@ public class ComputeConstraints {
                         throw new ComputeConstraintsException("The operand is not binary when there are two symbols to be operated on");
                     }
 
-                    var right = symbols.pop();
-                    var left = symbols.pop();
-
+                    String right = symbols.pop();
+                    String left = symbols.pop();
                     if (assignmentSymName == null) {
-                        if (left instanceof String && right instanceof String) {
-                            globalState.pushConstraint(
-                                    (String) left,
-                                    (BinaryOperand) operand,
-                                    (String) right
-                            );
-                        } else if (left instanceof String) {
-                            globalState.pushConstraint(new BinaryConstraint<>(
-                                    (String) left,
-                                    (BinaryOperand) operand,
-                                    right)
-                            );
-                        } else if (right instanceof String) {
-                            globalState.pushConstraint(new BinaryConstraint<>(
-                                    left,
-                                    (BinaryOperand) operand,
-                                    (String) right)
-                            );
-                        } else {
-                            throw new ComputeConstraintsException("Both operands are nonStrings");
-                        }
-                    } else {
-                        if (left instanceof String && right instanceof String) {
-                            globalState.pushConstraint(
-                                    (String) left,
-                                    (BinaryOperand) operand,
-                                    (String) right,
-                                    assignmentSymName
-                            );
-                        } else if (left instanceof String) {
-                            globalState.pushConstraint(new BinaryConstraint<>(
-                                    (String) left,
-                                    (BinaryOperand) operand,
-                                    right,
-                                    globalState.getSymbol(assignmentSymName)));
-                        } else if (right instanceof String) {
-                            globalState.pushConstraint(new BinaryConstraint<>(
-                                    left,
-                                    (BinaryOperand) operand,
-                                    (String) right,
-                                    globalState.getSymbol(assignmentSymName)));
-                        } else {
-                            throw new ComputeConstraintsException("Both operands are nonStrings");
-                        }
+                        globalState.pushConstraint(left, (BinaryOperand) operand, right);
+                    }
+                    else {
+                        globalState.pushConstraint(left, (BinaryOperand) operand, right, assignmentSymName);
                     }
                     break;
 
@@ -128,21 +72,17 @@ public class ComputeConstraints {
                         throw new ComputeConstraintsException("The operand is not unary when there is one symbol to be operated on");
                     }
 
-                    var symbol = symbols.pop();
-
-                    if (!(symbol instanceof String)) {
-                        throw new ComputeConstraintsException("The symbol is a constant when it must be a symbol");
-                    }
-
+                    String symbol = symbols.pop();
                     if (assignmentSymName == null) {
-                        globalState.pushConstraint((UnaryOperand) operand, (String) symbol);
-                    } else {
-                        globalState.pushConstraint((UnaryOperand) operand, (String) symbol, assignmentSymName);
+                        globalState.pushConstraint((UnaryOperand) operand, symbol);
+                    }
+                    else {
+                        globalState.pushConstraint((UnaryOperand) operand, symbol, assignmentSymName);
                     }
                     break;
 
                 default:
-                    throw new TooManyOperandsException("Too many symbols have been pushed on to the stack.");
+                    throw new ComputeConstraintsException("Too many symbols have been pushed on to the stack.");
             }
         } catch (SymbolMissingException | ComputeConstraintsException e) {
             throw new RuntimeException(e);
@@ -153,7 +93,6 @@ public class ComputeConstraints {
 
     /**
      * Generate constraints based on the calls
-     *
      * @param globalState the global state to store the newly generated constraints
      */
     public void generateConstraint(State globalState) {

@@ -3,6 +3,9 @@ package vbn.constraints;
 import java.io.Serializable;
 
 public class Symbol implements Serializable {
+
+    private static final long serialVersionUID = 0L;
+
     public String id;
     public enum SymbolType {
         INT_TYPE,
