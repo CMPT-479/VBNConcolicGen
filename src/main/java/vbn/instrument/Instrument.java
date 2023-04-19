@@ -9,9 +9,10 @@ import java.util.Map;
 
 public class Instrument extends BodyTransformer {
     public SymbolTable symbolTable;
+    public SootClass runtime;
     public Instrument() {
         symbolTable = new SymbolTable();
-        Scene.v().loadClassAndSupport("vbn.Call");
+        runtime = Scene.v().loadClassAndSupport("vbn.Call");
     }
 
     @Override
@@ -22,10 +23,10 @@ public class Instrument extends BodyTransformer {
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
-        var statementSwitch = new StatementSwitch(new InstrumentData(units, body, symbolTable));
+        var statementSwitch = new StatementSwitch(new InstrumentData(units, body, symbolTable, runtime));
         while (it.hasNext()) {
             var unit = it.next();
-            unit.apply(statementSwitch);
+            System.out.println("\t"+unit);
         }
 
     }

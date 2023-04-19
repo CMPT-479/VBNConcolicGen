@@ -13,6 +13,7 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseAssignStmt(AssignStmt stmt) {
         // Handle assignment statements
+        var right = stmt.getLeftOp();
 
     }
 
