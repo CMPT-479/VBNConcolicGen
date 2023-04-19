@@ -138,11 +138,36 @@ public class Z3Solver {
 
         // Check for satisfying assignment
         Status status = solver.check();
+        ArrayList<Symbol> returnList = new ArrayList<>();
         if (status == Status.SATISFIABLE) {
             // Get satisfying assignment
             Model model = solver.getModel();
             for (String k : z3ExprMap.keySet()) {
-                System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
+//                if (model.eval(z3ExprMap.get(k), true) ==)
+                Expr evaluatedValue = model.eval(z3ExprMap.get(k), true);
+                if (evaluatedValue instanceof BoolExpr) {
+                    BoolExpr evaluatedValueBoolExpr = (BoolExpr) evaluatedValue;
+                    String evaluatedBookExprEnumIntVal = evaluatedValueBoolExpr.getBoolValue().toString();
+                    switch (evaluatedBookExprEnumIntVal) {
+                        case "Z3_L_FALSE":
+                            returnList.add(new BinaryConstant(k, false));
+                            break;
+                        case "Z3_L_TRUE":
+                            returnList.add(new BinaryConstant(k, true));
+                            break;
+                        default:
+
+                            break;
+                    }
+//                    boolean val = model.g
+                    System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
+                } else if (evaluatedValue instanceof IntNum) {
+                    IntNum evaluatedValueIntNum = (IntNum) evaluatedValue;
+                    int val = evaluatedValueIntNum.getInt();
+                    System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
+                } else {
+                    System.out.println("ERROR, unhandled");
+                }
             }
         } else if (status == Status.UNSATISFIABLE) {
             System.out.println("Path constraint is unsatisfiable");
