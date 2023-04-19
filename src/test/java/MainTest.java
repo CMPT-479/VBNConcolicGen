@@ -31,7 +31,6 @@ public class MainTest {
         soot.Main.main(args);
     }
 
-<<<<<<< HEAD
 //    @Test
 //    final void testZ3SimpleOr() {
 //        State state = new State();
