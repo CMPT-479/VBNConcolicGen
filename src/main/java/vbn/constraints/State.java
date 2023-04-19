@@ -154,5 +154,8 @@ public class State {
         return result;
     }
 
+    public Collection<Symbol> getSymbols() {
+        return symbols.values();
+    }
 
 }
