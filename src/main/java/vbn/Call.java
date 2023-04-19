@@ -49,8 +49,6 @@ public class Call {
     public static void afterInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
-        System.out.println("\t The left: " + left);
-        System.out.println("\t The left: " + right);
     }
 
     /**
