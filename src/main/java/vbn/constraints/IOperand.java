@@ -1,4 +1,4 @@
 package vbn.constraints;
 
-public interface IJimpleOperand {
+public interface IOperand {
 }

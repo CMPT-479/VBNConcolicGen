@@ -71,7 +71,7 @@ public class Call {
      * @param operand the operand (e.g. + or -) to be applied to the symbols
      * @param <JEnum> the type of operand
      */
-    public static <JEnum extends IJimpleOperand> void applyOperand(JEnum operand) {
+    public static <JEnum extends IOperand> void applyOperand(JEnum operand) {
         tempComputeConstraints.setOperand(operand);
     }
 
@@ -79,8 +79,15 @@ public class Call {
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void storeSym(String symName) throws Exception {
+    public static void finalizeStore(String symName) {
         tempComputeConstraints.generateConstraint(globalState, symName);
+    }
+
+    /**
+     * Store the result of this operand in the constraints
+     */
+    public static void finalizeIf() {
+        tempComputeConstraints.generateConstraint(globalState);
     }
 
     /**

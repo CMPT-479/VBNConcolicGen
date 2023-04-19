@@ -13,8 +13,13 @@ public class ComputeConstraints {
 
     private Object operand = null;
 
-    public void pushSymbol(String item) {
-        symbols.push(item);
+    /**
+     * Add a symbol to be later used for constraints.
+     * Left goes first.
+     * @param symName the name of the symbol
+     */
+    public void pushSymbol(String symName) {
+        symbols.push(symName);
     }
     public void setOperand(Object operand) {
         this.operand = operand;

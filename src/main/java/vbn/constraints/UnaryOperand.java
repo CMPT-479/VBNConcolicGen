@@ -1,6 +1,6 @@
 package vbn.constraints;
 
-public enum UnaryOperand implements IJimpleOperand {
+public enum UnaryOperand implements IOperand {
     NOT,
     NEG,
 
