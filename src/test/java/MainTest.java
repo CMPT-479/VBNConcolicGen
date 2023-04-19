@@ -9,6 +9,7 @@ import soot.options.Options;
 import vbn.solver.Z3Solver;
 
 import java.io.File;
+import java.util.List;
 
 public class MainTest {
 
@@ -49,7 +50,8 @@ public class MainTest {
             System.out.println("Missing symbol from state");
         }
 
-        Z3Solver.solve(state);
+        List<Symbol> solved = Z3Solver.solve(state);
+        Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
     @Test
@@ -67,7 +69,9 @@ public class MainTest {
         } catch (SymbolMissingException e) {
             System.out.println("Missing symbol from state");
         }
-        Z3Solver.solve(state);
+
+        List<Symbol> solved = Z3Solver.solve(state);
+        Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
     @Test
@@ -85,6 +89,8 @@ public class MainTest {
         } catch (SymbolMissingException e) {
             System.out.println("Missing symbol from state");
         }
-        Z3Solver.solve(state);
+
+        List<Symbol> solved = Z3Solver.solve(state);
+        Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 }

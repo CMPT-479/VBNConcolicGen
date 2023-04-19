@@ -103,7 +103,7 @@ public class Z3Solver {
         return exprToReturn;
     }
 
-    public static void solve(@NonNull State state) {
+    public static List<Symbol> solve(@NonNull State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
         Solver solver = ctx.mkSolver();
@@ -143,30 +143,27 @@ public class Z3Solver {
             // Get satisfying assignment
             Model model = solver.getModel();
             for (String k : z3ExprMap.keySet()) {
-//                if (model.eval(z3ExprMap.get(k), true) ==)
                 Expr evaluatedValue = model.eval(z3ExprMap.get(k), true);
                 if (evaluatedValue instanceof BoolExpr) {
                     BoolExpr evaluatedValueBoolExpr = (BoolExpr) evaluatedValue;
                     String evaluatedBookExprEnumIntVal = evaluatedValueBoolExpr.getBoolValue().toString();
                     switch (evaluatedBookExprEnumIntVal) {
                         case "Z3_L_FALSE":
-                            returnList.add(new BinaryConstant(k, false));
+                            returnList.add(new BooleanConstant(k, false));
                             break;
                         case "Z3_L_TRUE":
-                            returnList.add(new BinaryConstant(k, true));
+                            returnList.add(new BooleanConstant(k, true));
                             break;
                         default:
-
-                            break;
+                            throw new RuntimeException("Error, BoolExpr return value " + evaluatedBookExprEnumIntVal + " does not exist");
                     }
-//                    boolean val = model.g
-                    System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
                 } else if (evaluatedValue instanceof IntNum) {
                     IntNum evaluatedValueIntNum = (IntNum) evaluatedValue;
                     int val = evaluatedValueIntNum.getInt();
-                    System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
+                    returnList.add(new IntConstant(k, val));
                 } else {
-                    System.out.println("ERROR, unhandled");
+                    throw new RuntimeException("Error, evaluatedValue instance of an unhandled class");
+
                 }
             }
         } else if (status == Status.UNSATISFIABLE) {
@@ -178,5 +175,19 @@ public class Z3Solver {
         // Dispose of solver instance
         System.gc();
         ctx.close();
+
+        return returnList;
+    }
+
+    public static void printSolvedValuesBasedOnList(List<Symbol> symbols) {
+        for (Symbol symbol : symbols) {
+            if (symbol instanceof BooleanConstant) {
+                System.out.println(symbol.id + " = " + ((BooleanConstant) symbol).value);
+            } else if (symbol instanceof IntConstant) {
+                System.out.println(symbol.id + " = " + ((IntConstant) symbol).value);
+            } else {
+                System.out.println(symbol.id + " = unknown value");
+            }
+        }
     }
 }
