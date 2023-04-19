@@ -1,4 +1,4 @@
-package vbn.instrument.switches;
+package vbn.instrument.old_switches;
 
 import vbn.instrument.InstrumentData;
 import soot.*;

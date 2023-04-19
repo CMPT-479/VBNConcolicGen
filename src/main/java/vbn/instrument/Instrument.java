@@ -17,9 +17,8 @@ public class Instrument extends BodyTransformer {
 
     @Override
     protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-        // body's method
         var method = body.getMethod();
-        System.out.println("\ninstrumenting method : " + method.getSignature());
+        System.out.println("\n---instrument method : " + method.getSignature());
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
@@ -27,7 +26,14 @@ public class Instrument extends BodyTransformer {
         while (it.hasNext()) {
             var unit = it.next();
             System.out.println("\t"+unit);
+            unit.apply(statementSwitch);
         }
 
+        it = units.snapshotIterator();
+        System.out.println("---after instrument");
+        while (it.hasNext()) {
+            var unit = it.next();
+            System.out.println("\t" + unit);
+        }
     }
 }

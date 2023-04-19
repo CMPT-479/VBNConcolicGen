@@ -1,5 +1,8 @@
 package vbn.instrument.switches;
 
+import com.google.protobuf.Value;
+import soot.Local;
+import soot.Type;
 import vbn.instrument.InstrumentData;
 import soot.jimple.*;
 
@@ -13,8 +16,10 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseAssignStmt(AssignStmt stmt) {
         // Handle assignment statements
-        var right = stmt.getLeftOp();
-
+        var left = stmt.getLeftOp();
+        var right = stmt.getRightOp();
+        JimpleValueInstrument.instrument(right, left, stmt, data);
+        left.apply(new ReferenceSwitch(data, stmt, "finalizeStore", false));
     }
 
     public void caseInvokeStmt(InvokeStmt stmt) {

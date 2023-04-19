@@ -1,12 +1,23 @@
 package vbn.examples;
 
 public class Test_00_Basic {
-    public static void main(String[] args) {
-        int a = Integer.parseInt(args[0]);
-        int b = Integer.parseInt(args[1]);
-        int c = a + b;
-        System.out.println(c);
+    public static void f(Object o) {
+        System.out.println(o);
+    }
 
-        System.out.println(a + b + c);
+    public static void main(String[] args) {
+        int length = args.length;
+        var x = Integer.parseInt(args[0]);
+        var y = Integer.parseInt(args[1]);
+        var z = 3;
+
+        var p = (x + y) * z;
+
+        var q = p;
+
+        q = q + 1;
+
+        f(p);
+        f(q);
     }
 }

@@ -1,8 +1,11 @@
 package vbn.instrument.switches;
 
+import soot.RefType;
 import soot.Unit;
 import soot.jimple.*;
 import vbn.instrument.InstrumentData;
+
+import java.util.List;
 
 public class ExpressionInstrumentUtil {
 
@@ -18,8 +21,9 @@ public class ExpressionInstrumentUtil {
         var left = expr.getOp1();
         var right = expr.getOp2();
         if (left instanceof Constant && right instanceof Constant) return;
-        // TODO: Instrument left and right
-        var apply = data.runtime.getMethod("void apply(java.lang.String)").makeRef();
+        JimpleValueInstrument.instrument(left, null, unit, data);
+        JimpleValueInstrument.instrument(right, null, unit, data);
+        var apply = data.runtime.getMethod("apply", List.of(RefType.v("java.lang.String"))).makeRef();
         var symbol = StringConstant.v(expr.getSymbol());
         data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)), unit);
     }
@@ -28,7 +32,8 @@ public class ExpressionInstrumentUtil {
         var left = expr.getOp1();
         var right = expr.getOp2();
         if (left instanceof Constant && right instanceof Constant) return;
-        // TODO: Instrument left and right
+        JimpleValueInstrument.instrument(left, null, unit, data);
+        JimpleValueInstrument.instrument(right, null, unit, data);
         var apply = data.runtime.getMethod("void apply(java.lang.String)").makeRef();
         var symbol = StringConstant.v(expr.getSymbol());
         data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)), unit);

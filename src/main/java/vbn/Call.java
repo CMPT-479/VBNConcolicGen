@@ -1,18 +1,35 @@
 package vbn;
 
-import vbn.constraints.State;
+import vbn.constraints.*;
+import vbn.constraints.helpers.ComputeConstraints;
+import vbn.constraints.helpers.TooManyOperandsException;
 
 /**
  *
  */
 
 public class Call {
+
+    static State globalState;
+
+    static ComputeConstraints tempComputeConstraints;
+
+    /**
+     * Hello World just to test involving a function
+     */
+    public static void helloWorld() {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+    }
+
     /**
      * When the program begins
-     *
-     * @param globalState The global state passed around
      */
-    public static void init(State globalState) {
+    public static void init() {
+        // Create new to avoid carried over state
+        globalState = new State();
+        tempComputeConstraints = new ComputeConstraints();
+
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
@@ -20,72 +37,107 @@ public class Call {
     /**
      * Handle any assignment that we don't control the value of
      * e.g. user input, external functions, etc.
-     *
-     * @param globalState The global state passed around
      */
-    public static void initNewInput(State globalState) {
+    public static void initNewInput() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * Trigger before involving a function
-     *
-     * @param globalState The global state passed around
      */
-    public static void beforeInvokeFunc(State globalState) {
+    public static void beforeInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * Trigger after involving a function
-     *
-     * @param globalState The global state passed around
      */
-    public static void afterInvokeFunc(State globalState) {
+    public static void afterInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
-     * Handle a new assignment (may contain new symbols)
-     *
-     * @param globalState The global state passed around
+     * Push symbols used in the computation.
+     * The left operand is pushed first for binary operations.
      */
-    public static void handleAssignment(State globalState) {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
+    public static void pushSym(String symName) {
+        try {
+            tempComputeConstraints.pushSymbol(symName);
+        } catch (TooManyOperandsException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    /**
+     * Push symbols used in the computation.
+     * The left operand is pushed first for binary operations.
+     */
+    public static void pushConstant(Object constant) {
+        tempComputeConstraints.pushConstant(constant);
+    }
+
+    /**
+     * Select the operand used for computation
+     * @param operand the operand (e.g. + or -) to be applied to the symbols
+     * @param <JEnum> the type of operand
+     */
+    public static <JEnum extends IOperand> void applyOperand(JEnum operand) {
+        tempComputeConstraints.setOperand(operand);
+    }
+
+    /**
+     * Store the result of this operand in the constraints
+     * @param symName the name of the symbol to store the expression
+     */
+    public static void finalizeStore(String symName) {
+        tempComputeConstraints.generateConstraint(globalState, symName);
+    }
+
+    /**
+     * Store the result of this operand in the constraints
+     */
+    public static void finalizeIf() {
+        tempComputeConstraints.generateConstraint(globalState);
+    }
 
     /**
      * Handle new conditionals
-     *
-     * @param globalState The global state passed around
      */
-    public static void handleConditional(State globalState) {
+    public static void handleConditional() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * When the DFS search hits an error, return, etc.
-     *
-     * @param globalState The global state passed around
      */
-    public static void terminatePath(State globalState) {
+    public static void terminatePath() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
     /**
      * After the program is completed
-     *
-     * @param globalState The global state passed around
      */
-    public static void error(State globalState) {
+    public static void error() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
+
+    /**
+     * Ensure that state does not carry over
+     */
+    public static void destroy() {
+        globalState = null;
+        tempComputeConstraints = null;
+    }
+
+    public static void apply(String op) {}
+
+    public static void loadValue(Object o) {}
+
+    public static void pushValue(Object o) {}
 }
