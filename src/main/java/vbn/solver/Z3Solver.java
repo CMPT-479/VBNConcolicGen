@@ -76,37 +76,30 @@ public class Z3Solver {
         return exprToReturn;
     }
 
-//
-//    public static IntExpr handleIntConstraints(ConstraintItemInt constraintItemInt,
-//                                               Map<String, Expr> z3ExprMap, Context ctx) {
-//        IntExpr expr = null;
-//        if (constraintItemInt == null ||
-//                constraintItemInt.left == null || constraintItemInt.left.id == null ||
-//                constraintItemInt.right == null || constraintItemInt.right.id == null) {
-//            return null;
-//        }
-//
-//        Expr leftExpr = z3ExprMap.get(constraintItemInt.left.id);
-//        Expr rightExpr = z3ExprMap.get(constraintItemInt.right.id);
-//
-//        if (leftExpr == null || rightExpr == null) {
-//            return null;
-//        }
-//
-//        switch (constraintItemInt.op) {
-//            case EQ:
-//                break;
-//            case GE:
-//                break;
-//            case GT:
-//                break;
-//            case LE:
-//                break;
-//            case LT:
-//                break;
-//        }
-//        return expr;
-//    }
+    public static Expr handleUnaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
+                                              @NonNull UnaryConstraint unaryConstraint) {
+        @NonNull Symbol symbol = unaryConstraint.symbol;
+        @NonNull UnaryOperand op = unaryConstraint.op;
+        @Nullable Symbol assigned = unaryConstraint.assigned; // optional
+
+        @NonNull Expr symbolExpr = z3ExprMap.get(symbol.id);
+        Expr exprToReturn = null;
+
+        switch(op) {
+            case NOT:
+                exprToReturn = ctx.mkNot(symbolExpr);
+                break;
+            case NEG:
+                exprToReturn = ctx.mkMul(symbolExpr, ctx.mkInt(-1));
+                break;
+        }
+        if (exprToReturn != null && assigned != null) {
+            @NonNull Expr assignedExpr = z3ExprMap.get(assigned.id);
+            exprToReturn = ctx.mkEq(assignedExpr, exprToReturn);
+        }
+
+        return exprToReturn;
+    }
 
     public static void solve(@NonNull State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
@@ -134,11 +127,9 @@ public class Z3Solver {
         for (Constraint constraint : constraintStack) {
             System.out.println(constraint.getClass());
             if (constraint.getClass().equals(UnaryConstraint.class)) {
-                solver.add();
-//                constraints.add(handleBoolConstraints((ConstraintItemBool) constraintItem, z3ExprMap, ctx));
+                solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
             } else if (constraint.getClass().equals(BinaryConstraint.class)) {
                 solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
-//                constraints.add(handleIntConstraints((ConstraintItemInt) constraintItem, z3ExprMap, ctx));
             } else {
                 System.out.println("Error");
             }
@@ -164,9 +155,9 @@ public class Z3Solver {
         if (status == Status.SATISFIABLE) {
             // Get satisfying assignment
             Model model = solver.getModel();
-//            for (String k : keys) {
-//                System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
-//            }
+            for (String k : z3ExprMap.keySet()) {
+                System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
+            }
 //            System.out.println("x = " + model.eval(x, true));
 //            System.out.println("y = " + model.eval(y, true));
         } else if (status == Status.UNSATISFIABLE) {
