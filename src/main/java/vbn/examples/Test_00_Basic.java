@@ -1,8 +1,14 @@
 package vbn.examples;
 
 public class Test_00_Basic {
-    public void test() {
+    public static void main(String[] args) {
+        int length = args.length;
+        var x = Integer.parseInt(args[0]);
+        var y = Integer.parseInt(args[1]);
+        var z = 3;
 
-        System.out.println("Hello");
+        var p = (x + y) * z;
+
+        System.out.println(p);
     }
 }
