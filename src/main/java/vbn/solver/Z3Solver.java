@@ -12,11 +12,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class Z3Solver {
-    public Z3Solver() {
 
-    }
-
-    public void solve(State state) {
+    public static void solve(State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
         Solver solver = ctx.mkSolver();
