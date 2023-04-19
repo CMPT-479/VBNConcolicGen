@@ -23,17 +23,6 @@ import java.util.*;
 //    }
 //}
 
-class Symbol implements Serializable {
-    String id;
-    Symbol(String id) {
-        this.id = id;
-    }
-}
-
-abstract class ConstraintItem {
-//    void push(PushConstaintsVisitor visitor);
-}
-
 //class PushConstraintsVisitor {
 //
 //    public ConstraintItem newConstraintItem;
@@ -65,15 +54,15 @@ public class State {
 
     private Stack<ConstraintItem> constraints = new Stack<>();
 
-    public void pushConstaints(ConstraintItem constraint) {
+    public void pushConstraints(ConstraintItem constraint) {
         constraints.push(constraint);
     }
 
     public void addSymbol(Symbol symbol) {
         symbols.put(symbol.id, symbol);
     }
-    public void addSymbol(String stringSymbol) {
-        symbols.put(stringSymbol, new Symbol(stringSymbol));
+    public void addSymbol(String stringSymbol, Symbol.SymbolType symbolType) {
+        symbols.put(stringSymbol, new Symbol(stringSymbol, symbolType));
     }
 
     public Stack<ConstraintItem> getConstraints() {

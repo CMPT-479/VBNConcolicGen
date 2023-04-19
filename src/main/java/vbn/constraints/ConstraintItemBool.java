@@ -4,9 +4,9 @@ import java.util.Optional;
 
 // TODO: Add unary operation handling (e.g. not x)
 public final class ConstraintItemBool extends ConstraintItem {
-    Symbol left;
-    BoolOperand op;
-    Symbol right;
+    public Symbol left;
+    public BoolOperand op;
+    public Symbol right;
 
     public ConstraintItemBool(Symbol left, BoolOperand op, Symbol right) {
         this.left = left;
