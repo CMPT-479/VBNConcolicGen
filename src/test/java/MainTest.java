@@ -50,7 +50,7 @@ public class MainTest {
             System.out.println("Missing symbol from state");
         }
 
-        List<Symbol> solved = Z3Solver.solve(state);
+        List<AbstractConstant> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
@@ -70,7 +70,7 @@ public class MainTest {
             System.out.println("Missing symbol from state");
         }
 
-        List<Symbol> solved = Z3Solver.solve(state);
+        List<AbstractConstant> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
@@ -90,7 +90,7 @@ public class MainTest {
             System.out.println("Missing symbol from state");
         }
 
-        List<Symbol> solved = Z3Solver.solve(state);
+        List<AbstractConstant> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 }
