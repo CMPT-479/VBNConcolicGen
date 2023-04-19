@@ -103,7 +103,7 @@ public class Z3Solver {
         return exprToReturn;
     }
 
-    public static List<Symbol> solve(@NonNull State state) {
+    public static ArrayList<AbstractConstant> solve(@NonNull State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
         Solver solver = ctx.mkSolver();
@@ -138,7 +138,7 @@ public class Z3Solver {
 
         // Check for satisfying assignment
         Status status = solver.check();
-        ArrayList<Symbol> returnList = new ArrayList<>();
+        ArrayList<AbstractConstant> returnList = new ArrayList<>();
         if (status == Status.SATISFIABLE) {
             // Get satisfying assignment
             Model model = solver.getModel();
@@ -179,7 +179,7 @@ public class Z3Solver {
         return returnList;
     }
 
-    public static void printSolvedValuesBasedOnList(List<Symbol> symbols) {
+    public static void printSolvedValuesBasedOnList(List<AbstractConstant> symbols) {
         for (Symbol symbol : symbols) {
             if (symbol instanceof BooleanConstant) {
                 System.out.println(symbol.id + " = " + ((BooleanConstant) symbol).value);
