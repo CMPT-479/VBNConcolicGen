@@ -1,3 +1,4 @@
+import vbn.constraints.*;
 import vbn.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -5,6 +6,7 @@ import soot.G;
 import soot.PackManager;
 import soot.Transform;
 import soot.options.Options;
+import vbn.solver.Z3Solver;
 
 import java.io.File;
 
@@ -38,11 +40,57 @@ public class MainTest {
     }
 
     @Test
-    final void testZ3() {
-//        State state = new State();
-//        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
-//        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
-//        state.pushConstraints(new ConstraintBoolComp(state.getSymbol("x"), BoolBinaryCompare.OR, state.getSymbol("y")));
-//        Z3Solver.solve(state);
+    final void testZ3SimpleOr() {
+        // x or y
+        State state = new State();
+        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
+        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
+        try {
+            state.pushConstraint(
+                    new BinaryConstraint(
+                            state.getSymbol("x"),
+                            BinaryOperand.OR,
+                            state.getSymbol("y")));
+        } catch (SymbolMissingException e) {
+            System.out.println("Missing symbol from state");
+        }
+
+        Z3Solver.solve(state);
+    }
+
+    @Test
+    final void testZ3SimpleAnd() {
+        // x and y
+        State state = new State();
+        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
+        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
+        try {
+            state.pushConstraint(
+                    new BinaryConstraint(
+                            state.getSymbol("x"),
+                            BinaryOperand.AND,
+                            state.getSymbol("y")));
+        } catch (SymbolMissingException e) {
+            System.out.println("Missing symbol from state");
+        }
+        Z3Solver.solve(state);
+    }
+
+    @Test
+    final void testZ3Gt() {
+        // x > y
+        State state = new State();
+        state.addSymbol("x", Symbol.SymbolType.INT_TYPE);
+        state.addSymbol("y", Symbol.SymbolType.INT_TYPE);
+        try {
+            state.pushConstraint(
+                    new BinaryConstraint(
+                            state.getSymbol("x"),
+                            BinaryOperand.INT_GT,
+                            state.getSymbol("y")));
+        } catch (SymbolMissingException e) {
+            System.out.println("Missing symbol from state");
+        }
+        Z3Solver.solve(state);
     }
 }
