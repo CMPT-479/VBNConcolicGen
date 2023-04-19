@@ -31,12 +31,21 @@ public class MainTest {
         soot.Main.main(args);
     }
 
-    @Test
-    final void testZ3() {
+//    @Test
+//    final void testZ3SimpleOr() {
 //        State state = new State();
 //        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
 //        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
-//        state.pushConstraints(new ConstraintBoolComp(state.getSymbol("x"), BoolBinaryCompare.OR, state.getSymbol("y")));
+//        state.pushConstraints(new ConstraintItemBool(state.getSymbol("x"), BoolBinaryCompare.OR, state.getSymbol("y")));
 //        Z3Solver.solve(state);
-    }
+//    }
+//
+//    @Test
+//    final void testZ3SimpleAnd() {
+//        State state = new State();
+//        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
+//        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
+//        state.pushConstraints(new ConstraintItemBool(state.getSymbol("x"), BoolOperand.AND, state.getSymbol("y")));
+//        Z3Solver.solve(state);
+//    }
 }
