@@ -1,30 +1,17 @@
 package vbn;
 
-import vbn.constraints.Constraint;
-import vbn.constraints.JimpleOperandI;
-import vbn.constraints.State;
-
-import java.util.Stack;
+import vbn.constraints.*;
+import vbn.constraints.helpers.ComputeConstraints;
 
 /**
  *
  */
 
-class ComputeExpression {
-    public Stack<String> symbols = new Stack<>();
-    public Object operand = null;
-
-    public void clear() {
-        symbols.clear();
-        operand = null;
-    }
-}
-
 public class Call {
 
     static State globalState;
 
-    static ComputeExpression tempComputeExpr;
+    static ComputeConstraints tempComputeConstraints;
 
     /**
      * Hello World just to test involving a function
@@ -38,8 +25,9 @@ public class Call {
      * When the program begins
      */
     public static void init() {
+        // Create new to avoid carried over state
         globalState = new State();
-        tempComputeExpr = new ComputeExpression();
+        tempComputeConstraints = new ComputeConstraints();
 
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
@@ -75,7 +63,7 @@ public class Call {
      * The left operand is pushed first for binary operations.
      */
     public static void pushSym(String symName) {
-        tempComputeExpr.symbols.push(symName);
+        tempComputeConstraints.pushSymbol(symName);
     }
 
     /**
@@ -83,8 +71,8 @@ public class Call {
      * @param operand the operand (e.g. + or -) to be applied to the symbols
      * @param <JEnum> the type of operand
      */
-    public static <JEnum extends JimpleOperandI> void applyOperand(JEnum operand) {
-        tempComputeExpr.operand = operand;
+    public static <JEnum extends IJimpleOperand> void applyOperand(JEnum operand) {
+        tempComputeConstraints.setOperand(operand);
     }
 
     /**
@@ -92,28 +80,8 @@ public class Call {
      * @param symName the name of the symbol to store the expression
      */
     public static void storeSym(String symName) throws Exception {
-        var numOfOps = tempComputeExpr.symbols.size();
-
-        Constraint constraint;
-        switch (numOfOps) {
-            case 2:
-//                constraint = new BooleanEx
-                break;
-            case 1:
-                break;
-            case 0:
-                break;
-
-            default:
-                throw new Exception("Too many symbols have been pushed on to the stack.");
-        }
-
-//        globalState.pushConstraints(constraint);
-
-//        globalState.pushConstraints();
-        tempComputeExpr.clear();
+        tempComputeConstraints.generateConstraint(globalState, symName);
     }
-
 
     /**
      * Handle new conditionals
@@ -144,6 +112,6 @@ public class Call {
      */
     public static void destroy() {
         globalState = null;
-        tempComputeExpr = null;
+        tempComputeConstraints = null;
     }
 }

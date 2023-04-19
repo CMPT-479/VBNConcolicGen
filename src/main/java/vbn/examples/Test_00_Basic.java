@@ -9,6 +9,12 @@ public class Test_00_Basic {
 
         var p = (x + y) * z;
 
+        var q = p;
+
+        q = q + 1;
+
+
+        System.out.println(q);
         System.out.println(p);
     }
 }

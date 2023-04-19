@@ -1,6 +1,3 @@
-import vbn.constraints.BoolBinaryCompare;
-import vbn.constraints.State;
-import vbn.constraints.Symbol;
 import vbn.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,7 +5,6 @@ import soot.G;
 import soot.PackManager;
 import soot.Transform;
 import soot.options.Options;
-import vbn.solver.Z3Solver;
 
 import java.io.File;
 
