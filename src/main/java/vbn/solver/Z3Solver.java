@@ -65,6 +65,8 @@ public class Z3Solver {
             case INT_GTE:
                 exprToReturn = ctx.mkGe(leftExpr, rightExpr);
                 break;
+            default:
+                throw new RuntimeException("Error, binary constraint operation not handled " + op);
         }
         if (exprToReturn != null && assigned != null) {
             @NonNull Expr assignedExpr = z3ExprMap.get(assigned.id);
@@ -90,6 +92,8 @@ public class Z3Solver {
             case NEG:
                 exprToReturn = ctx.mkMul(symbolExpr, ctx.mkInt(-1));
                 break;
+            default:
+                throw new RuntimeException("Error, unary constraint operation not handled " + op);
         }
         if (exprToReturn != null && assigned != null) {
             @NonNull Expr assignedExpr = z3ExprMap.get(assigned.id);
@@ -115,8 +119,7 @@ public class Z3Solver {
                     z3ExprMap.put(sym.id, ctx.mkBoolConst(sym.id));
                     break;
                 default:
-                    System.out.println("ERROR, Symbol type wasn't of expected type");
-                    break;
+                    throw new RuntimeException("Error, symbol " + sym.symbolType + " wasn't of expected type");
             }
         }
 
@@ -124,12 +127,12 @@ public class Z3Solver {
         // will need to keep negating the top of the stack and then removing it while going down
         for (Constraint constraint : constraintStack) {
             System.out.println(constraint.getClass());
-            if (constraint.getClass().equals(UnaryConstraint.class)) {
+            if (constraint instanceof UnaryConstraint) {
                 solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
-            } else if (constraint.getClass().equals(BinaryConstraint.class)) {
+            } else if (constraint instanceof BinaryConstraint) {
                 solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
             } else {
-                System.out.println("Error");
+                throw new RuntimeException("Error, constraint type does not exist");
             }
         }
 
