@@ -2,6 +2,7 @@ package vbn;
 
 import vbn.constraints.*;
 import vbn.constraints.helpers.ComputeConstraints;
+import vbn.constraints.helpers.TooManyOperandsException;
 
 /**
  *
@@ -63,7 +64,19 @@ public class Call {
      * The left operand is pushed first for binary operations.
      */
     public static void pushSym(String symName) {
-        tempComputeConstraints.pushSymbol(symName);
+        try {
+            tempComputeConstraints.pushSymbol(symName);
+        } catch (TooManyOperandsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Push symbols used in the computation.
+     * The left operand is pushed first for binary operations.
+     */
+    public static void pushConstant(Object constant) {
+        tempComputeConstraints.pushConstant(constant);
     }
 
     /**

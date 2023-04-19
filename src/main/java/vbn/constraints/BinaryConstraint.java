@@ -1,19 +1,19 @@
 package vbn.constraints;
 
-public class BinaryConstraint extends Constraint {
+public class BinaryConstraint<Left, Right> extends Constraint {
 
     public Symbol assigned;
-    public Symbol left;
+    public Left left;
     public BinaryOperand op;
-    public Symbol right;
+    public Right right;
 
-    public BinaryConstraint(Symbol left, BinaryOperand op, Symbol right) {
+    public BinaryConstraint(Left left, BinaryOperand op, Right right) {
         this.assigned = null;
         this.left = left;
         this.op = op;
         this.right = right;
     }
-    public BinaryConstraint(Symbol left, BinaryOperand op, Symbol right, Symbol assigned) {
+    public BinaryConstraint(Left left, BinaryOperand op, Right right, Symbol assigned) {
         this.assigned = assigned;
         this.left = left;
         this.op = op;
