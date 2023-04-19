@@ -2,10 +2,8 @@ package vbn.solver;
 
 import com.microsoft.z3.*;
 import lombok.NonNull;
-import soot.util.Cons;
 import vbn.constraints.*;
 import vbn.constraints.Symbol;
-//import vbn.constraints.ConstraintIntComp;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -135,21 +133,6 @@ public class Z3Solver {
             }
         }
 
-        // Create logical expression
-//        BoolExpr x = ctx.mkBoolConst("x");
-//        BoolExpr y = ctx.mkBoolConst("y");
-//        BoolExpr p1 = ctx.mkOr(x, y);
-//        BoolExpr p2 = ctx.mkOr(ctx.mkNot(x), y);
-//        BoolExpr pathConstraint = ctx.mkAnd(p1, p2);
-
-//        BoolExpr pathConstraint =;
-
-        // Add path constraint to solver
-//        for (Expr expr : constraints) {
-//            solver.add(expr);
-//        }
-//        solver.add(pathConstraint);
-
         // Check for satisfying assignment
         Status status = solver.check();
         if (status == Status.SATISFIABLE) {
@@ -158,8 +141,6 @@ public class Z3Solver {
             for (String k : z3ExprMap.keySet()) {
                 System.out.println(k + " = " + model.eval(z3ExprMap.get(k), true));
             }
-//            System.out.println("x = " + model.eval(x, true));
-//            System.out.println("y = " + model.eval(y, true));
         } else if (status == Status.UNSATISFIABLE) {
             System.out.println("Path constraint is unsatisfiable");
         } else {
