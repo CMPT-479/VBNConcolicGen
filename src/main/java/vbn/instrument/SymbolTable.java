@@ -8,25 +8,25 @@ import java.util.Map;
  * to a unique identifier
  */
 public class SymbolTable {
-    public Map<String, String> map;
-    public Map<String, String> reverseMap;
+    public Map<String, Integer> map;
+    public Map<Integer, String> reverseMap;
+
 
     public SymbolTable() {
         map = new HashMap<>();
         reverseMap = new HashMap<>();
     }
 
-    public String getIdentifier(String variable) {
+    public int getId(String variable) {
         var value = map.get(variable);
         if (value != null) return value;
         int i = map.size() + 1;
-        String id = String.format("v_%d", i);
-        map.put(variable, id);
-        reverseMap.put(id, variable);
-        return id;
+        map.put(variable, i);
+        reverseMap.put(i, variable);
+        return i;
     }
 
-    public String getVariable(String key) {
+    public String getVariable(int key) {
         return reverseMap.get(key);
     }
 }

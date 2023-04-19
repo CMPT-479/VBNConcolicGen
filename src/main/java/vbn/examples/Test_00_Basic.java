@@ -1,10 +1,6 @@
 package vbn.examples;
 
 public class Test_00_Basic {
-    public static void f(Object o) {
-        System.out.println(o);
-    }
-
     public static void main(String[] args) {
         int length = args.length;
         var x = Integer.parseInt(args[0]);

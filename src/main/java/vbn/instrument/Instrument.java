@@ -10,6 +10,8 @@ import java.util.Map;
 public class Instrument extends BodyTransformer {
     public SymbolTable symbolTable;
     public SootClass runtime;
+
+    private static final Instrument instance = new Instrument();
     public Instrument() {
         symbolTable = new SymbolTable();
         runtime = Scene.v().loadClassAndSupport("vbn.Call");

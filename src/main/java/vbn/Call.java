@@ -9,7 +9,6 @@ import vbn.constraints.helpers.TooManyOperandsException;
  */
 
 public class Call {
-
     static State globalState;
 
     static ComputeConstraints tempComputeConstraints;
@@ -71,6 +70,16 @@ public class Call {
         }
     }
 
+    public static void pushSym(int objectId, int fieldId) {
+        long id = objectId;
+        id = (id << 32) | fieldId;
+        pushSym(String.format("v%d", id));
+    }
+
+    public static void pushSym(Object object, int fieldId) {
+        pushSym(object.hashCode(), fieldId);
+    }
+
     /**
      * Push symbols used in the computation.
      * The left operand is pushed first for binary operations.
@@ -95,6 +104,18 @@ public class Call {
     public static void finalizeStore(String symName) {
         tempComputeConstraints.generateConstraint(globalState, symName);
     }
+
+    public static void finalizeStore(int objectId, int fieldId) {
+        long id = objectId;
+        id = (id << 32) | fieldId;
+        finalizeStore(String.format("v%d", id));
+    }
+
+    public static void finalizeStore(Object object, int fieldId) {
+        finalizeStore(object.hashCode(), fieldId);
+    }
+
+
 
     /**
      * Store the result of this operand in the constraints
