@@ -31,6 +31,7 @@ public class MainTest {
         soot.Main.main(args);
     }
 
+<<<<<<< HEAD
 //    @Test
 //    final void testZ3SimpleOr() {
 //        State state = new State();
@@ -45,7 +46,7 @@ public class MainTest {
 //        State state = new State();
 //        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
 //        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
-//        state.pushConstraints(new ConstraintItemBool(state.getSymbol("x"), BoolOperand.AND, state.getSymbol("y")));
+//        state.pushConstraints(new ConstraintItemBool(state.getSymbol("x"), BoolBinaryCompare.AND, state.getSymbol("y")));
 //        Z3Solver.solve(state);
 //    }
 }
