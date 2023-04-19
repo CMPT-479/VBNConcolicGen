@@ -1,9 +1,8 @@
 package vbn.solver;
 
 import com.microsoft.z3.*;
-import vbn.constraints.ConstraintItem;
-import vbn.constraints.ConstraintItemBool;
-import vbn.constraints.ConstraintItemInt;
+import vbn.constraints.Constraint;
+import vbn.constraints.ConstraintIntComp;
 import vbn.constraints.State;
 
 import java.util.HashMap;
@@ -35,10 +34,10 @@ public class Z3Solver {
         }
         Set<Expr> constraints = new HashSet<>();
 
-        for (ConstraintItem constraintItem : state.getConstraints()) {
-            System.out.println(constraintItem.getClass());
-            if (constraintItem.getClass().equals(ConstraintItemBool.class)) {
-                ConstraintItemBool constraintItemBool = (ConstraintItemBool) constraintItem;
+        for (Constraint constraint : state.getConstraints()) {
+            System.out.println(constraint.getClass());
+            if (constraint.getClass().equals(ConstraintBoolComp.class)) {
+                ConstraintBoolComp constraintItemBool = (ConstraintBoolComp) constraint;
                 BoolExpr expr = null;
                 switch (constraintItemBool.op) {
                     case OR:
@@ -53,8 +52,8 @@ public class Z3Solver {
 //                        break;
                 }
                 constraints.add(expr);
-            } else if (constraintItem.getClass().equals(ConstraintItemInt.class)) {
-                ConstraintItemInt constraintItemInt = (ConstraintItemInt) constraintItem;
+            } else if (constraint.getClass().equals(ConstraintIntComp.class)) {
+                ConstraintIntComp constraintItemInt = (ConstraintIntComp) constraint;
                 IntExpr expr = null;
                 switch (constraintItemInt.op) {
                     case EQ:

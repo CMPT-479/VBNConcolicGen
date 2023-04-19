@@ -1,6 +1,6 @@
 package vbn.constraints;
 
-public enum IntBinaryOperand {
+public enum IntBinaryOperand implements IBinaryOperand, JimpleOperandI {
     ADD,
     MINUS,
     MULTIPLY,

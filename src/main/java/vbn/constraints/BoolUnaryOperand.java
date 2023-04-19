@@ -1,5 +1,5 @@
 package vbn.constraints;
 
-public enum BoolUnaryOperand {
+public enum BoolUnaryOperand implements IUnaryOperand, JimpleOperandI {
     NOT
 }

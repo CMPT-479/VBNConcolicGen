@@ -1,6 +1,5 @@
 package vbn.constraints;
 
-import java.io.Serializable;
 import java.util.*;
 
 
@@ -52,9 +51,9 @@ public class State {
 
     private Map<String, Symbol> symbols = new HashMap<>();
 
-    private Stack<ConstraintItem> constraints = new Stack<>();
+    private Stack<Constraint> constraints = new Stack<>();
 
-    public void pushConstraints(ConstraintItem constraint) {
+    public void pushConstraints(Constraint constraint) {
         constraints.push(constraint);
     }
 
@@ -65,7 +64,7 @@ public class State {
         symbols.put(stringSymbol, new Symbol(stringSymbol, symbolType));
     }
 
-    public Stack<ConstraintItem> getConstraints() {
+    public Stack<Constraint> getConstraints() {
         return constraints;
     }
 

@@ -1,7 +1,7 @@
 package vbn;
 
+import vbn.constraints.JimpleOperandI;
 import vbn.constraints.State;
-import vbn.instrument.JimpleOperand;
 
 import java.util.Stack;
 
@@ -9,12 +9,21 @@ import java.util.Stack;
  *
  */
 
+class ComputeExpression {
+    public Stack<String> symbols = new Stack<>();
+    public Object operand = null;
+
+    public void clear() {
+        symbols.clear();
+        operand = null;
+    }
+}
+
 public class Call {
 
-    static State globalState = new State();
+    static State globalState;
 
-    static Stack<String> tempSymbolsToCompute;
-    static JimpleOperand tempApplyOperand;
+    static ComputeExpression tempComputeExpr;
 
     /**
      * Hello World just to test involving a function
@@ -28,6 +37,9 @@ public class Call {
      * When the program begins
      */
     public static void init() {
+        globalState = new State();
+        tempComputeExpr = new ComputeExpression();
+
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
@@ -58,19 +70,44 @@ public class Call {
     }
 
     /**
-     * Handle a new assignment (may contain new symbols)
+     * Push symbols used in the computation.
+     * The left operand is pushed first for binary operations.
      */
     public static void pushSym(String symName) {
-        tempSymbolsToCompute.push(symName);
+        tempComputeExpr.symbols.push(symName);
     }
 
-    public static void applyOperand(JimpleOperand operand) {
-        tempApplyOperand = operand;
+    /**
+     * Select the operand used for computation
+     * @param operand the operand (e.g. + or -) to be applied to the symbols
+     * @param <JEnum> the type of operand
+     */
+    public static <JEnum extends JimpleOperandI> void applyOperand(JEnum operand) {
+        tempComputeExpr.operand = operand;
     }
 
-    public static void storeSym(String symName) {
+    /**
+     * Store the result of this operand in the constraints
+     * @param symName the name of the symbol to store the expression
+     */
+    public static void storeSym(String symName) throws Exception {
+        var numOfOps = tempComputeExpr.symbols.size();
+
+        switch (numOfOps) {
+            case 2:
+//                globalState.pushConstraints(new Con);
+                break;
+            case 1:
+                break;
+            case 0:
+                break;
+
+            default:
+                throw new Exception("Too many symbols have been pushed on to the stack.");
+        }
 
 //        globalState.pushConstraints();
+        tempComputeExpr.clear();
     }
 
 
@@ -96,5 +133,13 @@ public class Call {
     public static void error() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
+    }
+
+    /**
+     * Ensure that state does not carry over
+     */
+    public static void destroy() {
+        globalState = null;
+        tempComputeExpr = null;
     }
 }

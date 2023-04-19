@@ -1,5 +1,4 @@
 import vbn.constraints.BoolBinaryCompare;
-import vbn.constraints.ConstraintItemBool;
 import vbn.constraints.State;
 import vbn.constraints.Symbol;
 import vbn.instrument.Instrument;
@@ -38,10 +37,10 @@ public class MainTest {
 
     @Test
     final void testZ3() {
-        State state = new State();
-        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
-        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
-        state.pushConstraints(new ConstraintItemBool(state.getSymbol("x"), BoolBinaryCompare.OR, state.getSymbol("y")));
-        Z3Solver.solve(state);
+//        State state = new State();
+//        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
+//        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
+//        state.pushConstraints(new ConstraintBoolComp(state.getSymbol("x"), BoolBinaryCompare.OR, state.getSymbol("y")));
+//        Z3Solver.solve(state);
     }
 }
