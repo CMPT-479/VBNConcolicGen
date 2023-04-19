@@ -25,9 +25,14 @@ public class ValueTypeSwitch extends TypeSwitch<Boolean> {
         );
     }
 
-    @Override
     public void caseIntType(IntType t) {
         Value box = makeBoxedValue(v, "int", "java.lang.Integer");
+        instrument(box);
+    }
+
+    @Override
+    public void caseDoubleType(DoubleType t) {
+        Value box = makeBoxedValue(v, "double", "java.lang.Double");
         instrument(box);
     }
 

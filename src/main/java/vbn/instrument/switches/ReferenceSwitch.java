@@ -23,7 +23,8 @@ public class ReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
     }
 
     public void caseLocal(Local v) {
-        var name = StringConstant.v(v.getName());
+        var id = data.symbolTable.getIdentifier(v.getName());
+        var name = StringConstant.v(id);
         var caller = Jimple.v().newStaticInvokeExpr(method.makeRef(), name);
         var stmt = Jimple.v().newInvokeStmt(caller);
         if (insertBefore) {

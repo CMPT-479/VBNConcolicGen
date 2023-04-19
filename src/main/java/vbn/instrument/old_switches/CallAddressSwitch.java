@@ -30,8 +30,6 @@ public class CallAddressSwitch extends AbstractJimpleValueSwitch<Boolean> {
     public void caseLocal(Local v) {
         var mr = Scene.v().getMethod("<org.cmpt479.Runtime: void "+setting.methodName+"(int,int)>").makeRef();
         var v1 = IntConstant.v(0);
-        var v2 = IntConstant.v(data.symbolTable.get(v.getName()));
-        instrument(mr, v1, v2);
     }
 
     private void instrument(SootMethodRef mr, Value v1, Value v2) {

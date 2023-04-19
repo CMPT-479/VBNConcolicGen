@@ -17,7 +17,6 @@ public class Test_00_Basic {
 
         q = q + 1;
 
-        f(p);
-        f(q);
+        System.out.println(q);
     }
 }

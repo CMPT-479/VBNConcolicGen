@@ -29,6 +29,9 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseIfStmt(IfStmt stmt) {
         // Handle if statements
+        var condition = stmt.getCondition();
+        if (!(condition instanceof BinopExpr)) return;
+        JimpleValueInstrument.instrument(condition, null, stmt, data);
 
     }
 
