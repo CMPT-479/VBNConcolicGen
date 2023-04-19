@@ -3,25 +3,30 @@ package vbn.instrument;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Map from the variable name from the program
+ * to a unique identifier
+ */
 public class SymbolTable {
     public Map<String, Integer> map;
     public Map<Integer, String> reverseMap;
+
 
     public SymbolTable() {
         map = new HashMap<>();
         reverseMap = new HashMap<>();
     }
 
-    public int get(String key) {
-        var value = map.get(key);
+    public int getId(String variable) {
+        var value = map.get(variable);
         if (value != null) return value;
         int i = map.size() + 1;
-        map.put(key, i);
-        reverseMap.put(i, key);
+        map.put(variable, i);
+        reverseMap.put(i, variable);
         return i;
     }
 
-    public String getReverse(int key) {
+    public String getVariable(int key) {
         return reverseMap.get(key);
     }
 }

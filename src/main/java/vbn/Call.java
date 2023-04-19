@@ -2,13 +2,14 @@ package vbn;
 
 import vbn.constraints.*;
 import vbn.constraints.helpers.ComputeConstraints;
+import vbn.constraints.helpers.ComputeConstraintsException;
+import vbn.constraints.helpers.TooManyOperandsException;
 
 /**
  *
  */
 
 public class Call {
-
     static State globalState;
 
     static ComputeConstraints tempComputeConstraints;
@@ -63,7 +64,27 @@ public class Call {
      * The left operand is pushed first for binary operations.
      */
     public static void pushSym(String symName) {
-        tempComputeConstraints.pushSymbol(symName);
+        try {
+            tempComputeConstraints.pushSymbol(symName);
+        } catch (SymbolMissingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void pushSym(int objectId, int fieldId) {
+        long id = objectId;
+        id = (id << 32) | fieldId;
+        pushSym(String.format("sym%d", id));
+    }
+
+    /**
+     * For both variables and constants
+     * TODO: track the value of constants later on.
+     * @param object the object to generate an id on
+     * @param fieldId the optional offset of an array or field of a class id
+     */
+    public static void pushSym(Object object, int fieldId) {
+        pushSym(object.hashCode(), fieldId);
     }
 
     /**
@@ -82,6 +103,18 @@ public class Call {
     public static void finalizeStore(String symName) {
         tempComputeConstraints.generateConstraint(globalState, symName);
     }
+
+    public static void finalizeStore(int objectId, int fieldId) {
+        long id = objectId;
+        id = (id << 32) | fieldId;
+        finalizeStore(String.format("sym%d", id));
+    }
+
+    public static void finalizeStore(Object object, int fieldId) {
+        finalizeStore(object.hashCode(), fieldId);
+    }
+
+
 
     /**
      * Store the result of this operand in the constraints
@@ -121,4 +154,10 @@ public class Call {
         globalState = null;
         tempComputeConstraints = null;
     }
+
+    public static void apply(String op) {}
+
+    public static void loadValue(Object o) {}
+
+    public static void pushValue(Object o) {}
 }

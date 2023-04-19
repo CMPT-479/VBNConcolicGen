@@ -10,6 +10,8 @@ import java.util.Map;
 public class Instrument extends BodyTransformer {
     public SymbolTable symbolTable;
     public SootClass runtime;
+
+    private static final Instrument instance = new Instrument();
     public Instrument() {
         symbolTable = new SymbolTable();
         runtime = Scene.v().loadClassAndSupport("vbn.Call");
@@ -18,19 +20,22 @@ public class Instrument extends BodyTransformer {
     @Override
     protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
         var method = body.getMethod();
-        System.out.println("\n\ninstrumenting method : " + method.getSignature());
-        System.out.println(body);
+        System.out.println("\n---instrument method : " + method.getSignature());
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
         var statementSwitch = new StatementSwitch(new InstrumentData(units, body, symbolTable, runtime));
         while (it.hasNext()) {
             var unit = it.next();
+            System.out.println("\t"+unit);
             unit.apply(statementSwitch);
         }
 
-        System.out.println("After instrument");
-        System.out.println(body);
-
+        it = units.snapshotIterator();
+        System.out.println("---after instrument");
+        while (it.hasNext()) {
+            var unit = it.next();
+            System.out.println("\t" + unit);
+        }
     }
 }

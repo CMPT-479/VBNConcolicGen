@@ -34,6 +34,12 @@ public class MainTest {
     }
 
     @Test
+    final void basicArray() {
+        final String[] args = new String[] {"vbn.examples.Test_01_Array"};
+        soot.Main.main(args);
+    }
+
+    @Test
     final void testZ3SimpleOr() {
         // x or y
         State state = new State();

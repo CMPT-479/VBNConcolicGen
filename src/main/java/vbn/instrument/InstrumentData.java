@@ -2,7 +2,6 @@ package vbn.instrument;
 
 import soot.Body;
 import soot.SootClass;
-import soot.SootMethodRef;
 import soot.Unit;
 import soot.util.Chain;
 

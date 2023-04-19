@@ -1,9 +1,9 @@
 package vbn.constraints.helpers;
 
-public class ComputeConstraintsException extends Exception {
+public class TooManyOperandsException extends Exception {
     private static final long serialVersionUID = 0L;
 
-    public ComputeConstraintsException(String errorMessage) {
+    public TooManyOperandsException(String errorMessage) {
         super(errorMessage);
     }
 }

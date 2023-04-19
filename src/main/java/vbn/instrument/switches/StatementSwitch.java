@@ -18,11 +18,8 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         // Handle assignment statements
         var left = stmt.getLeftOp();
         var right = stmt.getRightOp();
-        if (!(left instanceof Local)) return;
-        Local localLeft = (Local) left;
-//        var mr = data.runtime.getMethod("void handleAssignment(java.lang.String)").makeRef();
-//        var leftSym = StringConstant.v(localLeft.getName());
-//        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(mr, leftSym)), stmt);
+        JimpleValueInstrument.instrument(right, left, stmt, data);
+        left.apply(new ReferenceSwitch(data, stmt, "finalizeStore", false));
     }
 
     public void caseInvokeStmt(InvokeStmt stmt) {
@@ -32,15 +29,13 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseIfStmt(IfStmt stmt) {
         // Handle if statements
+        var condition = stmt.getCondition();
+        if (!(condition instanceof BinopExpr)) return;
+        JimpleValueInstrument.instrument(condition, null, stmt, data);
 
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {
-        System.out.println("Identity: " + stmt);
-        var right = stmt.getRightOp();
-        if (right instanceof ParameterRef || right instanceof ThisRef) {
-            System.out.println("  right: " + right);
-        }
 
     }
 

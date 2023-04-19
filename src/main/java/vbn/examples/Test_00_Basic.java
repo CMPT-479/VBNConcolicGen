@@ -13,8 +13,6 @@ public class Test_00_Basic {
 
         q = q + 1;
 
-
         System.out.println(q);
-        System.out.println(p);
     }
 }

@@ -18,8 +18,12 @@ public class ComputeConstraints {
      * Left goes first.
      * @param symName the name of the symbol
      */
-    public void pushSymbol(String symName) {
-        symbols.push(symName);
+    public void pushSymbol(String symName) throws SymbolMissingException {
+        var result = symbols.push(symName);
+
+        if (result == null) {
+            throw new SymbolMissingException("The symbol can not be found");
+        }
     }
     public void setOperand(Object operand) {
         this.operand = operand;
