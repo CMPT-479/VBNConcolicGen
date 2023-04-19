@@ -54,9 +54,10 @@ public class Call {
     /**
      * Handle a new assignment (may contain new symbols)
      */
-    public static void handleAssignment(State globalState) {
+    public static void handleAssignment(String symbol) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
+        System.out.println("\t Symbol = " + symbol);
     }
 
 
