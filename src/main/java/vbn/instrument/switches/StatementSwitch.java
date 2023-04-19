@@ -20,9 +20,9 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var right = stmt.getRightOp();
         if (!(left instanceof Local)) return;
         Local localLeft = (Local) left;
-        var mr = data.runtime.getMethod("void handleAssignment(java.lang.String)").makeRef();
-        var leftSym = StringConstant.v(localLeft.getName());
-        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(mr, leftSym)), stmt);
+//        var mr = data.runtime.getMethod("void handleAssignment(java.lang.String)").makeRef();
+//        var leftSym = StringConstant.v(localLeft.getName());
+//        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(mr, leftSym)), stmt);
     }
 
     public void caseInvokeStmt(InvokeStmt stmt) {

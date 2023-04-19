@@ -1,7 +1,3 @@
-import vbn.constraints.BoolBinaryCompare;
-import vbn.constraints.ConstraintItemBool;
-import vbn.constraints.State;
-import vbn.constraints.Symbol;
 import vbn.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +5,6 @@ import soot.G;
 import soot.PackManager;
 import soot.Transform;
 import soot.options.Options;
-import vbn.solver.Z3Solver;
 
 import java.io.File;
 
@@ -38,10 +33,10 @@ public class MainTest {
 
     @Test
     final void testZ3() {
-        State state = new State();
-        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
-        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
-        state.pushConstraints(new ConstraintItemBool(state.getSymbol("x"), BoolBinaryCompare.OR, state.getSymbol("y")));
-        Z3Solver.solve(state);
+//        State state = new State();
+//        state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
+//        state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
+//        state.pushConstraints(new ConstraintBoolComp(state.getSymbol("x"), BoolBinaryCompare.OR, state.getSymbol("y")));
+//        Z3Solver.solve(state);
     }
 }

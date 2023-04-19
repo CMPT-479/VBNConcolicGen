@@ -1,5 +1,5 @@
 package vbn.constraints;
 
-public abstract class ConstraintItem {
+public abstract class Constraint {
 //    void push(PushConstaintsVisitor visitor);
 }

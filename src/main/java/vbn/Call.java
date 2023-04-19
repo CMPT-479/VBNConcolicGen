@@ -1,6 +1,7 @@
 package vbn;
 
-import vbn.constraints.State;
+import vbn.constraints.*;
+import vbn.constraints.helpers.ComputeConstraints;
 
 /**
  *
@@ -8,7 +9,9 @@ import vbn.constraints.State;
 
 public class Call {
 
-    static State globalState = new State();
+    static State globalState;
+
+    static ComputeConstraints tempComputeConstraints;
 
     /**
      * Hello World just to test involving a function
@@ -22,6 +25,10 @@ public class Call {
      * When the program begins
      */
     public static void init() {
+        // Create new to avoid carried over state
+        globalState = new State();
+        tempComputeConstraints = new ComputeConstraints();
+
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
@@ -52,14 +59,36 @@ public class Call {
     }
 
     /**
-     * Handle a new assignment (may contain new symbols)
+     * Push symbols used in the computation.
+     * The left operand is pushed first for binary operations.
      */
-    public static void handleAssignment(String symbol) {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
-        System.out.println("\t Symbol = " + symbol);
+    public static void pushSym(String symName) {
+        tempComputeConstraints.pushSymbol(symName);
     }
 
+    /**
+     * Select the operand used for computation
+     * @param operand the operand (e.g. + or -) to be applied to the symbols
+     * @param <JEnum> the type of operand
+     */
+    public static <JEnum extends IOperand> void applyOperand(JEnum operand) {
+        tempComputeConstraints.setOperand(operand);
+    }
+
+    /**
+     * Store the result of this operand in the constraints
+     * @param symName the name of the symbol to store the expression
+     */
+    public static void finalizeStore(String symName) {
+        tempComputeConstraints.generateConstraint(globalState, symName);
+    }
+
+    /**
+     * Store the result of this operand in the constraints
+     */
+    public static void finalizeIf() {
+        tempComputeConstraints.generateConstraint(globalState);
+    }
 
     /**
      * Handle new conditionals
@@ -83,5 +112,13 @@ public class Call {
     public static void error() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
+    }
+
+    /**
+     * Ensure that state does not carry over
+     */
+    public static void destroy() {
+        globalState = null;
+        tempComputeConstraints = null;
     }
 }
