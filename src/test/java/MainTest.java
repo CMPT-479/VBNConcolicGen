@@ -42,7 +42,6 @@ public class MainTest {
         state.addSymbol("x", Symbol.SymbolType.BOOL_TYPE);
         state.addSymbol("y", Symbol.SymbolType.BOOL_TYPE);
         state.pushConstraints(new ConstraintItemBool(state.getSymbol("x"), BoolOperand.OR, state.getSymbol("y")));
-        Z3Solver z3Solver = new Z3Solver();
-        z3Solver.solve(state);
+        Z3Solver.solve(state);
     }
 }
