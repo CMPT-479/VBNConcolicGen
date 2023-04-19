@@ -49,36 +49,16 @@ public class Call {
     public static void afterInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
-    }
-
-    /**
-     * Handle a new assignment: a reassignment
-     */
-    public static void handleAssignment(String left, String right) {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
         System.out.println("\t The left: " + left);
         System.out.println("\t The left: " + right);
     }
 
     /**
-     * Handle a new assignment: a reassignment
+     * Handle a new assignment (may contain new symbols)
      */
-    public static void handleAssignment(String left,  right) {
+    public static void handleAssignment(State globalState) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
-        System.out.println("\t The left: " + left);
-        System.out.println("\t The left: " + right);
-    }
-
-    /**
-     * Handle a new assignment: a reassignment
-     */
-    public static void handleAssignment(String left, String right) {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
-        System.out.println("\t The left: " + left);
-        System.out.println("\t The left: " + right);
     }
 
 
