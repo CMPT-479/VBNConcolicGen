@@ -11,6 +11,14 @@ public class Call {
     static State globalState = new State();
 
     /**
+     * Hello World just to test involving a function
+     */
+    public static void helloWorld() {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+    }
+
+    /**
      * When the program begins
      */
     public static void init() {
@@ -44,12 +52,33 @@ public class Call {
     }
 
     /**
-     * Handle a new assignment (may contain new symbols)
+     * Handle a new assignment: a reassignment
      */
-    public static void handleAssignment(String variableName) {
+    public static void handleAssignment(String left, String right) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
-        System.out.println("\t The variable name is: " + variableName);
+        System.out.println("\t The left: " + left);
+        System.out.println("\t The left: " + right);
+    }
+
+    /**
+     * Handle a new assignment: a reassignment
+     */
+    public static void handleAssignment(String left,  right) {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+        System.out.println("\t The left: " + left);
+        System.out.println("\t The left: " + right);
+    }
+
+    /**
+     * Handle a new assignment: a reassignment
+     */
+    public static void handleAssignment(String left, String right) {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+        System.out.println("\t The left: " + left);
+        System.out.println("\t The left: " + right);
     }
 
 

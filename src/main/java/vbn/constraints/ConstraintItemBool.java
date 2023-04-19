@@ -1,14 +1,12 @@
 package vbn.constraints;
 
-import java.util.Optional;
-
 // TODO: Add unary operation handling (e.g. not x)
 public final class ConstraintItemBool extends ConstraintItem {
     public Symbol left;
-    public BoolOperand op;
+    public BoolBinaryCompare op;
     public Symbol right;
 
-    public ConstraintItemBool(Symbol left, BoolOperand op, Symbol right) {
+    public ConstraintItemBool(Symbol left, BoolBinaryCompare op, Symbol right) {
         this.left = left;
         this.op = op;
         this.right = right;
