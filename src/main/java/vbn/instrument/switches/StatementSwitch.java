@@ -6,6 +6,8 @@ import soot.Type;
 import vbn.instrument.InstrumentData;
 import soot.jimple.*;
 
+import java.util.List;
+
 public class StatementSwitch extends AbstractStmtSwitch<Object> {
     InstrumentData data;
 
@@ -29,10 +31,11 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
     }
 
     public void caseIfStmt(IfStmt stmt) {
-        // Handle if statements
         var condition = stmt.getCondition();
         if (!(condition instanceof BinopExpr)) return;
         JimpleValueInstrument.instrument(condition, null, stmt, data);
+        var finalizeIf = data.runtime.getMethod("void finalize()").makeRef();
+        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(finalizeIf)), stmt);
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {
@@ -42,17 +45,13 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         }
     }
 
-    public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
-    }
-
     public void caseReturnStmt(ReturnStmt stmt) {
 
     }
 
     public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
+        if (!data.body.getMethod().getSubSignature().equals("void main(java.lang.String[])")) return;
+        var terminate = data.runtime.getMethod("void terminatePath()").makeRef();
+        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(terminate)), stmt);
     }
-
-    public void caseTableSwitchStmt(TableSwitchStmt stmt) {
-    }
-
 }
