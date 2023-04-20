@@ -1,11 +1,11 @@
 package vbn.state.constraints;
 
-import java.io.Serializable;
+import vbn.state.helpers.ComputeConstraints;
 
 /**
  * Note: We could separate these into different enums, but decided the additional complexity was not worth it
  */
-public enum BinaryOperand implements IOperand, Serializable {
+public enum BinaryOperand implements IOperand {
     // Both Boolean and Numbers
     EQ,
 
@@ -29,4 +29,10 @@ public enum BinaryOperand implements IOperand, Serializable {
     LTE, // less than or equal
     GT,
     GTE,
+    ;
+
+    @Override
+    public void accept(IOperandVisitor visitor) {
+        visitor.visit(this);
+    }
 }

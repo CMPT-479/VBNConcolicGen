@@ -3,11 +3,10 @@ package vbn.state.value;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Symbol implements AbstractSymbol, Serializable {
+public class UnknownSymbol implements AbstractSymbol, Serializable {
 
     // For Serializable
     private static final long serialVersionUID = 0L;
-    private final Type type;
 
     /**
      * The unique identifier for this string
@@ -19,15 +18,14 @@ public class Symbol implements AbstractSymbol, Serializable {
      */
     public Object value;
 
-    public Symbol(String varName, Type symbolType, Object value) {
+    public UnknownSymbol(String varName, Object value) {
         this.varName = varName;
-        this.type = symbolType;
-        this.value = null;
+        this.value = value;
     }
 
     @Override
     public Type getType() {
-        return type;
+        return Type.UNKNOWN;
     }
 
     @Override
@@ -37,10 +35,10 @@ public class Symbol implements AbstractSymbol, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Symbol)) {
+        if (!(obj instanceof UnknownSymbol)) {
             return false;
         }
-        Symbol otherSymbol = (Symbol) obj;
-        return Objects.equals(this.varName, otherSymbol.varName) && this.type == otherSymbol.type;
+        UnknownSymbol otherSymbol = (UnknownSymbol) obj;
+        return Objects.equals(this.varName, otherSymbol.varName) && this.getType() == otherSymbol.getType();
     }
 }
