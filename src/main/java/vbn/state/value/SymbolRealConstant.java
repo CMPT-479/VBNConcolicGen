@@ -1,6 +1,8 @@
 package vbn.state.value;
 
-public class SymbolRealConstant extends AbstractSymbolConstant {
+import java.io.Serializable;
+
+public class SymbolRealConstant extends AbstractSymbolConstant implements Serializable {
     public int value;
     public SymbolRealConstant(String id, int value) {
         this.value = value;
@@ -8,7 +10,7 @@ public class SymbolRealConstant extends AbstractSymbolConstant {
     }
 
     @Override
-    public Object getValue() {
+    public Serializable getValue() {
         return value;
     }
 }

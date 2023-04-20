@@ -5,6 +5,7 @@ import vbn.state.constraints.*;
 import vbn.state.value.Symbol;
 import vbn.state.value.Value;
 
+import java.io.Serializable;
 import java.util.*;
 
 
@@ -49,7 +50,10 @@ import java.util.*;
 /**
  * This class handles all state necessary to solve an equation at a certain point
  */
-public class State {
+public final class State implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     public State() {
         super();
     }
@@ -124,7 +128,7 @@ public class State {
      * @param valueType the Z3 type of the symbol
      * @param concreteValue the current value of the symbol
      */
-    public void addSymbol(String symName, Value.Type valueType, Object concreteValue) {
+    public void addSymbol(String symName, Value.Type valueType, Serializable concreteValue) {
         symbols.put(symName, new Symbol(symName, valueType, concreteValue));
     }
 
@@ -147,8 +151,8 @@ public class State {
         return result;
     }
 
-    public Collection<Symbol> getSymbols() {
-        return symbols.values();
+    public ArrayList<Symbol> getSymbols() {
+        return new ArrayList<>(symbols.values());
     }
 
 }

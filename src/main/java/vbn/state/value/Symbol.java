@@ -18,27 +18,27 @@ public class Symbol extends AbstractSymbol implements Serializable {
     /**
      * The current concrete value for this symbol
      */
-    public Object value;
+    public Serializable value;
 
     /**
      * Whether this variable represents an original input variables
      */
     public boolean isInput = false;
 
-    public Symbol(String id, Type symbolType, Object value) {
+    public Symbol(String id, Type symbolType, Serializable value) {
         this.id = id;
         this.type = symbolType;
-        this.value = null;
+        this.value = value;
     }
-    public Symbol(String id, Type symbolType, Object value, boolean isInput) {
+    public Symbol(String id, Type symbolType, Serializable value, boolean isInput) {
         this.id = id;
         this.type = symbolType;
-        this.value = null;
+        this.value = value;
         this.isInput = isInput;
     }
 
     @Override
-    public Object getValue() {
+    public Serializable getValue() {
         return value;
     }
 
