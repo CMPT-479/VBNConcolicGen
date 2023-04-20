@@ -101,14 +101,16 @@ public class ExpressionSwitch extends AbstractExprSwitch<Boolean> {
 
     public void caseNegExpr(NegExpr v) {
         var op = v.getOp();
-        if (op instanceof Constant) return;
         JimpleValueInstrument.instrument(op, null, unit, data);
         var apply = data.runtime.getMethod("apply", List.of(RefType.v("java.lang.String"))).makeRef();
-        var symbol = StringConstant.v("-");
+        var symbol = StringConstant.v("neg");
         data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)), unit);
     }
 
     public void caseCastExpr(CastExpr v) {
-        JimpleValueInstrument.instrument(v, null, unit, data);
+        JimpleValueInstrument.instrument(v.getOp(), null, unit, data);
+        var apply = data.runtime.getMethod("applyCast", List.of(RefType.v("java.lang.String"))).makeRef();
+        var symbol = StringConstant.v(v.getCastType().toString());
+        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)), unit);
     }
 }
