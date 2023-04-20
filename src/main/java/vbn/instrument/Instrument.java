@@ -24,7 +24,7 @@ public class Instrument extends BodyTransformer {
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
-        var statementSwitch = new StatementSwitch(new InstrumentData(units, body, symbolTable, runtime));
+        var statementSwitch = new StatementSwitch(new InstrumentData(units, body, symbolTable, runtime, body.getClass().getName()));
         while (it.hasNext()) {
             var unit = it.next();
             System.out.println("\t"+unit);

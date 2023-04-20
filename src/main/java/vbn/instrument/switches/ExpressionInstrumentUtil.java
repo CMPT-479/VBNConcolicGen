@@ -10,9 +10,9 @@ import java.util.List;
 public class ExpressionInstrumentUtil {
 
     public static void invoke(InvokeExpr expr, Unit unit, InstrumentData data) {
+        var invokeMethod = expr.getMethod();
+        if (!invokeMethod.getDeclaringClass().getName().equals(data.mainClass)) return;
         addPopMethod(data, unit);
-        var args = expr.getArgs();
-
     }
 
     public static void length(LengthExpr expr, Unit unit, InstrumentData data) {

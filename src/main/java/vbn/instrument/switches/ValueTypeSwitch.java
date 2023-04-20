@@ -76,7 +76,7 @@ public class ValueTypeSwitch extends TypeSwitch<Boolean> {
 
     public Value makeBoxedValue(Value v, String type, String boxedType) {
         var boxMethod = Scene.v().getMethod(String.format("<%s: %s valueOf(%s)>", boxedType, boxedType, type));
-        var boxLocal = Jimple.v().newLocal(String.format("_b__%d", data.body.getLocalCount()), RefType.v(boxedType));
+        var boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v(boxedType));
         data.body.getLocals().add(boxLocal);
         var expr = Jimple.v().newStaticInvokeExpr(boxMethod.makeRef(), v);
         var assignment = Jimple.v().newAssignStmt(boxLocal, expr);
