@@ -128,7 +128,7 @@ public final class State implements Serializable {
      * @param valueType the Z3 type of the symbol
      * @param concreteValue the current value of the symbol
      */
-    public void addSymbol(String symName, Value.Type valueType, Serializable concreteValue) {
+    public void addSymbol(String symName, Value.Type valueType, Object concreteValue) {
         symbols.put(symName, new Symbol(symName, valueType, concreteValue));
     }
 
