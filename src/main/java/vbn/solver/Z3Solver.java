@@ -2,11 +2,12 @@ package vbn.solver;
 
 import com.microsoft.z3.*;
 import lombok.NonNull;
-import vbn.constraints.*;
-import vbn.constraints.Value.AbstractSymbolConstant;
-import vbn.constraints.Value.Symbol;
-import vbn.constraints.Value.SymbolBooleanConstant;
-import vbn.constraints.Value.SymbolIntConstant;
+import vbn.state.*;
+import vbn.state.constraints.*;
+import vbn.state.value.AbstractSymbolConstant;
+import vbn.state.value.Symbol;
+import vbn.state.value.SymbolBooleanConstant;
+import vbn.state.value.SymbolIntConstant;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -114,7 +115,7 @@ public class Z3Solver {
         Collection<Symbol> symbols = state.getSymbols();
         Map<String, Expr> z3ExprMap = new HashMap<>();
         for (var sym : symbols) {
-            switch (sym.valueType) {
+            switch (sym.type) {
                 case INT_TYPE:
                     z3ExprMap.put(sym.id, ctx.mkIntConst(sym.id));
                     break;
@@ -122,7 +123,7 @@ public class Z3Solver {
                     z3ExprMap.put(sym.id, ctx.mkBoolConst(sym.id));
                     break;
                 default:
-                    throw new RuntimeException("Error, symbol " + sym.valueType + " wasn't of expected type");
+                    throw new RuntimeException("Error, symbol " + sym.type + " wasn't of expected type");
             }
         }
 

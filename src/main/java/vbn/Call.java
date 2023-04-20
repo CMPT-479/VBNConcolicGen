@@ -1,9 +1,10 @@
 package vbn;
 
-import vbn.constraints.*;
-import vbn.constraints.helpers.ComputeConstraints;
+import vbn.state.*;
+import vbn.state.constraints.IOperand;
+import vbn.state.helpers.ComputeConstraints;
 
-import static vbn.constraints.helpers.ComputeOperand.*;
+import static vbn.state.helpers.ComputeOperand.*;
 
 /**
  *
@@ -12,7 +13,7 @@ import static vbn.constraints.helpers.ComputeOperand.*;
 public class Call {
     static State globalState;
 
-    static ComputeConstraints tempComputeConstraints;
+    static ComputeConstraints computeConstraints;
 
     /**
      * Hello World just to test involving a function
@@ -28,7 +29,7 @@ public class Call {
     public static void init() {
         // Create new to avoid carried over state
         globalState = new State();
-        tempComputeConstraints = new ComputeConstraints();
+        computeConstraints = new ComputeConstraints();
 
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
@@ -38,9 +39,9 @@ public class Call {
      * Handle any assignment that we don't control the value of
      * e.g. user input, external functions, etc.
      */
-    public static void initNewInput() {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
+    public static void initNewInput(String symName, Object value) {
+//        var valueType = computeType.get(value);
+//        globalState.addSymbol(symName, valueType, value);
     }
 
     /**
@@ -48,7 +49,7 @@ public class Call {
      * The left operand is pushed first for binary operations.
      */
     public static void pushSym(String symName, Object value) {
-        tempComputeConstraints.pushSymbol(symName);
+        computeConstraints.pushSymbol(symName);
     }
 
     /**
@@ -79,12 +80,20 @@ public class Call {
     }
 
     /**
+     * To cast an object to a type
+     * @param typeToCast the type to cast the symbol into
+     */
+    public static void applyCast(String typeToCast) {
+
+    }
+
+    /**
      * Select the operand used for computation
      * @param operand the operand (e.g. + or -) to be applied to the symbols
      * @param <JEnum> the type of operand
      */
     private static <JEnum extends IOperand> void applyOperand(JEnum operand) {
-        tempComputeConstraints.setOperand(operand);
+        computeConstraints.setOperand(operand);
     }
 
     /**
@@ -92,24 +101,14 @@ public class Call {
      * @param symName the name of the symbol to store the expression
      */
     public static void finalizeStore(String symName) {
-        tempComputeConstraints.generateConstraint(globalState, symName);
+        computeConstraints.generateFromPushes(globalState, symName);
     }
-
-
 
     /**
      * Store the result of this operand in the constraints
      */
     public static void finalizeIf() {
-        tempComputeConstraints.generateConstraint(globalState);
-    }
-
-    /**
-     * Handle new conditionals
-     */
-    public static void handleConditional() {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
+        computeConstraints.generateFromPushes(globalState);
     }
 
     /**
@@ -143,28 +142,5 @@ public class Call {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
-
-    /**
-     * Ensure that state does not carry over
-     */
-    public static void destroy() {
-        globalState = null;
-        tempComputeConstraints = null;
-    }
-
-    public static void pushValue(Object o) {}
-
-    public static void loadValue(Object o) {}
-
-    public static void popStore(Object object, int fieldId, Object value) {
-        popStore(object.hashCode(), fieldId, value);
-    }
-
-    public static void popStore(int objectId, int fieldId, Object value) {}
-
-    public static void pop() {}
-
-    public static void storeReturn(int objectId, int fieldId) {}
-
-    public static void storeReturn(Object object, int fieldId) {}
 }
+

@@ -1,7 +1,9 @@
-package vbn.constraints;
+package vbn.state;
 
-import vbn.constraints.Value.Symbol;
-import vbn.constraints.Value.Value;
+import lombok.NonNull;
+import vbn.state.constraints.*;
+import vbn.state.value.Symbol;
+import vbn.state.value.Value;
 
 import java.util.*;
 
@@ -70,9 +72,8 @@ public class State {
      * @param operand the operand applied to both
      * @param right the name of the right symbol
      * @param assigned where to store the result
-     * @throws SymbolMissingException if left, right, or assigned is not valid
      */
-    public void pushConstraint(String left, BinaryOperand operand, String right, String assigned) throws SymbolMissingException {
+    public void pushConstraint(String left, BinaryOperand operand, String right, String assigned) {
         var constraint = new BinaryConstraint(getSymbol(left), operand, getSymbol(right), getSymbol(assigned));
         pushConstraint(constraint);
     }
@@ -82,9 +83,8 @@ public class State {
      * @param left the name of the left symbol
      * @param operand the operand applied to both
      * @param right the name of the right symbol
-     * @throws SymbolMissingException if left, right, or assigned is not valid
      */
-    public void pushConstraint(String left, BinaryOperand operand, String right) throws SymbolMissingException {
+    public void pushConstraint(String left, BinaryOperand operand, String right) {
         var constraint = new BinaryConstraint(getSymbol(left), operand, getSymbol(right));
         pushConstraint(constraint);
     }
@@ -94,9 +94,8 @@ public class State {
      * @param symbol the name of the symbol to be operated on
      * @param operand the operand applied to both
      * @param assigned where to store the result
-     * @throws SymbolMissingException if symbol or assigned is not valid
      */
-    public void pushConstraint(UnaryOperand operand, String symbol, String assigned) throws SymbolMissingException {
+    public void pushConstraint(UnaryOperand operand, String symbol, String assigned) {
         var constraint = new UnaryConstraint(operand, getSymbol(symbol), getSymbol(assigned));
         pushConstraint(constraint);
     }
@@ -105,9 +104,8 @@ public class State {
      * Push a Unary Assignment Constraint
      * @param symbol the name of the symbol to be operated on
      * @param operand the operand applied to both
-     * @throws SymbolMissingException if symbol or assigned is not valid
      */
-    public void pushConstraint(UnaryOperand operand, String symbol) throws SymbolMissingException {
+    public void pushConstraint(UnaryOperand operand, String symbol) {
         var constraint = new UnaryConstraint(operand, getSymbol(symbol));
         pushConstraint(constraint);
     }
@@ -121,12 +119,13 @@ public class State {
     }
 
     /**
-     * Add a general symbol
-     * @param stringSymbol the name of the symbol
+     * Add a symbol shortcut
+     * @param symName the name of the symbol
      * @param valueType the Z3 type of the symbol
+     * @param concreteValue the current value of the symbol
      */
-    public void addSymbol(String stringSymbol, Value.ValueType valueType) {
-        symbols.put(stringSymbol, new Symbol(stringSymbol, valueType));
+    public void addSymbol(String symName, Value.Type valueType, Object concreteValue) {
+        symbols.put(symName, new Symbol(symName, valueType, concreteValue));
     }
 
     /**
@@ -137,22 +136,13 @@ public class State {
         return constraints;
     }
 
-//    public Map<String, Symbol> getSymbolsMap() {
-//        return symbols;
-//    }
-
     /**
      * Get the symbol object given a name. The symbol MUST exist or error thrown.
      * @param symbolName The name of the symbol
      * @return the symbol object
-     * @throws SymbolMissingException If an error is missing
-     */
-    public Symbol getSymbol(String symbolName) throws SymbolMissingException {
-        var result = symbols.get(symbolName);
-
-        if (result == null) {
-            throw new SymbolMissingException("Can not find symbol with the requested name");
-        }
+      */
+    public Symbol getSymbol(String symbolName) {
+        @NonNull var result = symbols.get(symbolName);
 
         return result;
     }
