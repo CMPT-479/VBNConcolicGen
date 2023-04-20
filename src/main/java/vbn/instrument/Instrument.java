@@ -1,10 +1,12 @@
 package vbn.instrument;
 
+import soot.jimple.Jimple;
 import vbn.instrument.switches.StatementSwitch;
 import soot.*;
 import soot.util.Chain;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class Instrument extends BodyTransformer {
@@ -20,7 +22,7 @@ public class Instrument extends BodyTransformer {
     @Override
     protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
         var method = body.getMethod();
-        System.out.println("\n---instrument method : " + method.getSignature());
+        System.out.println("\n---instrument method : " + method.getSubSignature());
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
@@ -29,6 +31,12 @@ public class Instrument extends BodyTransformer {
             var unit = it.next();
             System.out.println("\t"+unit);
             unit.apply(statementSwitch);
+        }
+
+        if (method.getSubSignature().equals("void main(java.lang.String[])")) {
+            var init = runtime.getMethod("void init()");
+            var stmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(init.makeRef()));
+            body.getUnits().addFirst(stmt);
         }
 
         it = units.snapshotIterator();

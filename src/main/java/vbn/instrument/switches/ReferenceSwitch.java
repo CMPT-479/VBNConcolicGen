@@ -41,24 +41,24 @@ public class ReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
     }
 
     public void caseArrayRef(ArrayRef v) {
-//        var base = v.getBase(); // Object
-//        var index = v.getIndex(); // Int
-//        insertCall(methodWithObject, base, index, v);
+        var base = v.getBase(); // Object
+        var index = v.getIndex(); // Int
+        insertCall(methodWithObject, base, index, v);
     }
 
     public void caseInstanceFieldRef(InstanceFieldRef v) {
-//        var base = v.getBase();
-//        var fieldId = data.symbolTable.getId(v.getField().getName());
-//        insertCall(methodWithObject, base, IntConstant.v(fieldId), v);
+        var base = v.getBase();
+        var fieldId = data.symbolTable.getId(v.getField().getName());
+        insertCall(methodWithObject, base, IntConstant.v(fieldId), v);
     }
 
     @Override
     public void caseStaticFieldRef(StaticFieldRef v) {
-//        var className = v.getField().getDeclaringClass().getName();
-//        var field = v.getField().getName();
-//        insertCall(methodWithInt,
-//                IntConstant.v(data.symbolTable.getId(className)),
-//                IntConstant.v(data.symbolTable.getId(field)), v);
+        var className = v.getField().getDeclaringClass().getName();
+        var field = v.getField().getName();
+        insertCall(methodWithInt,
+                IntConstant.v(data.symbolTable.getId(className)),
+                IntConstant.v(data.symbolTable.getId(field)), v);
     }
 
     private void insertCall(SootMethod method, Value base, Value field, Value value) {

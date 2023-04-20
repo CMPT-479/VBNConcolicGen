@@ -51,17 +51,26 @@ public class ValueTypeSwitch extends TypeSwitch<Object> {
         makeBoxedValue(v, "short", "java.lang.Short");
     }
 
-    public void caseRefType(RefType t) {}
-
     @Override
-    public void caseArrayType(ArrayType t) {}
+    public void defaultCase(Type t) {
+        Local boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v("java.lang.Object"));
+        this.boxLocal = boxLocal;
+        data.body.getLocals().add(boxLocal);
+        assignStmt = Jimple.v().newAssignStmt(boxLocal, v);
+    }
 
     public void makeBoxedValue(Value v, String type, String boxedType) {
         var boxMethod = Scene.v().getMethod(String.format("<%s: %s valueOf(%s)>", boxedType, boxedType, type));
-        Local boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v(boxedType));
+        Local boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v("java.lang.Object"));
         this.boxLocal = boxLocal;
         data.body.getLocals().add(boxLocal);
         var expr = Jimple.v().newStaticInvokeExpr(boxMethod.makeRef(), v);
         assignStmt = Jimple.v().newAssignStmt(boxLocal, expr);
+    }
+
+    public void makeAssignment(Value v, String type, String boxedType) {
+        Local boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v("java.lang.Object"));
+        this.boxLocal = boxLocal;
+        data.body.getLocals().add(boxLocal);
     }
 }
