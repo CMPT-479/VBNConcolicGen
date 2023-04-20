@@ -2,7 +2,8 @@ package vbn;
 
 import vbn.constraints.*;
 import vbn.constraints.helpers.ComputeConstraints;
-import vbn.constraints.helpers.TooManyOperandsException;
+
+import static vbn.constraints.helpers.ComputeOperand.*;
 
 /**
  *
@@ -43,49 +44,73 @@ public class Call {
     }
 
     /**
-     * Trigger before involving a function
-     */
-    public static void beforeInvokeFunc() {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
-    }
-
-    /**
-     * Trigger after involving a function
-     */
-    public static void afterInvokeFunc() {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
-    }
-
-    /**
      * Push symbols used in the computation.
      * The left operand is pushed first for binary operations.
      */
-    public static void pushSym(String symName) {
-        try {
-            tempComputeConstraints.pushSymbol(symName);
-        } catch (TooManyOperandsException e) {
-            throw new RuntimeException(e);
-        }
+    public static void pushSym(String symName, Object value) {
+        tempComputeConstraints.pushSymbol(symName);
     }
 
-    public static void pushSym(int objectId, int fieldId) {
+    /**
+     * Push symbols used in the computation - for Array refs
+     * The left operand is pushed first for binary operations.
+     */
+    public static void pushSym(int objectId, int fieldId, Object value) {
         long id = objectId;
         id = (id << 32) | fieldId;
-        pushSym(String.format("v%d", id));
-    }
-
-    public static void pushSym(Object object, int fieldId) {
-        pushSym(object.hashCode(), fieldId);
+        pushSym(String.format("sym%d", id), value);
     }
 
     /**
-     * Push symbols used in the computation.
-     * The left operand is pushed first for binary operations.
+     * For both variables on.
+     * @param object the object to generate an id on
+     * @param fieldId the optional offset of an array or field of a class id
      */
-    public static void pushConstant(Object constant) {
-        tempComputeConstraints.pushConstant(constant);
+    public static void pushSym(Object object, int fieldId, Object value) {
+        pushSym(object.hashCode(), fieldId, value);
+    }
+
+    /**
+     *
+     * @param value the concrete value to store
+     */
+    public static void pushConstant(Object value) {
+    }
+
+    /**
+     *
+     * @param o
+     */
+//    public static void loadValue(Object o, Object value) {
+//        System.out.println("DEBUG: loadValue is not currently in use");
+//    }
+
+    /**
+     *
+     * @param o
+     */
+//    public static void pushValue(Object o, Object value) {
+//        System.out.println("DEBUG: pushValue is not currently in use");
+//    }
+
+    /**
+     * Applies an Operand expressed as a string
+     * @param op the untrimmed string
+     */
+    public static void apply(String op){
+        var opTrimmed = op.trim();
+
+        var binOp = getBinaryOperand(opTrimmed);
+        if (binOp != null) {
+            applyOperand(binOp);
+        }
+
+        var unaOp = getUnaryOperand(opTrimmed);
+        if (unaOp != null) {
+            applyOperand(unaOp);
+        }
+
+        throw new RuntimeException("Tried processing an op that does not exist");
     }
 
     /**
@@ -93,7 +118,7 @@ public class Call {
      * @param operand the operand (e.g. + or -) to be applied to the symbols
      * @param <JEnum> the type of operand
      */
-    public static <JEnum extends IOperand> void applyOperand(JEnum operand) {
+    private static <JEnum extends IOperand> void applyOperand(JEnum operand) {
         tempComputeConstraints.setOperand(operand);
     }
 
@@ -101,14 +126,14 @@ public class Call {
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName) {
+    public static void finalizeStore(String symName, Object value) {
         tempComputeConstraints.generateConstraint(globalState, symName);
     }
 
-    public static void finalizeStore(int objectId, int fieldId) {
+    public static void finalizeStore(int objectId, int fieldId, Object value) {
         long id = objectId;
         id = (id << 32) | fieldId;
-        finalizeStore(String.format("v%d", id));
+        finalizeStore(String.format("sym%d", id), value);
     }
 
     public static void finalizeStore(Object object, int fieldId, Object value) {
@@ -141,6 +166,22 @@ public class Call {
     }
 
     /**
+     * Trigger before involving a function
+     */
+    public static void beforeInvokeFunc() {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+    }
+
+    /**
+     * Trigger after involving a function
+     */
+    public static void afterInvokeFunc() {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+    }
+
+    /**
      * After the program is completed
      */
     public static void error() {
@@ -155,8 +196,6 @@ public class Call {
         globalState = null;
         tempComputeConstraints = null;
     }
-
-    public static void apply(String op) {}
 
     public static void pushValue(Object o) {}
 

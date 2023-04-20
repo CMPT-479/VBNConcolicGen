@@ -11,9 +11,6 @@ public class JimpleValueInstrument {
         // Push
         if (!(v instanceof Expr)) {
             v.apply(new ReferenceSwitch(data, unit, "pushSym"));
-            if (v instanceof Constant) {
-                v.getType().apply(new ValueTypeSwitch(data, unit, v, true));
-            }
             return;
         }
         // Dealing with expression

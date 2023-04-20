@@ -1,5 +1,8 @@
 package vbn.constraints;
 
+import vbn.constraints.Value.Symbol;
+import vbn.constraints.Value.Value;
+
 import java.util.*;
 
 
@@ -70,7 +73,7 @@ public class State {
      * @throws SymbolMissingException if left, right, or assigned is not valid
      */
     public void pushConstraint(String left, BinaryOperand operand, String right, String assigned) throws SymbolMissingException {
-        var constraint = new BinaryConstraint<Symbol, Symbol>(getSymbol(left), operand, getSymbol(right), getSymbol(assigned));
+        var constraint = new BinaryConstraint(getSymbol(left), operand, getSymbol(right), getSymbol(assigned));
         pushConstraint(constraint);
     }
 
@@ -82,7 +85,7 @@ public class State {
      * @throws SymbolMissingException if left, right, or assigned is not valid
      */
     public void pushConstraint(String left, BinaryOperand operand, String right) throws SymbolMissingException {
-        var constraint = new BinaryConstraint<Symbol, Symbol>(getSymbol(left), operand, getSymbol(right));
+        var constraint = new BinaryConstraint(getSymbol(left), operand, getSymbol(right));
         pushConstraint(constraint);
     }
 
@@ -120,10 +123,10 @@ public class State {
     /**
      * Add a general symbol
      * @param stringSymbol the name of the symbol
-     * @param symbolType the Z3 type of the symbol
+     * @param valueType the Z3 type of the symbol
      */
-    public void addSymbol(String stringSymbol, Symbol.SymbolType symbolType) {
-        symbols.put(stringSymbol, new Symbol(stringSymbol, symbolType));
+    public void addSymbol(String stringSymbol, Value.ValueType valueType) {
+        symbols.put(stringSymbol, new Symbol(stringSymbol, valueType));
     }
 
     /**
@@ -154,5 +157,8 @@ public class State {
         return result;
     }
 
+    public Collection<Symbol> getSymbols() {
+        return symbols.values();
+    }
 
 }
