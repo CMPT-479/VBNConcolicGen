@@ -1,6 +1,8 @@
 package vbn.instrument;
 
 import soot.jimple.Jimple;
+import soot.jimple.Stmt;
+import soot.tagkit.LineNumberTag;
 import vbn.instrument.switches.StatementSwitch;
 import soot.*;
 import soot.util.Chain;
@@ -23,11 +25,19 @@ public class Instrument extends BodyTransformer {
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
-        var statementSwitch = new StatementSwitch(new InstrumentData(units, body, runtime, method.getDeclaringClass().getName()));
         while (it.hasNext()) {
-            var unit = it.next();
+            var unit = (Stmt) it.next();
+            var tags = unit.getTags();
+            var lineNumber = -1;
+            if (!tags.isEmpty()) {
+                lineNumber = ((LineNumberTag)tags.get(0)).getLineNumber();
+            }
             System.out.println("\t"+unit);
-            unit.apply(statementSwitch);
+            unit.apply(new StatementSwitch(new InstrumentData(
+                    units, body, runtime,
+                    method.getDeclaringClass().getName(),
+                    lineNumber
+            )));
         }
 
         if (method.getSubSignature().equals("void main(java.lang.String[])")) {
