@@ -29,8 +29,8 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var condition = stmt.getCondition();
         if (!(condition instanceof BinopExpr)) return;
         JimpleValueInstrument.instrument(condition, null, stmt, data);
-        var finalizeIf = data.runtime.getMethod("void finalizeIf()").makeRef();
-        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(finalizeIf)), stmt);
+        var finalizeIf = data.runtime.getMethod("void finalizeIf(int)").makeRef();
+        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(finalizeIf, data.lineNumber)), stmt);
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {

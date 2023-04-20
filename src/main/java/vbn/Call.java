@@ -48,7 +48,7 @@ public class Call {
      * Push symbols used in the computation.
      * The left operand is pushed first for binary operations.
      */
-    public static void pushSym(String symName, Object value) {
+    public static void pushSym(String symName, Object value, int lineNumber) {
         computeConstraints.pushSymbol(symName);
     }
 
@@ -56,7 +56,7 @@ public class Call {
      *
      * @param value the concrete value to store
      */
-    public static void pushConstant(Object value) {
+    public static void pushConstant(Object value, int lineNumber) {
     }
 
     /**
@@ -83,7 +83,7 @@ public class Call {
      * To cast an object to a type
      * @param typeToCast the type to cast the symbol into
      */
-    public static void applyCast(String typeToCast) {
+    public static void applyCast(String typeToCast, int lineNumber) {
 
     }
 
@@ -102,14 +102,14 @@ public class Call {
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName, Object object) {
+    public static void finalizeStore(String symName, Object object, int lineNumber) {
         computeConstraints.generateFromPushes(globalState, symName);
     }
 
     /**
      * Store the result of this operand in the constraints
      */
-    public static void finalizeIf() {
+    public static void finalizeIf(int lineNumber) {
         computeConstraints.generateFromPushes(globalState);
     }
 

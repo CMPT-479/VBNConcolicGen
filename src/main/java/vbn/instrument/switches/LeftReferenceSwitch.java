@@ -15,7 +15,8 @@ public class LeftReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
         this.unit = unit;
         method = data.runtime.getMethod("finalizeStore", List.of(
                 RefType.v("java.lang.String"),
-                RefType.v("java.lang.Object")
+                RefType.v("java.lang.Object"),
+                IntType.v()
         ));
     }
 
@@ -44,7 +45,7 @@ public class LeftReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
         var typeSwitch = new ValueTypeSwitch(data, unit, v);
         v.getType().apply(typeSwitch);
         var units = typeSwitch.getResult();
-        var caller = Jimple.v().newStaticInvokeExpr(method.makeRef(), StringConstant.v(id), typeSwitch.v);
+        var caller = Jimple.v().newStaticInvokeExpr(method.makeRef(), StringConstant.v(id), typeSwitch.v, data.lineNumber);
         units.add(Jimple.v().newInvokeStmt(caller));
         data.units.insertAfter(units, unit);
     }
