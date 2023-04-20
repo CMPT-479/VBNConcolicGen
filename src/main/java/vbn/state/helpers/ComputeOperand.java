@@ -1,14 +1,14 @@
-package vbn.constraints.helpers;
+package vbn.state.helpers;
 
 import lombok.NonNull;
 import soot.jimple.Jimple;
-import vbn.constraints.BinaryOperand;
-import vbn.constraints.UnaryOperand;
+import vbn.state.constraints.BinaryOperand;
+import vbn.state.constraints.UnaryOperand;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class ComputeOperands {
+public class ComputeOperand {
 
     static final Map<String, BinaryOperand> binaryEnumsMap = Map.ofEntries(
             Map.entry("&&", BinaryOperand.AND),

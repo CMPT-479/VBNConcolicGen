@@ -1,8 +1,9 @@
-package vbn.constraints;
+package vbn.state;
 
 import lombok.NonNull;
-import vbn.constraints.Value.Symbol;
-import vbn.constraints.Value.Value;
+import vbn.state.constraints.*;
+import vbn.state.value.Symbol;
+import vbn.state.value.Value;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package vbn.constraints;
+package vbn.state.constraints;
 
 /**
  * Note: We could separate these into different enums, but decided the additional complexity was not worth it
