@@ -1,20 +1,18 @@
 package vbn.examples;
 
-import java.util.Map;
-
 public class Test_00_Basic {
     public static void main(String[] args) {
-        int[] x = {1, 2, 3, 4};
+        int length = args.length;
+        var x = Integer.parseInt(args[0]);
+        var y = Integer.parseInt(args[1]);
+        var z = 3;
 
-        System.out.println(x[1]);
-        System.out.println(x[2]);
+        var p = (x + y) * z;
 
-        var k = x.clone();
+        var q = p;
 
-        k[2] = 89898;
+        q = q + 1;
 
-        System.out.println(k[2]);
-
-
+        System.out.println(q);
     }
 }
