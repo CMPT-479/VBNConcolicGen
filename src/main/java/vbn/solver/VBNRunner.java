@@ -1,9 +1,9 @@
 package vbn.solver;
 
-import vbn.constraints.Constraint;
-import vbn.constraints.State;
-import vbn.constraints.Value.AbstractSymbolConstant;
-import vbn.constraints.Value.Symbol;
+import vbn.state.constraints.Constraint;
+import vbn.state.State;
+import vbn.state.value.AbstractSymbolConstant;
+import vbn.state.value.Symbol;
 
 import java.util.ArrayList;
 import java.util.Collection;
