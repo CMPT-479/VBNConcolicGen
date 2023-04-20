@@ -22,13 +22,13 @@ public class VBNRunner {
             State state = new State(); // shouldn't be a "new"
             ArrayList<AbstractSymbolConstant> solved = Z3Solver.solve(state);   // need to save these solved values somewhere
             stateConstraint = state.getConstraints();
-            while (!(stateConstraint.empty()) && (stateConstraint.peek().negated)) {
-                stateConstraint.pop();
-            }
-            if (stateConstraint.empty()) {
-                break;
-            }
-            stateConstraint.peek().negated = true;
+//            while (!(stateConstraint.empty()) && (stateConstraint.peek().negated)) {
+//                stateConstraint.pop();
+//            }
+//            if (stateConstraint.empty()) {
+//                break;
+//            }
+//            stateConstraint.peek().negated = true;
             InstrumentedRunner.runInstrumented(programName, programInputs);
         }
     }

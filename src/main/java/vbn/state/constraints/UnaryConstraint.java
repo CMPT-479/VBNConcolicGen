@@ -16,13 +16,11 @@ public class UnaryConstraint extends Constraint {
         this.assigned = null;
         this.symbol = symbol;
         this.op = op;
-        this.negated = false;
     }
     public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Symbol symbol, Symbol assigned) {
         this.assigned = assigned;
         this.symbol = symbol;
         this.op = op;
-        this.negated = false;
     }
 
     @Override
