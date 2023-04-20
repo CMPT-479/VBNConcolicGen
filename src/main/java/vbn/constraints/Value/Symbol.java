@@ -46,6 +46,6 @@ public class Symbol extends AbstractSymbol implements Serializable {
             return false;
         }
         Symbol otherSymbol = (Symbol) obj;
-        return Objects.equals(this.id, otherSymbol.id) && this.valueType == otherSymbol.valueType;
+        return Objects.equals(this.id, otherSymbol.id) && this.type == otherSymbol.type;
     }
 }

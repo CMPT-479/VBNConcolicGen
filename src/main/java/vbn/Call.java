@@ -79,6 +79,14 @@ public class Call {
     }
 
     /**
+     * To cast an object to a type
+     * @param typeToCast the type to cast the symbol into
+     */
+    public static void applyCast(String typeToCast) {
+
+    }
+
+    /**
      * Select the operand used for computation
      * @param operand the operand (e.g. + or -) to be applied to the symbols
      * @param <JEnum> the type of operand
@@ -91,18 +99,8 @@ public class Call {
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName, Object value) {
+    public static void finalizeStore(String symName) {
         computeConstraints.generateFromPushes(globalState, symName);
-    }
-
-    public static void finalizeStore(int objectId, int fieldId, Object value) {
-        long id = objectId;
-        id = (id << 32) | fieldId;
-        finalizeStore(String.format("sym%d", id), value);
-    }
-
-    public static void finalizeStore(Object object, int fieldId, Object value) {
-        finalizeStore(object.hashCode(), fieldId, value);
     }
 
     /**
@@ -143,46 +141,5 @@ public class Call {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
-
-    public static void pushValue(Object o) {}
-
-    public static void loadValue(Object o) {}
-
-    public static void popStore(Object object, int fieldId, Object value) {
-        popStore(object.hashCode(), fieldId, value);
-    }
-
-    public static void popStore(int objectId, int fieldId, Object value) {}
-
-    public static void pop() {}
-
-    public static void storeReturn(int objectId, int fieldId) {}
-
-    public static void storeReturn(Object object, int fieldId) {}
 }
 
-//    /**
-//     *
-//     * @param o
-//     */
-//    public static void loadValue(Object o, Object value) {
-//        System.out.println("DEBUG: loadValue is not currently in use");
-//    }
-
-//    /**
-//     *
-//     * @param o
-//     */
-//    public static void pushValue(Object o, Object value) {
-//        System.out.println("DEBUG: pushValue is not currently in use");
-//    }
-
-
-//    /**
-//     * Ensure that state does not carry over
-//     */
-//    public static void destroy() {
-//        globalState = null;
-//        tempComputeConstraints = null;
-//    }
-}
