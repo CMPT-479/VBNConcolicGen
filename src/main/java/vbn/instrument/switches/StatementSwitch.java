@@ -1,5 +1,6 @@
 package vbn.instrument.switches;
 
+import soot.tagkit.LineNumberTag;
 import vbn.instrument.InstrumentData;
 import soot.jimple.*;
 
@@ -30,7 +31,8 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         if (!(condition instanceof BinopExpr)) return;
         JimpleValueInstrument.instrument(condition, null, stmt, data);
         var finalizeIf = data.runtime.getMethod("void finalizeIf(int)").makeRef();
-        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(finalizeIf, data.lineNumber)), stmt);
+        var lineNumberTag = ((LineNumberTag) stmt.getTag("LineNumberTag")).getLineNumber();
+        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(finalizeIf, IntConstant.v(lineNumberTag))), stmt);
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {
@@ -43,7 +45,8 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
         if (!data.body.getMethod().getSubSignature().equals("void main(java.lang.String[])")) return;
-        var terminate = data.runtime.getMethod("void terminatePath()").makeRef();
-        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(terminate)), stmt);
+        var terminate = data.runtime.getMethod("void terminatePath(int)").makeRef();
+        var lineNumber = ((LineNumberTag) stmt.getTag("LineNumberTag")).getLineNumber();
+        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(terminate, IntConstant.v(lineNumber))), stmt);
     }
 }

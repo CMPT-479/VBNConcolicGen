@@ -23,6 +23,7 @@ public class MainTest {
         };
 
         Options.v().set_soot_classpath(String.join(File.pathSeparator, paths));
+        Options.v().set_keep_line_number(true);
         final var cute = new Instrument();
         final var transform = new Transform("jtp.Instrument", cute);
         PackManager.v().getPack("jtp").add(transform);

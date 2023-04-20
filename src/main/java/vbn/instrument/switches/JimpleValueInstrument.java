@@ -17,10 +17,9 @@ public class JimpleValueInstrument {
             var typeSwitch = new ValueTypeSwitch(data, unit, v);
             v.getType().apply(typeSwitch);
             var pushConstant = data.runtime.getMethod("pushConstant", List.of(
-                    RefType.v("java.lang.Object"),
-                    IntType.v()
+                    RefType.v("java.lang.Object")
             ));
-            var invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(pushConstant.makeRef(), typeSwitch.v, data.lineNumber));
+            var invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(pushConstant.makeRef(), typeSwitch.v));
             data.units.insertBefore(invokeStmt, unit);
             return;
         }
