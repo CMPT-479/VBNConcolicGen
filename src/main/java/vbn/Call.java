@@ -35,13 +35,6 @@ public class Call {
     }
 
     /**
-     * Initialize SymbolMap with all the symbols
-     */
-    public static void registerLocalr(String symName, String type) {
-
-    }
-
-    /**
      * Handle any assignment that we don't control the value of
      * e.g. user input, external functions, etc.
      */

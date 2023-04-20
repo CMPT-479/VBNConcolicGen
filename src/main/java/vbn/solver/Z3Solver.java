@@ -3,7 +3,10 @@ package vbn.solver;
 import com.microsoft.z3.*;
 import lombok.NonNull;
 import vbn.constraints.*;
-import vbn.constraints.Symbol;
+import vbn.constraints.Value.AbstractSymbolConstant;
+import vbn.constraints.Value.Symbol;
+import vbn.constraints.Value.SymbolBooleanConstant;
+import vbn.constraints.Value.SymbolIntConstant;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -103,7 +106,7 @@ public class Z3Solver {
         return exprToReturn;
     }
 
-    public static ArrayList<AbstractConstant> solve(@NonNull State state) {
+    public static ArrayList<AbstractSymbolConstant> solve(@NonNull State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
         Solver solver = ctx.mkSolver();
@@ -111,7 +114,7 @@ public class Z3Solver {
         Collection<Symbol> symbols = state.getSymbols();
         Map<String, Expr> z3ExprMap = new HashMap<>();
         for (var sym : symbols) {
-            switch (sym.symbolType) {
+            switch (sym.valueType) {
                 case INT_TYPE:
                     z3ExprMap.put(sym.id, ctx.mkIntConst(sym.id));
                     break;
@@ -119,7 +122,7 @@ public class Z3Solver {
                     z3ExprMap.put(sym.id, ctx.mkBoolConst(sym.id));
                     break;
                 default:
-                    throw new RuntimeException("Error, symbol " + sym.symbolType + " wasn't of expected type");
+                    throw new RuntimeException("Error, symbol " + sym.valueType + " wasn't of expected type");
             }
         }
 
@@ -138,7 +141,7 @@ public class Z3Solver {
 
         // Check for satisfying assignment
         Status status = solver.check();
-        ArrayList<AbstractConstant> returnList = new ArrayList<>();
+        ArrayList<AbstractSymbolConstant> returnList = new ArrayList<>();
         if (status == Status.SATISFIABLE) {
             // Get satisfying assignment
             Model model = solver.getModel();
@@ -149,10 +152,10 @@ public class Z3Solver {
                     String evaluatedBookExprEnumIntVal = evaluatedValueBoolExpr.getBoolValue().toString();
                     switch (evaluatedBookExprEnumIntVal) {
                         case "Z3_L_FALSE":
-                            returnList.add(new BooleanConstant(k, false));
+                            returnList.add(new SymbolBooleanConstant(k, false));
                             break;
                         case "Z3_L_TRUE":
-                            returnList.add(new BooleanConstant(k, true));
+                            returnList.add(new SymbolBooleanConstant(k, true));
                             break;
                         default:
                             throw new RuntimeException("Error, BoolExpr return value " + evaluatedBookExprEnumIntVal + " does not exist");
@@ -160,7 +163,7 @@ public class Z3Solver {
                 } else if (evaluatedValue instanceof IntNum) {
                     IntNum evaluatedValueIntNum = (IntNum) evaluatedValue;
                     int val = evaluatedValueIntNum.getInt();
-                    returnList.add(new IntConstant(k, val));
+                    returnList.add(new SymbolIntConstant(k, val));
                 } else {
                     throw new RuntimeException("Error, evaluatedValue instance of an unhandled class");
 
@@ -179,12 +182,12 @@ public class Z3Solver {
         return returnList;
     }
 
-    public static void printSolvedValuesBasedOnList(List<AbstractConstant> symbols) {
-        for (Symbol symbol : symbols) {
-            if (symbol instanceof BooleanConstant) {
-                System.out.println(symbol.id + " = " + ((BooleanConstant) symbol).value);
-            } else if (symbol instanceof IntConstant) {
-                System.out.println(symbol.id + " = " + ((IntConstant) symbol).value);
+    public static void printSolvedValuesBasedOnList(List<AbstractSymbolConstant> symbols) {
+        for (AbstractSymbolConstant symbol : symbols) {
+            if (symbol instanceof SymbolBooleanConstant) {
+                System.out.println(symbol.id + " = " + ((SymbolBooleanConstant) symbol).value);
+            } else if (symbol instanceof SymbolIntConstant) {
+                System.out.println(symbol.id + " = " + ((SymbolIntConstant) symbol).value);
             } else {
                 System.out.println(symbol.id + " = unknown value");
             }
