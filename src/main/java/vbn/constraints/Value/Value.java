@@ -1,13 +1,15 @@
 package vbn.constraints.Value;
 
 public abstract class Value {
-    public enum ValueType {
+    public enum Type {
         INT_TYPE,
         REAL_TYPE,
         BOOL_TYPE
     }
 
-    public ValueType valueType;
+    public Type type;
+
+    public abstract Object getValue();
 
 }
 

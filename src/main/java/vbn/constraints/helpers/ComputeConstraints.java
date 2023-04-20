@@ -3,7 +3,6 @@ package vbn.constraints.helpers;
 import lombok.NonNull;
 import vbn.constraints.BinaryOperand;
 import vbn.constraints.State;
-import vbn.constraints.SymbolMissingException;
 import vbn.constraints.UnaryOperand;
 
 import javax.annotation.Nullable;
@@ -40,7 +39,7 @@ public class ComputeConstraints {
      * @param globalState the global state to store the newly generated constraints
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public void generateConstraint(@NonNull State globalState, @Nullable final String assignmentSymName) {
+    public void generateFromPushes(@NonNull State globalState, @Nullable final String assignmentSymName) {
         var numOfOps = symbols.size();
 
         try { // FIXME: Is this good practice?
@@ -82,7 +81,7 @@ public class ComputeConstraints {
                 default:
                     throw new ComputeConstraintsException("Too many symbols have been pushed on to the stack.");
             }
-        } catch (SymbolMissingException | ComputeConstraintsException e) {
+        } catch (ComputeConstraintsException e) {
             throw new RuntimeException(e);
         }
 
@@ -93,7 +92,7 @@ public class ComputeConstraints {
      * Generate constraints based on the calls
      * @param globalState the global state to store the newly generated constraints
      */
-    public void generateConstraint(State globalState) {
-        generateConstraint(globalState, null);
+    public void generateFromPushes(State globalState) {
+        generateFromPushes(globalState, null);
     }
 }
