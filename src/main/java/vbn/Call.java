@@ -72,26 +72,26 @@ public class Call {
 
     /**
      *
-     * @param concreteValue the concrete value to store
+     * @param value the concrete value to store
      */
-    public static void pushConcrete(Object concreteValue) {
+    public static void pushConstant(Object value) {
     }
 
     /**
      *
      * @param o
      */
-    public static void loadValue(Object o, Object value) {
-        System.out.println("DEBUG: loadValue is not currently in use");
-    }
+//    public static void loadValue(Object o, Object value) {
+//        System.out.println("DEBUG: loadValue is not currently in use");
+//    }
 
     /**
      *
      * @param o
      */
-    public static void pushValue(Object o, Object value) {
-        System.out.println("DEBUG: pushValue is not currently in use");
-    }
+//    public static void pushValue(Object o, Object value) {
+//        System.out.println("DEBUG: pushValue is not currently in use");
+//    }
 
     /**
      * Applies an Operand expressed as a string
