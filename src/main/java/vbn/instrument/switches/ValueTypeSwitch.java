@@ -6,7 +6,10 @@ import soot.jimple.Constant;
 import soot.jimple.Jimple;
 import vbn.instrument.InstrumentData;
 
-public class ValueTypeSwitch extends TypeSwitch<Object> {
+import java.util.ArrayList;
+import java.util.List;
+
+public class ValueTypeSwitch extends TypeSwitch<List<Unit>> {
     public InstrumentData data;
     public Value v;
     public Unit unit;
@@ -14,6 +17,7 @@ public class ValueTypeSwitch extends TypeSwitch<Object> {
         this.data = data;
         this.v = v;
         this.unit = unit;
+        setResult(new ArrayList<>());
     }
 
     public void caseIntType(IntType t) {
@@ -62,7 +66,7 @@ public class ValueTypeSwitch extends TypeSwitch<Object> {
         data.body.getLocals().add(local);
         var expr = Jimple.v().newStaticInvokeExpr(boxMethod.makeRef(), v);
         var assignment = Jimple.v().newAssignStmt(local, expr);
-        data.units.insertBefore(assignment, unit);
+        getResult().add(assignment);
         this.v = local;
     }
 
@@ -71,7 +75,7 @@ public class ValueTypeSwitch extends TypeSwitch<Object> {
         var local = Jimple.v().newLocal(String.format("tmp%d", data.body.getLocalCount()), t);
         data.body.getLocals().add(local);
         var assignment = Jimple.v().newAssignStmt(local, v);
-        data.units.insertBefore(assignment, unit);
+        getResult().add(assignment);
         this.v = local;
     }
 }

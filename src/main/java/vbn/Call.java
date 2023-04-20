@@ -87,6 +87,8 @@ public class Call {
 
     }
 
+    public static void applyAssignment() {}
+
     /**
      * Select the operand used for computation
      * @param operand the operand (e.g. + or -) to be applied to the symbols
@@ -100,7 +102,7 @@ public class Call {
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName) {
+    public static void finalizeStore(String symName, Object object) {
         computeConstraints.generateFromPushes(globalState, symName);
     }
 

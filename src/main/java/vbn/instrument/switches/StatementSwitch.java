@@ -16,7 +16,6 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var left = stmt.getLeftOp();
         var right = stmt.getRightOp();
         JimpleValueInstrument.instrument(right, left, stmt, data);
-        if (right instanceof InvokeExpr || right instanceof LengthExpr) return;
         left.apply(new LeftReferenceSwitch(data, stmt));
     }
 
