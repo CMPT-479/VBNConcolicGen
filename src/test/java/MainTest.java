@@ -6,6 +6,7 @@ import soot.PackManager;
 import soot.Transform;
 import soot.options.Options;
 import vbn.solver.InstrumentedRunner;
+import vbn.solver.VBNRunner;
 import vbn.solver.Z3Solver;
 
 import java.io.*;
@@ -31,9 +32,7 @@ public class MainTest {
 
     @Test
     final void basic() {
-        final String[] args = new String[] {"vbn.examples.Test_00_Basic"};
-        soot.Main.main(args);
-        InstrumentedRunner.run("vbn.examples.Test_00_Basic", new String[]{"0", "1"});
+        VBNRunner.execute("vbn.examples.Test_00_Basic", new String[]{"0", "1"});
     }
 
     @Test

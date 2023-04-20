@@ -56,7 +56,7 @@ public class State {
 
     private final Map<String, Symbol> symbols = new HashMap<>();
 
-    private final Stack<Constraint> constraints = new Stack<>();
+    private Stack<Constraint> constraints = new Stack<>();
 
     /**
      * Push a general constraint
@@ -108,6 +108,10 @@ public class State {
     public void pushConstraint(UnaryOperand operand, String symbol) {
         var constraint = new UnaryConstraint(operand, getSymbol(symbol));
         pushConstraint(constraint);
+    }
+
+    public void pushConstraints(Stack<Constraint> constraints) {
+        this.constraints = constraints;
     }
 
     /**

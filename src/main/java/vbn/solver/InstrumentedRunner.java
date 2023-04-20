@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class InstrumentedRunner {
-    public static void run(String programName, String[] programArgs) {
+    public static void runInstrumented(String programName, String[] programArgs) {
         try {
             String[] pbArgs = {
                     "java",
