@@ -1,15 +1,17 @@
 package vbn.constraints.helpers;
 
+import lombok.NonNull;
 import vbn.constraints.BinaryOperand;
 import vbn.constraints.State;
 import vbn.constraints.SymbolMissingException;
 import vbn.constraints.UnaryOperand;
 
+import javax.annotation.Nullable;
 import java.util.Stack;
 
 public class ComputeConstraints {
 
-    private Stack<String> symbols = new Stack<>();
+    @NonNull private final Stack<String> symbols = new Stack<>();
 
     private Object operand = null;
 
@@ -18,14 +20,10 @@ public class ComputeConstraints {
      * Left goes first.
      * @param symName the name of the symbol
      */
-    public void pushSymbol(String symName) throws SymbolMissingException {
-        var result = symbols.push(symName);
-
-        if (result == null) {
-            throw new SymbolMissingException("The symbol can not be found");
-        }
+    public void pushSymbol(@NonNull String symName) {
+        symbols.push(symName);
     }
-    public void setOperand(Object operand) {
+    public void setOperand(@NonNull Object operand) {
         this.operand = operand;
     }
 
@@ -42,7 +40,7 @@ public class ComputeConstraints {
      * @param globalState the global state to store the newly generated constraints
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public void generateConstraint(State globalState, final String assignmentSymName) {
+    public void generateConstraint(@NonNull State globalState, @Nullable final String assignmentSymName) {
         var numOfOps = symbols.size();
 
         try { // FIXME: Is this good practice?
