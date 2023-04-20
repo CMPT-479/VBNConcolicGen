@@ -11,7 +11,7 @@ public abstract class Value implements Serializable {
 
     public Type type;
 
-    public abstract Serializable getValue();
+    public abstract Object getValue();
 
 }
 
