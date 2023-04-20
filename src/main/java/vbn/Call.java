@@ -111,8 +111,8 @@ public class Call {
         finalizeStore(String.format("v%d", id));
     }
 
-    public static void finalizeStore(Object object, int fieldId) {
-        finalizeStore(object.hashCode(), fieldId);
+    public static void finalizeStore(Object object, int fieldId, Object value) {
+        finalizeStore(object.hashCode(), fieldId, value);
     }
 
 
@@ -162,11 +162,11 @@ public class Call {
 
     public static void loadValue(Object o) {}
 
-    public static void popStore(Object object, int fieldId) {
-        popStore(object.hashCode(), fieldId);
+    public static void popStore(Object object, int fieldId, Object value) {
+        popStore(object.hashCode(), fieldId, value);
     }
 
-    public static void popStore(int objectId, int fieldId) {}
+    public static void popStore(int objectId, int fieldId, Object value) {}
 
     public static void pop() {}
 

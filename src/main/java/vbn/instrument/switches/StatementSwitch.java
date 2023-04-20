@@ -22,7 +22,7 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var right = stmt.getRightOp();
         JimpleValueInstrument.instrument(right, left, stmt, data);
         if (right instanceof InvokeExpr || right instanceof LengthExpr) return;
-        left.apply(new ReferenceSwitch(data, stmt, "finalizeStore", false));
+        left.apply(new ReferenceSwitch(data, stmt, "finalizeStore"));
     }
 
     public void caseInvokeStmt(InvokeStmt stmt) {
@@ -42,7 +42,7 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
     public void caseIdentityStmt(IdentityStmt stmt) {
         var right = stmt.getRightOp();
         if (right instanceof ParameterRef || right instanceof ThisRef) {
-            stmt.getLeftOp().apply(new ReferenceSwitch(data, stmt, "popStore", true));
+            stmt.getLeftOp().apply(new ReferenceSwitch(data, stmt, "popStore"));
         }
     }
 
