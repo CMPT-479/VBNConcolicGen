@@ -10,7 +10,7 @@ import soot.Transform;
 import soot.options.Options;
 import vbn.solver.Z3Solver;
 
-import java.io.File;
+import java.io.*;
 import java.util.List;
 
 public class MainTest {
@@ -34,6 +34,31 @@ public class MainTest {
     final void basic() {
         final String[] args = new String[] {"vbn.examples.Test_00_Basic"};
         soot.Main.main(args);
+
+        try {
+            ProcessBuilder pb = new ProcessBuilder("java", "-cp", "sootOutput" + File.pathSeparator + "target/classes", "vbn.examples.Test_00_Basic", "0", "1");
+            // this is currently breaking due to Call finalizeStore not working correctly, but it is actually executing what we want
+            /*
+            Exception in thread "main" java.lang.NullPointerException
+                at vbn.Call.finalizeStore(Call.java:146)
+                at vbn.Call.finalizeStore(Call.java:152)
+                at vbn.examples.Test_00_Basic.main(Test_00_Basic.java)
+            Program exited with code 1
+             */
+
+            pb.redirectErrorStream(true);
+            Process p = pb.start();
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            p.waitFor(); // wait for the process to finish
+            int exitCode = p.exitValue();
+            System.out.println("Program exited with code " + exitCode);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
