@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class Instrument extends BodyTransformer {
     public SootClass runtime;
-
+    public static int counter = 1;
     public Instrument() {
         runtime = Scene.v().loadClassAndSupport("vbn.Call");
     }
@@ -25,19 +25,19 @@ public class Instrument extends BodyTransformer {
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
+        // Tag line number
         while (it.hasNext()) {
-            var unit = (Stmt) it.next();
-            var tags = unit.getTags();
-            var lineNumber = -1;
-            if (!tags.isEmpty()) {
-                lineNumber = ((LineNumberTag)tags.get(0)).getLineNumber();
-            }
+            var unit = it.next();
+            unit.addTag(new LineNumberTag(counter));
+            counter++;
+        }
+
+        // Instrument
+        it = units.snapshotIterator();
+        while (it.hasNext()) {
+            var unit = it.next();
             System.out.println("\t"+unit);
-            unit.apply(new StatementSwitch(new InstrumentData(
-                    units, body, runtime,
-                    method.getDeclaringClass().getName(),
-                    lineNumber
-            )));
+            unit.apply(new StatementSwitch(new InstrumentData(units, body, runtime, method.getDeclaringClass().getName())));
         }
 
         if (method.getSubSignature().equals("void main(java.lang.String[])")) {

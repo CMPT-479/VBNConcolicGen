@@ -48,7 +48,7 @@ public class Call {
      * Push symbols used in the computation.
      * The left operand is pushed first for binary operations.
      */
-    public static void pushSym(String symName, Object value, int lineNumber) {
+    public static void pushSym(String symName, Object value) {
         computeConstraints.pushSymbol(symName);
     }
 
@@ -56,7 +56,7 @@ public class Call {
      *
      * @param value the concrete value to store
      */
-    public static void pushConstant(Object value, int lineNumber) {
+    public static void pushConstant(Object value) {
     }
 
     /**
@@ -83,11 +83,9 @@ public class Call {
      * To cast an object to a type
      * @param typeToCast the type to cast the symbol into
      */
-    public static void applyCast(String typeToCast, int lineNumber) {
+    public static void applyCast(String typeToCast) {
 
     }
-
-    public static void applyAssignment() {}
 
     /**
      * Select the operand used for computation
@@ -102,7 +100,7 @@ public class Call {
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName, Object object, int lineNumber) {
+    public static void finalizeStore(String symName, Object object) {
         computeConstraints.generateFromPushes(globalState, symName);
     }
 
@@ -116,7 +114,7 @@ public class Call {
     /**
      * When the DFS search hits an error, return, etc.
      */
-    public static void terminatePath() {
+    public static void terminatePath(int lineNumber) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
