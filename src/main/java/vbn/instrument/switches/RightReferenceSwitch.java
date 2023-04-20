@@ -44,7 +44,6 @@ public class RightReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
         value.getType().apply(typeSwitch);
         var caller = Jimple.v().newStaticInvokeExpr(method.makeRef(), StringConstant.v(id), typeSwitch.v);
         Unit stmt = Jimple.v().newInvokeStmt(caller);
-        System.out.println("Left insert: " + stmt);
         data.units.insertBefore(stmt, unit);
     }
 }
