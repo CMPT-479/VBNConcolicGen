@@ -9,7 +9,7 @@ public class SymbolIntConstant extends AbstractSymbolConstant implements Seriali
         this.type = Type.INT_TYPE;
     }
     @Override
-    public Serializable getValue() {
+    public Object getValue() {
         return value;
     }
 }

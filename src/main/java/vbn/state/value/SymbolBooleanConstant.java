@@ -9,7 +9,7 @@ public class SymbolBooleanConstant extends AbstractSymbolConstant implements Ser
         this.type = Type.BOOL_TYPE;
     }
     @Override
-    public Serializable getValue() {
+    public Object getValue() {
         return value;
     }
 }

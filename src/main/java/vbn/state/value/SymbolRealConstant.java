@@ -10,7 +10,7 @@ public class SymbolRealConstant extends AbstractSymbolConstant implements Serial
     }
 
     @Override
-    public Serializable getValue() {
+    public Object getValue() {
         return value;
     }
 }
