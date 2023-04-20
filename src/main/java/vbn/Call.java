@@ -52,46 +52,11 @@ public class Call {
     }
 
     /**
-     * Push symbols used in the computation - for Array refs
-     * The left operand is pushed first for binary operations.
-     */
-    public static void pushSym(int objectId, int fieldId, Object value) {
-        long id = objectId;
-        id = (id << 32) | fieldId;
-        pushSym(String.format("sym%d", id), value);
-    }
-
-    /**
-     * For both variables on.
-     * @param object the object to generate an id on
-     * @param fieldId the optional offset of an array or field of a class id
-     */
-    public static void pushSym(Object object, int fieldId, Object value) {
-        pushSym(object.hashCode(), fieldId, value);
-    }
-
-    /**
      *
      * @param value the concrete value to store
      */
     public static void pushConstant(Object value) {
     }
-
-    /**
-     *
-     * @param o
-     */
-//    public static void loadValue(Object o, Object value) {
-//        System.out.println("DEBUG: loadValue is not currently in use");
-//    }
-
-    /**
-     *
-     * @param o
-     */
-//    public static void pushValue(Object o, Object value) {
-//        System.out.println("DEBUG: pushValue is not currently in use");
-//    }
 
     /**
      * Applies an Operand expressed as a string
@@ -128,16 +93,6 @@ public class Call {
      */
     public static void finalizeStore(String symName) {
         tempComputeConstraints.generateConstraint(globalState, symName);
-    }
-
-    public static void finalizeStore(int objectId, int fieldId) {
-        long id = objectId;
-        id = (id << 32) | fieldId;
-        finalizeStore(String.format("sym%d", id));
-    }
-
-    public static void finalizeStore(Object object, int fieldId) {
-        finalizeStore(object.hashCode(), fieldId);
     }
 
 

@@ -10,12 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Instrument extends BodyTransformer {
-    public SymbolTable symbolTable;
-    public static SootClass runtime;
+    public SootClass runtime;
 
-    private static final Instrument instance = new Instrument();
     public Instrument() {
-        symbolTable = new SymbolTable();
         runtime = Scene.v().loadClassAndSupport("vbn.Call");
     }
 
@@ -26,7 +23,7 @@ public class Instrument extends BodyTransformer {
         Chain<Unit> units = body.getUnits();
         Iterator<Unit> it = units.snapshotIterator();
 
-        var statementSwitch = new StatementSwitch(new InstrumentData(units, body, symbolTable, runtime, body.getClass().getName()));
+        var statementSwitch = new StatementSwitch(new InstrumentData(units, body, runtime, body.getClass().getName()));
         while (it.hasNext()) {
             var unit = it.next();
             System.out.println("\t"+unit);
