@@ -1,61 +1,77 @@
 package vbn.instrument.switches;
 
 import soot.*;
+import soot.jimple.AssignStmt;
+import soot.jimple.Constant;
 import soot.jimple.Jimple;
 import vbn.instrument.InstrumentData;
 
-import java.util.List;
-
-public class ValueTypeSwitch extends TypeSwitch<Boolean> {
+public class ValueTypeSwitch extends TypeSwitch<Object> {
     public InstrumentData data;
     public Value v;
     public Unit unit;
-    public boolean isPushed;
-    private final SootMethod method;
-
-    public ValueTypeSwitch(InstrumentData data, Unit unit, Value v, boolean isPushed) {
+    public ValueTypeSwitch(InstrumentData data, Unit unit, Value v) {
         this.data = data;
         this.v = v;
         this.unit = unit;
-        this.isPushed = isPushed;
-        String methodName = isPushed ? "pushValue" : "loadValue";
-        method = data.runtime.getMethod(
-                methodName,
-                List.of(RefType.v("java.lang.Object"))
-        );
     }
 
     public void caseIntType(IntType t) {
-        Value box = makeBoxedValue(v, "int", "java.lang.Integer");
-        instrument(box);
+        super.caseIntType(t);
+        makeBoxedValue("int", "java.lang.Integer");
     }
 
-    @Override
     public void caseDoubleType(DoubleType t) {
-        Value box = makeBoxedValue(v, "double", "java.lang.Double");
-        instrument(box);
+        super.caseDoubleType(t);
+        makeBoxedValue("double", "java.lang.Double");
     }
 
-    public Value makeBoxedValue(Value v, String type, String boxedType) {
+    public void caseBooleanType(BooleanType t) {
+        super.caseBooleanType(t);
+        makeBoxedValue("boolean", "java.lang.Boolean");
+    }
+
+    public void caseByteType(ByteType t) {
+        super.caseByteType(t);
+        makeBoxedValue("byte", "java.lang.Byte");
+    }
+
+    public void caseCharType(CharType t) {
+        super.caseCharType(t);
+        makeBoxedValue("char", "java.lang.Char");
+    }
+
+    public void caseFloatType(FloatType t) {
+        super.caseFloatType(t);
+        makeBoxedValue("float", "java.lang.Float");
+    }
+
+    public void caseLongType(LongType t) {
+        super.caseLongType(t);
+        makeBoxedValue("long", "java.lang.Long");
+    }
+
+    public void caseShortType(ShortType t) {
+        super.caseShortType(t);
+        makeBoxedValue("short", "java.lang.Short");
+    }
+
+    public void makeBoxedValue(String type, String boxedType) {
         var boxMethod = Scene.v().getMethod(String.format("<%s: %s valueOf(%s)>", boxedType, boxedType, type));
-        var boxLocal = Jimple.v().newLocal(String.format("_b__%d", data.body.getLocalCount()), RefType.v(boxedType));
-        data.body.getLocals().add(boxLocal);
+        Local local = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v(boxedType));
+        data.body.getLocals().add(local);
         var expr = Jimple.v().newStaticInvokeExpr(boxMethod.makeRef(), v);
-        var assignment = Jimple.v().newAssignStmt(boxLocal, expr);
-        if (isPushed)
-            data.units.insertBefore(assignment, unit);
-        else
-            data.units.insertAfter(assignment, unit);
-        return boxLocal;
+        var assignment = Jimple.v().newAssignStmt(local, expr);
+        data.units.insertBefore(assignment, unit);
+        this.v = local;
     }
 
-    private void instrument(Value v) {
-        var caller = Jimple.v().newStaticInvokeExpr(method.makeRef(), v);
-        var invokeStmt = Jimple.v().newInvokeStmt(caller);
-        if (isPushed)
-            data.units.insertBefore(invokeStmt, unit);
-        else
-            data.units.insertAfter(invokeStmt, unit);
-        setResult(true);
+    public void defaultCase(Type t) {
+        if (v instanceof Constant) return;
+        var local = Jimple.v().newLocal(String.format("tmp%d", data.body.getLocalCount()), t);
+        data.body.getLocals().add(local);
+        var assignment = Jimple.v().newAssignStmt(local, v);
+        data.units.insertBefore(assignment, unit);
+        this.v = local;
     }
 }
