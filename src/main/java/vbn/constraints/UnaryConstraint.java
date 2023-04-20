@@ -1,5 +1,7 @@
 package vbn.constraints;
 
+import vbn.constraints.Value.Symbol;
+
 public class UnaryConstraint extends Constraint {
 
     public Symbol assigned;

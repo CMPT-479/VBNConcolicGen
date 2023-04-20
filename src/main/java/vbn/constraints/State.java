@@ -1,5 +1,8 @@
 package vbn.constraints;
 
+import vbn.constraints.Value.Symbol;
+import vbn.constraints.Value.Value;
+
 import java.util.*;
 
 
@@ -120,10 +123,10 @@ public class State {
     /**
      * Add a general symbol
      * @param stringSymbol the name of the symbol
-     * @param symbolType the Z3 type of the symbol
+     * @param valueType the Z3 type of the symbol
      */
-    public void addSymbol(String stringSymbol, Symbol.SymbolType symbolType) {
-        symbols.put(stringSymbol, new Symbol(stringSymbol, symbolType));
+    public void addSymbol(String stringSymbol, Value.ValueType valueType) {
+        symbols.put(stringSymbol, new Symbol(stringSymbol, valueType));
     }
 
     /**
