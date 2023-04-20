@@ -1,4 +1,4 @@
-package vbn.constraints;
+package vbn.state.constraints;
 
 public interface IOperand {
 }

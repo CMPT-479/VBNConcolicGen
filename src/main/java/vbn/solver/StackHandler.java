@@ -1,9 +1,9 @@
 package vbn.solver;
 
 import lombok.NonNull;
-import vbn.constraints.BinaryConstraint;
-import vbn.constraints.Constraint;
-import vbn.constraints.UnaryConstraint;
+import vbn.state.constraints.BinaryConstraint;
+import vbn.state.constraints.Constraint;
+import vbn.state.constraints.UnaryConstraint;
 
 import java.util.Stack;
 
