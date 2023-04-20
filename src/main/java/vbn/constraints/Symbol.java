@@ -9,6 +9,7 @@ public class Symbol implements Serializable {
     public String id;
     public enum SymbolType {
         INT_TYPE,
+        REAL_TYPE,
         BOOL_TYPE
     }
     public SymbolType symbolType;

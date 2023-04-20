@@ -2,8 +2,8 @@ package vbn;
 
 import vbn.constraints.*;
 import vbn.constraints.helpers.ComputeConstraints;
-import vbn.constraints.helpers.ComputeConstraintsException;
-import vbn.constraints.helpers.TooManyOperandsException;
+
+import static vbn.constraints.helpers.ComputeOperand.*;
 
 /**
  *
@@ -64,13 +64,13 @@ public class Call {
      * The left operand is pushed first for binary operations.
      */
     public static void pushSym(String symName) {
-        try {
-            tempComputeConstraints.pushSymbol(symName);
-        } catch (SymbolMissingException e) {
-            throw new RuntimeException(e);
-        }
+        tempComputeConstraints.pushSymbol(symName);
     }
 
+    /**
+     * Push symbols used in the computation - for Array refs
+     * The left operand is pushed first for binary operations.
+     */
     public static void pushSym(int objectId, int fieldId) {
         long id = objectId;
         id = (id << 32) | fieldId;
@@ -78,8 +78,7 @@ public class Call {
     }
 
     /**
-     * For both variables and constants
-     * TODO: track the value of constants later on.
+     * For both variables on.
      * @param object the object to generate an id on
      * @param fieldId the optional offset of an array or field of a class id
      */
@@ -88,11 +87,54 @@ public class Call {
     }
 
     /**
+     *
+     * @param object the concrete value to store
+     */
+    public static void pushConcrete(Object object) {
+    }
+
+    /**
+     *
+     * @param o
+     */
+    public static void loadValue(Object o) {
+        System.out.println("DEBUG: loadValue is not currently in use");
+    }
+
+    /**
+     *
+     * @param o
+     */
+    public static void pushValue(Object o) {
+        System.out.println("DEBUG: pushValue is not currently in use");
+    }
+
+    /**
+     * Applies an Operand expressed as a string
+     * @param op the untrimmed string
+     */
+    public static void apply(String op){
+        var opTrimmed = op.trim();
+
+        var binOp = getBinaryOperand(opTrimmed);
+        if (binOp != null) {
+            applyOperand(binOp);
+        }
+
+        var unaOp = getUnaryOperand(opTrimmed);
+        if (unaOp != null) {
+            applyOperand(unaOp);
+        }
+
+        throw new RuntimeException("Tried processing an op that does not exist");
+    }
+
+    /**
      * Select the operand used for computation
      * @param operand the operand (e.g. + or -) to be applied to the symbols
      * @param <JEnum> the type of operand
      */
-    public static <JEnum extends IOperand> void applyOperand(JEnum operand) {
+    private static <JEnum extends IOperand> void applyOperand(JEnum operand) {
         tempComputeConstraints.setOperand(operand);
     }
 
@@ -154,10 +196,4 @@ public class Call {
         globalState = null;
         tempComputeConstraints = null;
     }
-
-    public static void apply(String op) {}
-
-    public static void loadValue(Object o) {}
-
-    public static void pushValue(Object o) {}
 }

@@ -47,22 +47,22 @@ public class Z3Solver {
             case POWER:
                 exprToReturn = ctx.mkPower(leftExpr, rightExpr);
                 break;
-            case INT_LT:
+            case LT:
                 exprToReturn = ctx.mkLt(leftExpr, rightExpr);
                 break;
-            case INT_LTE:
+            case LTE:
                 exprToReturn = ctx.mkLe(leftExpr, rightExpr);
                 break;
-            case INT_EQ:
-                exprToReturn = ctx.mkEq(leftExpr, rightExpr);
-                break;
-            case INT_NEQ:
-                exprToReturn = ctx.mkNot(ctx.mkEq(leftExpr, rightExpr));
-                break;
-            case INT_GT:
+//            case EQ: // Removed because we previous had EQ and INT_EQ
+//                exprToReturn = ctx.mkEq(leftExpr, rightExpr);
+//                break;
+//            case NEG: // Removed because negation is not binary
+//                exprToReturn = ctx.mkNot(ctx.mkEq(leftExpr, rightExpr));
+//                break;
+            case GT:
                 exprToReturn = ctx.mkGt(leftExpr, rightExpr);
                 break;
-            case INT_GTE:
+            case GTE:
                 exprToReturn = ctx.mkGe(leftExpr, rightExpr);
                 break;
             default:

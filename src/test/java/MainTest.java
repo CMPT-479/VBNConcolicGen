@@ -41,6 +41,12 @@ public class MainTest {
     }
 
     @Test
+    final void basicNegAndMinus() {
+        final String[] args = new String[] {"vbn.examples.Test_02_NEG_vs_MINUS"};
+        soot.Main.main(args);
+    }
+
+    @Test
     final void testZ3SimpleOr() {
         // x or y
         State state = new State();
@@ -90,7 +96,7 @@ public class MainTest {
             state.pushConstraint(
                     new BinaryConstraint(
                             state.getSymbol("x"),
-                            BinaryOperand.INT_GT,
+                            BinaryOperand.GT,
                             state.getSymbol("y")));
         } catch (SymbolMissingException e) {
             System.out.println("Missing symbol from state");
