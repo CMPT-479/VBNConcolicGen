@@ -1,37 +1,29 @@
 package vbn.instrument.switches;
 
-import polyglot.util.SubtypeSet;
 import soot.*;
 import soot.jimple.*;
 import vbn.instrument.InstrumentData;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
+public class RightReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
     public final InstrumentData data;
     public final Unit unit;
     public static SootMethod methodWithInt, methodWithObject;
-    public boolean insertBefore = false;
 
-    public ReferenceSwitch(InstrumentData data, Unit unit, String methodName) {
+    public RightReferenceSwitch(InstrumentData data, Unit unit) {
         this.data = data;
         this.unit = unit;
-        methodWithInt = data.runtime.getMethod(methodName, List.of(
+        methodWithInt = data.runtime.getMethod("pushSym", List.of(
                 IntType.v(),
                 IntType.v(),
                 RefType.v("java.lang.Object")
         ));
-        methodWithObject = data.runtime.getMethod(methodName, List.of(
+        methodWithObject = data.runtime.getMethod("pushSym", List.of(
                 RefType.v("java.lang.Object"),
                 IntType.v(),
                 RefType.v("java.lang.Object")
         ));
-    }
-
-    public ReferenceSwitch setInsertBefore(boolean insertBefore) {
-        this.insertBefore = insertBefore;
-        return this;
     }
 
     public void caseLocal(Local v) {
@@ -64,15 +56,8 @@ public class ReferenceSwitch extends AbstractJimpleValueSwitch<Object> {
     private void insertCall(SootMethod method, Value base, Value field, Value value) {
         var typeSwitch = new ValueTypeSwitch(data, unit, value);
         value.getType().apply(typeSwitch);
-        var caller = Jimple.v().newStaticInvokeExpr(method.makeRef(), base, field, typeSwitch.boxLocal);
-        Unit stmt = Jimple.v().newInvokeStmt(caller);
-        var units = new ArrayList<Unit>();
-        if (typeSwitch.assignStmt != null) units.add(typeSwitch.assignStmt);
-        units.add(stmt);
-        if (insertBefore) {
-            data.units.insertBefore(units, unit);
-        } else {
-            data.units.insertAfter(units, unit);
-        }
+        var caller = Jimple.v().newStaticInvokeExpr(method.makeRef(), base, field, typeSwitch.v);
+         Unit stmt = Jimple.v().newInvokeStmt(caller);
+         data.units.insertBefore(stmt, unit);
     }
 }

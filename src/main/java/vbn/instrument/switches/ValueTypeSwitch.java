@@ -2,6 +2,7 @@ package vbn.instrument.switches;
 
 import soot.*;
 import soot.jimple.AssignStmt;
+import soot.jimple.Constant;
 import soot.jimple.Jimple;
 import vbn.instrument.InstrumentData;
 
@@ -9,68 +10,68 @@ public class ValueTypeSwitch extends TypeSwitch<Object> {
     public InstrumentData data;
     public Value v;
     public Unit unit;
-    public Value boxLocal;
-    public Unit assignStmt;
-
     public ValueTypeSwitch(InstrumentData data, Unit unit, Value v) {
         this.data = data;
         this.v = v;
         this.unit = unit;
-        this.boxLocal = v;
     }
 
     public void caseIntType(IntType t) {
-        makeBoxedValue(v, "int", "java.lang.Integer");
+        super.caseIntType(t);
+        makeBoxedValue("int", "java.lang.Integer");
     }
 
     public void caseDoubleType(DoubleType t) {
-        makeBoxedValue(v, "double", "java.lang.Double");
+        super.caseDoubleType(t);
+        makeBoxedValue("double", "java.lang.Double");
     }
 
     public void caseBooleanType(BooleanType t) {
-        makeBoxedValue(v, "boolean", "java.lang.Boolean");
+        super.caseBooleanType(t);
+        makeBoxedValue("boolean", "java.lang.Boolean");
     }
 
     public void caseByteType(ByteType t) {
-        makeBoxedValue(v, "byte", "java.lang.Byte");
+        super.caseByteType(t);
+        makeBoxedValue("byte", "java.lang.Byte");
     }
 
     public void caseCharType(CharType t) {
-        makeBoxedValue(v, "char", "java.lang.Char");
+        super.caseCharType(t);
+        makeBoxedValue("char", "java.lang.Char");
     }
 
     public void caseFloatType(FloatType t) {
-        makeBoxedValue(v, "float", "java.lang.Float");
+        super.caseFloatType(t);
+        makeBoxedValue("float", "java.lang.Float");
     }
 
     public void caseLongType(LongType t) {
-        makeBoxedValue(v, "long", "java.lang.Long");
+        super.caseLongType(t);
+        makeBoxedValue("long", "java.lang.Long");
     }
 
     public void caseShortType(ShortType t) {
-        makeBoxedValue(v, "short", "java.lang.Short");
+        super.caseShortType(t);
+        makeBoxedValue("short", "java.lang.Short");
     }
 
-    @Override
-    public void defaultCase(Type t) {
-        Local boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v("java.lang.Object"));
-        this.boxLocal = boxLocal;
-        data.body.getLocals().add(boxLocal);
-        assignStmt = Jimple.v().newAssignStmt(boxLocal, v);
-    }
-
-    public void makeBoxedValue(Value v, String type, String boxedType) {
+    public void makeBoxedValue(String type, String boxedType) {
         var boxMethod = Scene.v().getMethod(String.format("<%s: %s valueOf(%s)>", boxedType, boxedType, type));
-        Local boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v("java.lang.Object"));
-        this.boxLocal = boxLocal;
-        data.body.getLocals().add(boxLocal);
+        Local local = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v(boxedType));
+        data.body.getLocals().add(local);
         var expr = Jimple.v().newStaticInvokeExpr(boxMethod.makeRef(), v);
-        assignStmt = Jimple.v().newAssignStmt(boxLocal, expr);
+        var assignment = Jimple.v().newAssignStmt(local, expr);
+        data.units.insertBefore(assignment, unit);
+        this.v = local;
     }
 
-    public void makeAssignment(Value v, String type, String boxedType) {
-        Local boxLocal = Jimple.v().newLocal(String.format("box%d", data.body.getLocalCount()), RefType.v("java.lang.Object"));
-        this.boxLocal = boxLocal;
-        data.body.getLocals().add(boxLocal);
+    public void defaultCase(Type t) {
+        if (v instanceof Constant) return;
+        var local = Jimple.v().newLocal(String.format("tmp%d", data.body.getLocalCount()), t);
+        data.body.getLocals().add(local);
+        var assignment = Jimple.v().newAssignStmt(local, v);
+        data.units.insertBefore(assignment, unit);
+        this.v = local;
     }
 }

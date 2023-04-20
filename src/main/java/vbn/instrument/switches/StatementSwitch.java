@@ -1,12 +1,7 @@
 package vbn.instrument.switches;
 
-import com.google.protobuf.Value;
-import soot.Local;
-import soot.Type;
 import vbn.instrument.InstrumentData;
 import soot.jimple.*;
-
-import java.util.List;
 
 public class StatementSwitch extends AbstractStmtSwitch<Object> {
     InstrumentData data;
@@ -22,7 +17,7 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var right = stmt.getRightOp();
         JimpleValueInstrument.instrument(right, left, stmt, data);
         if (right instanceof InvokeExpr || right instanceof LengthExpr) return;
-        left.apply(new ReferenceSwitch(data, stmt, "finalizeStore"));
+        left.apply(new LeftReferenceSwitch(data, stmt));
     }
 
     public void caseInvokeStmt(InvokeStmt stmt) {
@@ -40,10 +35,7 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {
-        var right = stmt.getRightOp();
-        if (right instanceof ParameterRef || right instanceof ThisRef) {
-            stmt.getLeftOp().apply(new ReferenceSwitch(data, stmt, "popStore"));
-        }
+
     }
 
     public void caseReturnStmt(ReturnStmt stmt) {

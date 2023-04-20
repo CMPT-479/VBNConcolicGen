@@ -126,18 +126,18 @@ public class Call {
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName, Object value) {
+    public static void finalizeStore(String symName) {
         tempComputeConstraints.generateConstraint(globalState, symName);
     }
 
-    public static void finalizeStore(int objectId, int fieldId, Object value) {
+    public static void finalizeStore(int objectId, int fieldId) {
         long id = objectId;
         id = (id << 32) | fieldId;
-        finalizeStore(String.format("sym%d", id), value);
+        finalizeStore(String.format("sym%d", id));
     }
 
-    public static void finalizeStore(Object object, int fieldId, Object value) {
-        finalizeStore(object.hashCode(), fieldId, value);
+    public static void finalizeStore(Object object, int fieldId) {
+        finalizeStore(object.hashCode(), fieldId);
     }
 
 
