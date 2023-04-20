@@ -3,15 +3,41 @@ package vbn.constraints.Value;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Symbol extends AbstractSymbolConstant implements Serializable {
+public class Symbol extends AbstractSymbol implements Serializable {
 
+    // For Serializable
     private static final long serialVersionUID = 0L;
 
+    /**
+     * The unique identifier for this string
+     */
     public String id;
 
-    public Symbol(String id, ValueType symbolType) {
+    /**
+     * The current concrete value for this symbol
+     */
+    public Object value;
+
+    /**
+     * Whether this variable represents an original input variables
+     */
+    public boolean isInput = false;
+
+    public Symbol(String id, Type symbolType, Object value) {
         this.id = id;
-        this.valueType = symbolType;
+        this.type = symbolType;
+        this.value = null;
+    }
+    public Symbol(String id, Type symbolType, Object value, boolean isInput) {
+        this.id = id;
+        this.type = symbolType;
+        this.value = null;
+        this.isInput = isInput;
+    }
+
+    @Override
+    public Object getValue() {
+        return value;
     }
 
     @Override

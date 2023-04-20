@@ -8,7 +8,7 @@ import vbn.constraints.UnaryOperand;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class ComputeOperand {
+public class ComputeOperands {
 
     static final Map<String, BinaryOperand> binaryEnumsMap = Map.ofEntries(
             Map.entry("&&", BinaryOperand.AND),

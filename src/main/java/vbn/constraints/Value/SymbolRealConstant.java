@@ -4,6 +4,11 @@ public class SymbolRealConstant extends AbstractSymbolConstant {
     public int value;
     public SymbolRealConstant(String id, int value) {
         this.value = value;
-        this.valueType = ValueType.REAL_TYPE;
+        this.type = Type.REAL_TYPE;
+    }
+
+    @Override
+    public Object getValue() {
+        return value;
     }
 }

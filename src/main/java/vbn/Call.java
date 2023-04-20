@@ -3,7 +3,7 @@ package vbn;
 import vbn.constraints.*;
 import vbn.constraints.helpers.ComputeConstraints;
 
-import static vbn.constraints.helpers.ComputeOperand.*;
+import static vbn.constraints.helpers.ComputeOperands.*;
 
 /**
  *
@@ -12,7 +12,7 @@ import static vbn.constraints.helpers.ComputeOperand.*;
 public class Call {
     static State globalState;
 
-    static ComputeConstraints tempComputeConstraints;
+    static ComputeConstraints computeConstraints;
 
     /**
      * Hello World just to test involving a function
@@ -28,7 +28,7 @@ public class Call {
     public static void init() {
         // Create new to avoid carried over state
         globalState = new State();
-        tempComputeConstraints = new ComputeConstraints();
+        computeConstraints = new ComputeConstraints();
 
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
@@ -38,9 +38,9 @@ public class Call {
      * Handle any assignment that we don't control the value of
      * e.g. user input, external functions, etc.
      */
-    public static void initNewInput() {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
+    public static void initNewInput(String symName, Object value) {
+//        var valueType = computeType.get(value);
+//        globalState.addSymbol(symName, valueType, value);
     }
 
     /**
@@ -48,7 +48,7 @@ public class Call {
      * The left operand is pushed first for binary operations.
      */
     public static void pushSym(String symName, Object value) {
-        tempComputeConstraints.pushSymbol(symName);
+        computeConstraints.pushSymbol(symName);
     }
 
     /**
@@ -84,32 +84,32 @@ public class Call {
      * @param <JEnum> the type of operand
      */
     private static <JEnum extends IOperand> void applyOperand(JEnum operand) {
-        tempComputeConstraints.setOperand(operand);
+        computeConstraints.setOperand(operand);
     }
 
     /**
      * Store the result of this operand in the constraints
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName) {
-        tempComputeConstraints.generateConstraint(globalState, symName);
+    public static void finalizeStore(String symName, Object value) {
+        computeConstraints.generateFromPushes(globalState, symName);
     }
 
+    public static void finalizeStore(int objectId, int fieldId, Object value) {
+        long id = objectId;
+        id = (id << 32) | fieldId;
+        finalizeStore(String.format("sym%d", id), value);
+    }
 
+    public static void finalizeStore(Object object, int fieldId, Object value) {
+        finalizeStore(object.hashCode(), fieldId, value);
+    }
 
     /**
      * Store the result of this operand in the constraints
      */
     public static void finalizeIf() {
-        tempComputeConstraints.generateConstraint(globalState);
-    }
-
-    /**
-     * Handle new conditionals
-     */
-    public static void handleConditional() {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
+        computeConstraints.generateFromPushes(globalState);
     }
 
     /**
@@ -144,14 +144,6 @@ public class Call {
         System.out.println("From " + name);
     }
 
-    /**
-     * Ensure that state does not carry over
-     */
-    public static void destroy() {
-        globalState = null;
-        tempComputeConstraints = null;
-    }
-
     public static void pushValue(Object o) {}
 
     public static void loadValue(Object o) {}
@@ -167,4 +159,30 @@ public class Call {
     public static void storeReturn(int objectId, int fieldId) {}
 
     public static void storeReturn(Object object, int fieldId) {}
+}
+
+//    /**
+//     *
+//     * @param o
+//     */
+//    public static void loadValue(Object o, Object value) {
+//        System.out.println("DEBUG: loadValue is not currently in use");
+//    }
+
+//    /**
+//     *
+//     * @param o
+//     */
+//    public static void pushValue(Object o, Object value) {
+//        System.out.println("DEBUG: pushValue is not currently in use");
+//    }
+
+
+//    /**
+//     * Ensure that state does not carry over
+//     */
+//    public static void destroy() {
+//        globalState = null;
+//        tempComputeConstraints = null;
+//    }
 }
