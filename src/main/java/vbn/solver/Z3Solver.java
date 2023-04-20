@@ -2,11 +2,12 @@ package vbn.solver;
 
 import com.microsoft.z3.*;
 import lombok.NonNull;
-import vbn.constraints.*;
-import vbn.constraints.Value.AbstractSymbolConstant;
-import vbn.constraints.Value.Symbol;
-import vbn.constraints.Value.SymbolBooleanConstant;
-import vbn.constraints.Value.SymbolIntConstant;
+import vbn.state.*;
+import vbn.state.constraints.*;
+import vbn.state.value.AbstractSymbolConstant;
+import vbn.state.value.Symbol;
+import vbn.state.value.SymbolBooleanConstant;
+import vbn.state.value.SymbolIntConstant;
 
 import javax.annotation.Nullable;
 import java.util.*;

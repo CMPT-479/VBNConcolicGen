@@ -1,4 +1,4 @@
-package vbn.constraints.Value;
+package vbn.state.value;
 
 public class SymbolIntConstant extends AbstractSymbolConstant {
     public int value;

@@ -1,4 +1,4 @@
-package vbn.constraints.Value;
+package vbn.state.value;
 
 public abstract class Value {
     public enum ValueType {

@@ -1,10 +1,10 @@
-package vbn.constraints.helpers;
+package vbn.state.helpers;
 
 import lombok.NonNull;
-import vbn.constraints.BinaryOperand;
-import vbn.constraints.State;
-import vbn.constraints.SymbolMissingException;
-import vbn.constraints.UnaryOperand;
+import vbn.state.constraints.BinaryOperand;
+import vbn.state.State;
+import vbn.state.constraints.SymbolMissingException;
+import vbn.state.constraints.UnaryOperand;
 
 import javax.annotation.Nullable;
 import java.util.Stack;

@@ -1,6 +1,9 @@
-import vbn.constraints.*;
-import vbn.constraints.Value.AbstractSymbolConstant;
-import vbn.constraints.Value.Value;
+import vbn.state.*;
+import vbn.state.constraints.BinaryConstraint;
+import vbn.state.constraints.BinaryOperand;
+import vbn.state.constraints.SymbolMissingException;
+import vbn.state.value.AbstractSymbolConstant;
+import vbn.state.value.Value;
 import vbn.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

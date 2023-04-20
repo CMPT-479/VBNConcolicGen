@@ -1,4 +1,4 @@
-package vbn.constraints.helpers;
+package vbn.state.helpers;
 
 public class TooManyOperandsException extends Exception {
     private static final long serialVersionUID = 0L;

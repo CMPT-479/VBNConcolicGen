@@ -1,7 +1,7 @@
-package vbn.constraints;
+package vbn.state.constraints;
 
 import lombok.NonNull;
-import vbn.constraints.Value.Symbol;
+import vbn.state.value.Symbol;
 
 import javax.annotation.Nullable;
 import java.util.Objects;

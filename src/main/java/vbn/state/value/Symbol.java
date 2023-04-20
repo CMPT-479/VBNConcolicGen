@@ -1,4 +1,4 @@
-package vbn.constraints.Value;
+package vbn.state.value;
 
 import java.io.Serializable;
 import java.util.Objects;

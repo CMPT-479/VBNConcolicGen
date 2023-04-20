@@ -1,9 +1,10 @@
 package vbn;
 
-import vbn.constraints.*;
-import vbn.constraints.helpers.ComputeConstraints;
+import vbn.state.*;
+import vbn.state.constraints.IOperand;
+import vbn.state.helpers.ComputeConstraints;
 
-import static vbn.constraints.helpers.ComputeOperand.*;
+import static vbn.state.helpers.ComputeOperand.*;
 
 /**
  *
