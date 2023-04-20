@@ -6,7 +6,8 @@ public abstract class Value implements Serializable {
     public enum Type implements Serializable {
         INT_TYPE,
         REAL_TYPE,
-        BOOL_TYPE
+        BOOL_TYPE,
+        UNKNOWN,
     }
 
     public Type type;

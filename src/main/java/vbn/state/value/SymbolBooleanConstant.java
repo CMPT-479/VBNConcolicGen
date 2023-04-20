@@ -1,8 +1,6 @@
 package vbn.state.value;
 
-import java.io.Serializable;
-
-public class SymbolBooleanConstant extends AbstractSymbolConstant implements Serializable {
+public class SymbolBooleanConstant extends AbstractConstant {
     public boolean value;
     public SymbolBooleanConstant(String id, boolean value) {
         this.value = value;

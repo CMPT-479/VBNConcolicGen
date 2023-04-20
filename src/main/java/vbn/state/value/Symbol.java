@@ -1,7 +1,5 @@
 package vbn.state.value;
 
-import soot.Type;
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -13,7 +11,7 @@ public class Symbol extends AbstractSymbol implements Serializable {
     /**
      * The unique identifier for this string
      */
-    public String id;
+    public String varName;
 
     /**
      * The current concrete value for this symbol
@@ -25,13 +23,13 @@ public class Symbol extends AbstractSymbol implements Serializable {
      */
     public boolean isInput = false;
 
-    public Symbol(String id, Type symbolType, Object value) {
-        this.id = id;
+    public Symbol(String varName, Type symbolType, Object value) {
+        this.varName = varName;
         this.type = symbolType;
         this.value = value;
     }
-    public Symbol(String id, Type symbolType, Object value, boolean isInput) {
-        this.id = id;
+    public Symbol(String varName, Type symbolType, Object value, boolean isInput) {
+        this.varName = varName;
         this.type = symbolType;
         this.value = value;
         this.isInput = isInput;
@@ -48,6 +46,6 @@ public class Symbol extends AbstractSymbol implements Serializable {
             return false;
         }
         Symbol otherSymbol = (Symbol) obj;
-        return Objects.equals(this.id, otherSymbol.id) && this.type == otherSymbol.type;
+        return Objects.equals(this.varName, otherSymbol.varName) && this.type == otherSymbol.type;
     }
 }

@@ -1,16 +1,17 @@
 package vbn.state.helpers;
 
 import lombok.NonNull;
-import vbn.state.constraints.BinaryOperand;
-import vbn.state.State;
-import vbn.state.constraints.UnaryOperand;
+import vbn.state.constraints.*;
+import vbn.state.value.AbstractConstant;
+import vbn.state.value.Symbol;
+import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
 import java.util.Stack;
 
 public class ComputeConstraints {
 
-    @NonNull private final Stack<String> symbols = new Stack<>();
+    @NonNull private final Stack<Value> symbols = new Stack<>();
 
     private Object operand = null;
 
@@ -19,9 +20,19 @@ public class ComputeConstraints {
      * Left goes first.
      * @param symName the name of the symbol
      */
-    public void pushSymbol(@NonNull String symName) {
+    public void pushSymbol(@NonNull Symbol symName) {
         symbols.push(symName);
     }
+
+    /**
+     * Add a constant to be later used for constraints.
+     * Left goes first.
+     * @param constant the constant object
+     */
+    public void pushConstant(@NonNull AbstractConstant constant) {
+        symbols.push(constant);
+    }
+
     public void setOperand(@NonNull Object operand) {
         this.operand = operand;
     }
@@ -36,11 +47,11 @@ public class ComputeConstraints {
 
     /**
      * Generate constraints based on the calls
-     * @param globalState the global state to store the newly generated constraints
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public void generateFromPushes(@NonNull State globalState, @Nullable final String assignmentSymName) {
+    public AbstractConstraint generateFromPushes(@Nullable final Symbol assignmentSymName) {
         var numOfOps = symbols.size();
+        AbstractConstraint result;
 
         try { // FIXME: Is this good practice?
             if (operand == null) {
@@ -53,13 +64,13 @@ public class ComputeConstraints {
                         throw new ComputeConstraintsException("The operand is not binary when there are two symbols to be operated on");
                     }
 
-                    String right = symbols.pop();
-                    String left = symbols.pop();
+                    var right = symbols.pop();
+                    var left = symbols.pop();
                     if (assignmentSymName == null) {
-                        globalState.pushConstraint(left, (BinaryOperand) operand, right);
+                        result = new BinaryConstraint(left, (BinaryOperand) operand, right);
                     }
                     else {
-                        globalState.pushConstraint(left, (BinaryOperand) operand, right, assignmentSymName);
+                        result = new BinaryConstraint(left, (BinaryOperand) operand, right, assignmentSymName);
                     }
                     break;
 
@@ -69,12 +80,12 @@ public class ComputeConstraints {
                         throw new ComputeConstraintsException("The operand is not unary when there is one symbol to be operated on");
                     }
 
-                    String symbol = symbols.pop();
+                    var symbol = symbols.pop();
                     if (assignmentSymName == null) {
-                        globalState.pushConstraint((UnaryOperand) operand, symbol);
+                        result = new UnaryConstraint((UnaryOperand) operand, symbol);
                     }
                     else {
-                        globalState.pushConstraint((UnaryOperand) operand, symbol, assignmentSymName);
+                        result = new UnaryConstraint((UnaryOperand) operand, symbol, assignmentSymName);
                     }
                     break;
 
@@ -86,13 +97,15 @@ public class ComputeConstraints {
         }
 
         clear();
+        return result;
     }
 
     /**
      * Generate constraints based on the calls
-     * @param globalState the global state to store the newly generated constraints
+     *
+     * @return the newly created constraint
      */
-    public void generateFromPushes(State globalState) {
-        generateFromPushes(globalState, null);
+    public AbstractConstraint generateFromPushes() {
+        return generateFromPushes(null);
     }
 }
