@@ -132,9 +132,18 @@ public class Z3Solver {
         for (Constraint constraint : constraintStack) {
             System.out.println(constraint.getClass());
             if (constraint instanceof UnaryConstraint) {
-                solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
+                if (constraint.negated) {
+                    solver.add(ctx.mkNot(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint)))   ;
+                } else {
+                    solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
+                }
+
             } else if (constraint instanceof BinaryConstraint) {
-                solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
+                if (constraint.negated) {
+                    solver.add(ctx.mkNot(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint)))   ;
+                } else {
+                    solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
+                }
             } else {
                 throw new RuntimeException("Error, constraint type does not exist");
             }

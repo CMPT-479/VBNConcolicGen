@@ -18,12 +18,14 @@ public class BinaryConstraint extends Constraint {
         this.left = left;
         this.op = op;
         this.right = right;
+        this.negated = false;
     }
     public BinaryConstraint(@NonNull Symbol left, @NonNull BinaryOperand op, @NonNull Symbol right, Symbol assigned) {
         this.assigned = assigned;
         this.left = left;
         this.op = op;
         this.right = right;
+        this.negated = false;
     }
 
     @Override
