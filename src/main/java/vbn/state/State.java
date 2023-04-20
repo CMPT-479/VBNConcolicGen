@@ -5,6 +5,7 @@ import vbn.state.constraints.*;
 import vbn.state.value.Symbol;
 import vbn.state.value.Value;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.*;
 
@@ -60,58 +61,14 @@ public final class State implements Serializable {
 
     private final Map<String, Symbol> symbols = new HashMap<>();
 
-    private final Stack<Constraint> constraints = new Stack<>();
+    private final Stack<AbstractConstraint> constraints = new Stack<>();
 
     /**
      * Push a general constraint
      * @param constraint the constraint to add the constraint stack
      */
-    public void pushConstraint(Constraint constraint) {
+    public void pushConstraint(AbstractConstraint constraint) {
         constraints.push(constraint);
-    }
-
-    /**
-     * Push a Binary Assignment Constraint
-     * @param left the name of the left symbol
-     * @param operand the operand applied to both
-     * @param right the name of the right symbol
-     * @param assigned where to store the result
-     */
-    public void pushConstraint(String left, BinaryOperand operand, String right, String assigned) {
-        var constraint = new BinaryConstraint(getSymbol(left), operand, getSymbol(right), getSymbol(assigned));
-        pushConstraint(constraint);
-    }
-
-    /**
-     * Push a Binary Assignment Constraint
-     * @param left the name of the left symbol
-     * @param operand the operand applied to both
-     * @param right the name of the right symbol
-     */
-    public void pushConstraint(String left, BinaryOperand operand, String right) {
-        var constraint = new BinaryConstraint(getSymbol(left), operand, getSymbol(right));
-        pushConstraint(constraint);
-    }
-
-    /**
-     * Push a Unary Assignment Constraint
-     * @param symbol the name of the symbol to be operated on
-     * @param operand the operand applied to both
-     * @param assigned where to store the result
-     */
-    public void pushConstraint(UnaryOperand operand, String symbol, String assigned) {
-        var constraint = new UnaryConstraint(operand, getSymbol(symbol), getSymbol(assigned));
-        pushConstraint(constraint);
-    }
-
-    /**
-     * Push a Unary Assignment Constraint
-     * @param symbol the name of the symbol to be operated on
-     * @param operand the operand applied to both
-     */
-    public void pushConstraint(UnaryOperand operand, String symbol) {
-        var constraint = new UnaryConstraint(operand, getSymbol(symbol));
-        pushConstraint(constraint);
     }
 
     /**
@@ -119,24 +76,29 @@ public final class State implements Serializable {
      * @param symbol the symbol object to add
      */
     public void addSymbol(Symbol symbol) {
-        symbols.put(symbol.id, symbol);
+        symbols.put(symbol.varName, symbol);
     }
 
     /**
      * Add a symbol shortcut
-     * @param symName the name of the symbol
-     * @param valueType the Z3 type of the symbol
+     *
+     * @param symName       the name of the symbol
+     * @param valueType     the Z3 type of the symbol
      * @param concreteValue the current value of the symbol
+     * @return the symbol that was just created
      */
-    public void addSymbol(String symName, Value.Type valueType, Object concreteValue) {
-        symbols.put(symName, new Symbol(symName, valueType, concreteValue));
+    public Symbol addSymbol(String symName, Value.Type valueType, Object concreteValue) {
+        var newSymbol = new Symbol(symName, valueType, concreteValue);
+        symbols.put(symName, newSymbol);
+        return newSymbol;
     }
 
     /**
      * Getters
      * @return the constraint stack
      */
-    public Stack<Constraint> getConstraints() {
+    @NonNull
+    public Stack<AbstractConstraint> getConstraints() {
         return constraints;
     }
 
@@ -146,13 +108,32 @@ public final class State implements Serializable {
      * @return the symbol object
       */
     public Symbol getSymbol(String symbolName) {
-        @NonNull var result = symbols.get(symbolName);
+        @NonNull
+        var result = symbols.get(symbolName);
 
         return result;
     }
 
+    @Nullable
+    public Symbol getSymbolCanBeNull(String symbolName) {
+        return symbols.get(symbolName);
+    }
+
+    @NonNull
     public ArrayList<Symbol> getSymbols() {
         return new ArrayList<>(symbols.values());
     }
 
+    /**
+     * Update the concrete concreteValue of the symbol
+     * @param symName The name of the symbol
+     * @param concreteValue the value to update the concrete value to
+     */
+    public void updateSymbolConcreteValue(String symName, Object concreteValue) {
+        getSymbol(symName).value = concreteValue;
+    }
+
+    public void initSymbol(String symName, Object value) {
+
+    }
 }

@@ -2,19 +2,19 @@ package vbn.solver;
 
 import lombok.NonNull;
 import vbn.state.constraints.BinaryConstraint;
-import vbn.state.constraints.Constraint;
+import vbn.state.constraints.AbstractConstraint;
 import vbn.state.constraints.UnaryConstraint;
 
 import java.util.Stack;
 
 public class StackHandler {
-    public static boolean compareConstraintStacks(@NonNull Stack<Constraint> stack1, @NonNull Stack<Constraint> stack2) {
+    public static boolean compareConstraintStacks(@NonNull Stack<AbstractConstraint> stack1, @NonNull Stack<AbstractConstraint> stack2) {
         if (stack1.size() != stack2.size()) {
             return false;
         }
 
-        Constraint s1Constraint;
-        Constraint s2Constraint;
+        AbstractConstraint s1Constraint;
+        AbstractConstraint s2Constraint;
         BinaryConstraint s1BinaryConstraint;
         BinaryConstraint s2BinaryConstraint;
         UnaryConstraint s1UnaryConstraint;
@@ -49,7 +49,7 @@ public class StackHandler {
         return true;
     }
 
-    public static boolean visitedPreviouslySeenPath(Stack<Constraint> stack) {
+    public static boolean visitedPreviouslySeenPath(Stack<AbstractConstraint> stack) {
         return false;
     }
 
