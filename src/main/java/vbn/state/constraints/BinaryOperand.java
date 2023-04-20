@@ -1,9 +1,11 @@
 package vbn.state.constraints;
 
+import java.io.Serializable;
+
 /**
  * Note: We could separate these into different enums, but decided the additional complexity was not worth it
  */
-public enum BinaryOperand implements IOperand {
+public enum BinaryOperand implements IOperand, Serializable {
     // Both Boolean and Numbers
     EQ,
 

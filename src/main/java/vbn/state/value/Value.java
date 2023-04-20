@@ -1,7 +1,9 @@
 package vbn.state.value;
 
-public abstract class Value {
-    public enum Type {
+import java.io.Serializable;
+
+public abstract class Value implements Serializable {
+    public enum Type implements Serializable {
         INT_TYPE,
         REAL_TYPE,
         BOOL_TYPE
@@ -9,7 +11,7 @@ public abstract class Value {
 
     public Type type;
 
-    public abstract Object getValue();
+    public abstract Serializable getValue();
 
 }
 

@@ -4,9 +4,10 @@ import lombok.NonNull;
 import vbn.state.value.Symbol;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class BinaryConstraint extends Constraint {
+public class BinaryConstraint extends Constraint implements Serializable {
 
     @Nullable public Symbol assigned;
     @NonNull public Symbol left;

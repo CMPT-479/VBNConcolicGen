@@ -1,4 +1,6 @@
 package vbn.state.value;
 
-public abstract class AbstractSymbolConstant extends AbstractSymbol {
+import java.io.Serializable;
+
+public abstract class AbstractSymbolConstant extends AbstractSymbol implements Serializable {
 }
