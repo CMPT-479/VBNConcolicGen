@@ -24,7 +24,8 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseInvokeStmt(InvokeStmt stmt) {
         // Handle method invocation statements
-
+        var invokeExpr = stmt.getInvokeExpr();
+        ExpressionInstrumentUtil.invoke(invokeExpr, stmt, data);
     }
 
     public void caseIfStmt(IfStmt stmt) {

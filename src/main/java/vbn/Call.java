@@ -167,4 +167,6 @@ public class Call {
     }
 
     public static void popStore(int objectId, int fieldId) {}
+
+    public static void pop() {}
 }

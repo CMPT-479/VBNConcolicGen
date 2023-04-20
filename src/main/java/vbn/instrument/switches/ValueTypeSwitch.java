@@ -30,10 +30,48 @@ public class ValueTypeSwitch extends TypeSwitch<Boolean> {
         instrument(box);
     }
 
-    @Override
     public void caseDoubleType(DoubleType t) {
         Value box = makeBoxedValue(v, "double", "java.lang.Double");
         instrument(box);
+    }
+
+    public void caseBooleanType(BooleanType t) {
+        Value box = makeBoxedValue(v, "boolean", "java.lang.Boolean");
+        instrument(box);
+    }
+
+    public void caseByteType(ByteType t) {
+        Value box = makeBoxedValue(v, "byte", "java.lang.Byte");
+        instrument(box);
+    }
+
+    public void caseCharType(CharType t) {
+        Value box = makeBoxedValue(v, "char", "java.lang.Char");
+        instrument(box);
+    }
+
+    public void caseFloatType(FloatType t) {
+        Value box = makeBoxedValue(v, "float", "java.lang.Float");
+        instrument(box);
+    }
+
+    public void caseLongType(LongType t) {
+        Value box = makeBoxedValue(v, "long", "java.lang.Long");
+        instrument(box);
+    }
+
+    public void caseShortType(ShortType t) {
+        Value box = makeBoxedValue(v, "short", "java.lang.Short");
+        instrument(box);
+    }
+
+    public void caseArrayType(ArrayType t) {
+        instrument(v);
+    }
+
+    @Override
+    public void caseRefType(RefType t) {
+        instrument(v);
     }
 
     public Value makeBoxedValue(Value v, String type, String boxedType) {
