@@ -2,9 +2,10 @@ package vbn.state.constraints;
 
 import vbn.state.helpers.ComputeConstraints;
 
-public enum UnaryOperand implements IOperand {
-    NOT, // Jimple does not have NOT statement (it is handled through conditionals)
-    NEG,
+public enum CustomOperand implements IOperand {
+    CAST, // Cast the operand to another type
+    REASSIGN, // Set the value of one operand to another
+
     ;
 
     @Override
