@@ -32,11 +32,13 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var condition = stmt.getCondition();
         if (!(condition instanceof BinopExpr)) return;
         JimpleValueInstrument.instrument(condition, null, stmt, data);
-
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {
-
+        var right = stmt.getRightOp();
+        if (right instanceof ParameterRef || right instanceof ThisRef) {
+            stmt.getLeftOp().apply(new ReferenceSwitch(data, stmt, "popStore", true));
+        }
     }
 
     public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {

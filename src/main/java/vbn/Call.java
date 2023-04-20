@@ -158,7 +158,13 @@ public class Call {
 
     public static void apply(String op) {}
 
+    public static void pushValue(Object o) {}
+
     public static void loadValue(Object o) {}
 
-    public static void pushValue(Object o) {}
+    public static void popStore(Object object, int fieldId) {
+        popStore(object.hashCode(), fieldId);
+    }
+
+    public static void popStore(int objectId, int fieldId) {}
 }
