@@ -18,20 +18,20 @@ public class State implements Serializable {
         constraints = new Stack<>();
     }
 
-    public State(Map<String, ISymbol> symbols, Stack<AbstractConstraint> constraints) {
+    public State(Map<String, ISymbol> symbols, Stack<IConstraint> constraints) {
         this.symbols = symbols;
         this.constraints = constraints;
     }
 
     private final Map<String, ISymbol> symbols;
 
-    private final Stack<AbstractConstraint> constraints;
+    private final Stack<IConstraint> constraints;
 
     /**
      * Push a general constraint
      * @param constraint the constraint to add the constraint stack
      */
-    public void pushConstraint(AbstractConstraint constraint) {
+    public void pushConstraint(IConstraint constraint) {
         constraints.push(constraint);
     }
 
@@ -48,7 +48,7 @@ public class State implements Serializable {
      * @return the constraint stack
      */
     @NonNull
-    public Stack<AbstractConstraint> getConstraints() {
+    public Stack<IConstraint> getConstraints() {
         return constraints;
     }
 
@@ -89,8 +89,8 @@ public class State implements Serializable {
      * @return the state that should be Serializable
      */
     public State getSerializeState() {
-        Stack<AbstractConstraint> newConstraints = (Stack<AbstractConstraint>) this.constraints.clone();
-        Stack<AbstractConstraint> finalConstraints = new Stack<>();
+        Stack<IConstraint> newConstraints = (Stack<IConstraint>) this.constraints.clone();
+        Stack<IConstraint> finalConstraints = new Stack<>();
         Map<String, ISymbol> finalSymbols = new HashMap<>();
 
         this.symbols.forEach((key, val) -> {
@@ -99,7 +99,7 @@ public class State implements Serializable {
             }
         });
 
-        for (AbstractConstraint constraint : newConstraints) {
+        for (IConstraint constraint : newConstraints) {
             if (constraint instanceof BinaryConstraint) {
                 BinaryConstraint binConst = (BinaryConstraint) constraint;
                 if (!(binConst.left instanceof UnknownSymbol) && !(binConst.right instanceof UnknownSymbol)) {

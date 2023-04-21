@@ -55,8 +55,8 @@ public class ComputeConstraints {
      * Generate constraints based on the calls
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public AbstractConstraint generateFromPushes(@Nullable final ISymbol assignmentSymName) {
-        AbstractConstraint resultingConstraint;
+    public IConstraint generateFromPushes(@Nullable final ISymbol assignmentSymName) {
+        IConstraint resultingConstraint;
 
         try {
 
@@ -77,7 +77,7 @@ public class ComputeConstraints {
         return resultingConstraint;
     }
 
-    public AbstractConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName) {
+    public IConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName) {
         var constraint = generateFromPushes(assignmentSymName);
         constraint.setLineNumber(lineNumber);
         return constraint;
@@ -88,7 +88,7 @@ public class ComputeConstraints {
      *
      * @return the newly created constraint
      */
-    public AbstractConstraint generateFromPushes() {
+    public IConstraint generateFromPushes() {
         return generateFromPushes(null);
     }
 
@@ -97,7 +97,7 @@ public class ComputeConstraints {
     }
 
     static public class GenerateConstraintVisitor implements IOperandVisitor {
-        private AbstractConstraint generatedConstraint;
+        private IConstraint generatedConstraint;
         public ISymbol assignSym;
         public Stack<Value> valueStack;
 
@@ -152,7 +152,7 @@ public class ComputeConstraints {
             throw new RuntimeException("An operator is not handled");
         }
 
-        public AbstractConstraint getGeneratedConstraint() {
+        public IConstraint getGeneratedConstraint() {
             return generatedConstraint;
         }
 

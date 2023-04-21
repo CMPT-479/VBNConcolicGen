@@ -128,9 +128,9 @@ public class Z3Solver {
             }
         }
 
-        Stack<AbstractConstraint> constraintStack = state.getConstraints();
+        Stack<IConstraint> constraintStack = state.getConstraints();
         // will need to keep negating the top of the stack and then removing it while going down
-        for (AbstractConstraint constraint : constraintStack) {
+        for (IConstraint constraint : constraintStack) {
             System.out.println(constraint.getClass());
             int constraintLineNumber = constraint.getLineNumber();
             if (constraint instanceof UnaryConstraint) {

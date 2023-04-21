@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 import vbn.ObjectIO;
 import vbn.solver.VBNRunner;
 import vbn.state.State;
-import vbn.state.constraints.AbstractConstraint;
+import vbn.state.constraints.IConstraint;
 import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
 import vbn.state.constraints.UnaryConstraint;
@@ -48,11 +48,11 @@ public class ObjectIOTests {
         String fileName = "constraints.ser";
         ObjectIO.writeObjectToFile(state.getConstraints(), fileName);
 
-        Stack<AbstractConstraint> constraints = (Stack<AbstractConstraint>) ObjectIO.readObjectFromFile(fileName);
+        Stack<IConstraint> constraints = (Stack<IConstraint>) ObjectIO.readObjectFromFile(fileName);
         Assertions.assertNotNull(constraints);
         System.out.println(constraints);
         Assertions.assertNotEquals(constraints.size(), 0);
-        for (AbstractConstraint c : constraints) {
+        for (IConstraint c : constraints) {
             if (c instanceof BinaryConstraint) {
                 BinaryConstraint bc = (BinaryConstraint) c;
                 System.out.println("Found instance of constraint "
@@ -119,10 +119,10 @@ public class ObjectIOTests {
             System.out.println("Found symbol from file: " + s.getName() + " " + s.getType() + " " + s.getValue());
         }
 
-        Stack<AbstractConstraint> constraints = returnedState.getConstraints();
+        Stack<IConstraint> constraints = returnedState.getConstraints();
         Assertions.assertNotNull(constraints);
         System.out.println(constraints);
-        for (AbstractConstraint c : constraints) {
+        for (IConstraint c : constraints) {
             if (c instanceof BinaryConstraint) {
                 BinaryConstraint bc = (BinaryConstraint) c;
                 System.out.println("Found instance of constraint "

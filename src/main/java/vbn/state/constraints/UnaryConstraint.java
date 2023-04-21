@@ -7,7 +7,7 @@ import vbn.state.value.Value;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class UnaryConstraint implements AbstractConstraint {
+public class UnaryConstraint implements IConstraint {
     @Nullable
     public ISymbol assigned;
 
