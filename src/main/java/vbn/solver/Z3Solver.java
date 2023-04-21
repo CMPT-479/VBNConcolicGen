@@ -188,6 +188,7 @@ public class Z3Solver {
                         throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
                     }
                     if (constraintNegatedMap.get(constraintLineNumber)) {
+                        System.out.println("Line " + constraintLineNumber + " negated in Z3Solver");
                         solver.add(ctx.mkNot(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint)));
                     } else {
                         solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
@@ -202,6 +203,7 @@ public class Z3Solver {
                         throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
                     }
                     if (constraintNegatedMap.get(constraintLineNumber)) {
+                        System.out.println("Line " + constraintLineNumber + " negated in Z3Solver");
                         solver.add(ctx.mkNot(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint)));
                     } else {
                         solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
@@ -213,6 +215,9 @@ public class Z3Solver {
                 throw new VBNSolverRuntimeError("Error, constraint type does not exist");
             }
         }
+        System.out.println("============== SOLVER CONSTRAINTS ==============");
+        System.out.println(solver);
+        System.out.println("============== END OF SOLVER CONSTRAINTS ==============");
 
         // Check for satisfying assignment
         Status status = solver.check();
