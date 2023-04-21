@@ -3,7 +3,7 @@ package vbn.solver;
 import lombok.NonNull;
 import vbn.ObjectIO;
 import vbn.RandomHandler;
-import vbn.state.constraints.AbstractConstraint;
+import vbn.state.constraints.IConstraint;
 import vbn.state.State;
 import vbn.state.value.*;
 
@@ -21,7 +21,7 @@ public class VBNRunner {
 
     public static State returnStateFromIO() {
         @NonNull ArrayList<ISymbol> symbols = (ArrayList<ISymbol>) ObjectIO.readObjectFromFile(fileNameSymbols);
-        @NonNull Stack<AbstractConstraint> constraints = (Stack<AbstractConstraint>) ObjectIO.readObjectFromFile(fileNameConstraints);
+        @NonNull Stack<IConstraint> constraints = (Stack<IConstraint>) ObjectIO.readObjectFromFile(fileNameConstraints);
 
         // convert symbol arrayList to symbol map
         Map<String, ISymbol> symbolMap = new HashMap<>();
@@ -109,9 +109,9 @@ public class VBNRunner {
         @NonNull State state = returnStateFromIO();
         ArrayList<ISymbol> solved;
 
-        @NonNull Stack<AbstractConstraint> constraints = state.getConstraints();
+        @NonNull Stack<IConstraint> constraints = state.getConstraints();
 
-        for (@NonNull AbstractConstraint constraint : constraints) {
+        for (@NonNull IConstraint constraint : constraints) {
             if (constraint.getLineNumber() == -1) {
                 continue;
             }
