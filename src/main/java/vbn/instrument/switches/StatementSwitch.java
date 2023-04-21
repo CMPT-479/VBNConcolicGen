@@ -24,6 +24,13 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var leftSwitch = new LeftReferenceSwitch(data);
         right.apply(rightSwitch);
         left.apply(leftSwitch);
+        instrument(stmt, rightSwitch.getResult());
+        if (right instanceof InvokeExpr) {
+            var popSwitch = new PopSwitch(data);
+            left.apply(popSwitch);
+            instrument(stmt, popSwitch.getResult());
+        }
+        instrument(stmt, leftSwitch.getResult());
     }
 
     public void caseInvokeStmt(InvokeStmt stmt) {
