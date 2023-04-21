@@ -51,10 +51,7 @@ import java.util.*;
 /**
  * This class handles all state necessary to solve an equation at a certain point
  */
-public final class State implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class State {
     public State() {
         super();
     }
