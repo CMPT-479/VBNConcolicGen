@@ -87,8 +87,43 @@ public class VBNRunner {
     private static Stack<IConstraint> removeInvalidConstraints(@NonNull Stack<IConstraint> constraints) {
         Stack<IConstraint> validConstraints = new Stack<>();
         for (IConstraint constraint : constraints) {
-//            if (constraint.)
+            if (constraint.hasLineNumber()) {
+                validConstraints.push(constraint);
+            }
         }
+        return validConstraints;
+    }
+
+    /**
+     *
+     * @param constraints
+     * @return boolean representing if we were able to negate successfully, if false, unsuccessful in negating
+     */
+    private static boolean negateConstraints(Stack<IConstraint> constraints) {
+        int lineNumber = -1;
+        while (!(constraints.empty())) {
+            lineNumber = constraints.peek().getLineNumber();
+            if (!constraintNegatedMap.containsKey(lineNumber)) {
+                throw new RuntimeException("Constraint negated map did not contain the constraint line number");
+            }
+
+            if (!constraintNegatedMap.get(lineNumber)) {
+                // map contains the key
+                // the top has a line number (is negateable)
+                // the top is not negated
+                break;
+            } else {
+                constraints.pop();
+            }
+        }
+        if (constraints.empty()) {
+            return false;
+        }
+
+        printConstraintNegationStatus();
+        constraintNegatedMap.put(lineNumber, true);
+
+        return true;
     }
 
     public static int execute(String programName) {
@@ -112,32 +147,13 @@ public class VBNRunner {
         putInitialConstraintPathDirection(constraints);
 
         while (!(constraints.empty())) {
-            // this global state needs to be obtained from an external data store
-            // solved = Z3Solver.solve(state);   // need to save these solved values somewhere
-            int linenumber = -1;
-            while (!(constraints.empty())) {
-                linenumber = constraints.peek().getLineNumber();
-                if (linenumber == -1) {
-                    constraints.pop();
-                    continue;
-                }
-                if (constraintNegatedMap.containsKey(linenumber) && !constraintNegatedMap.get(linenumber)) {
-                    // map contains the key
-                    // the top has a line number (is negateable)
-                    // the top is not negated
-                    break;
-                } else {
-                    constraints.pop();
-                    continue;
-                }
-            }
-            if (constraints.empty()) {
+            constraints = removeInvalidConstraints(constraints);
+            boolean negationResults = negateConstraints(constraints);
+            if (!negationResults) {
                 System.out.println("No more constraints to negate");
                 return 0;
             }
 
-            printConstraintNegationStatus();
-            constraintNegatedMap.put(linenumber, true);
             solved = Z3Solver.solve(state); // solve for negated end
             programInputs = abstractSymbolListToStringArray(solved, false);
             solvedConstraints.add(programInputs);
@@ -160,7 +176,7 @@ public class VBNRunner {
 
     private static void addConstraintsToNegatedMap(@NonNull Stack<IConstraint> constraints) {
         for (@NonNull IConstraint constraint : constraints) {
-            if (constraint.getLineNumber() == -1) {
+            if (!constraint.hasLineNumber()) {
                 continue;
             }
             if (!(constraintNegatedMap.containsKey(constraint.getLineNumber()))) {
