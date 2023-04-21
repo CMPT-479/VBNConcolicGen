@@ -34,6 +34,6 @@ public enum BinaryOperand implements IOperand {
 
     @Override
     public void accept(ComputeConstraints.GenerateConstraintVisitor visitor) {
-        visitor.visit( this);
+        visitor.visit(this);
     }
 }
