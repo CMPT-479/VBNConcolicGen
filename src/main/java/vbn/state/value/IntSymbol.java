@@ -1,6 +1,5 @@
 package vbn.state.value;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 public class IntSymbol implements AbstractSymbol {
@@ -16,11 +15,11 @@ public class IntSymbol implements AbstractSymbol {
     /**
      * The current concrete value for this symbol
      */
-    public int value;
+    private int concreteValue;
 
-    public IntSymbol(String varName, int value) {
+    public IntSymbol(String varName, int concreteValue) {
         this.varName = varName;
-        this.value = value;
+        this.concreteValue = concreteValue;
     }
 
     @Override
@@ -35,12 +34,12 @@ public class IntSymbol implements AbstractSymbol {
 
     @Override
     public Object getValue() {
-        return value;
+        return concreteValue;
     }
 
     @Override
     public void setValue(Object value) {
-        this.value = (int) value;
+        this.concreteValue = (int) value;
     }
 
     @Override
