@@ -12,6 +12,8 @@ import java.util.*;
  * This class handles all state necessary to solve an equation at a certain point
  */
 public class State implements Serializable {
+    private Throwable error;
+
     public State() {
         super();
         symbols = new HashMap<>();
@@ -118,4 +120,15 @@ public class State implements Serializable {
 
     }
 
+    public void setError(Throwable error) {
+        this.error = error;
+    }
+
+    public Throwable getError() {
+        return error;
+    }
+
+    public boolean hasVBNError() {
+        return error instanceof IVBNException;
+    }
 }

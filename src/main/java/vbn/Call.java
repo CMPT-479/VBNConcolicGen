@@ -190,7 +190,9 @@ public class Call {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
 
-        if (theError instanceof IVBNException) {
+        globalState.setError(theError);
+
+        if (globalState.hasVBNError()) {
             System.out.println("VBN's Runtime Library for the instrumentation failed with an error:");
             System.out.println("----------------------------------------------------------------------");
             theError.printStackTrace();
