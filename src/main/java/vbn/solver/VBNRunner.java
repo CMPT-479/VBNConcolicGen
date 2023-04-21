@@ -69,8 +69,13 @@ public class VBNRunner {
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
-                            new BooleanConstant(DEFAULT_BOOL_CONSTANT)))
-    );
+                            new BooleanConstant(DEFAULT_BOOL_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_08_If_Value",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT)))
+
+            );
 
     static String[] getProgramInputs(@NonNull List<IConstant> constants) {
         String[] inputs = new String[constants.size()];
