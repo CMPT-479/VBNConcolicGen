@@ -1,4 +1,6 @@
 package vbn.state.value;
 
-public interface IConstant extends Value {
+import java.io.Serializable;
+
+public interface IConstant extends Value, Serializable {
 }
