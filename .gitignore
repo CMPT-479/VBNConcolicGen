@@ -193,3 +193,5 @@ gradle-app.setting
 .classpath
 
 target
+
+*.ser
