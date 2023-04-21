@@ -11,6 +11,8 @@ import vbn.state.value.Value;
 import javax.annotation.Nullable;
 import java.util.Stack;
 
+import static org.junit.Assert.*;
+
 public class ComputeConstraints {
 
     @NonNull private final Stack<Value> valueStack = new Stack<>();
@@ -93,7 +95,7 @@ public class ComputeConstraints {
         return valueStack.size() == 1 && operand == null;
     }
 
-    static class GenerateConstraintVisitor implements IOperandVisitor {
+    static public class GenerateConstraintVisitor implements IOperandVisitor {
         private AbstractConstraint generatedConstraint;
         public AbstractSymbol assignmentSymName;
         public Stack<Value> valueStack;
@@ -135,7 +137,7 @@ public class ComputeConstraints {
         }
     }
     @Test
-    void testSimpleCompute() {
+    public void testSimpleCompute() {
         clear();
 
         var boolX = new BooleanSymbol("x", true);
@@ -146,8 +148,8 @@ public class ComputeConstraints {
         setOperand(BinaryOperand.AND);
 
         var result = generateFromPushes();
-
         var groundTruth = new BinaryConstraint(boolX, BinaryOperand.AND, boolY);
-        assertEquals(true,result.equals(groundTruth));
+        assertEquals(result, groundTruth);
+
     }
 }

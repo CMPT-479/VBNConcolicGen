@@ -1,5 +1,7 @@
 package vbn.state.constraints;
 
+import vbn.state.helpers.ComputeConstraints;
+
 /**
  * Note: We could separate these into different enums, but decided the additional complexity was not worth it
  */
@@ -31,7 +33,7 @@ public enum BinaryOperand implements IOperand {
     ;
 
     @Override
-    public void accept(IOperandVisitor visitor) {
-        visitor.visit((BinaryOperand) this);
+    public void accept(ComputeConstraints.GenerateConstraintVisitor visitor) {
+        visitor.visit( this);
     }
 }
