@@ -32,27 +32,19 @@ public class Instrument extends BodyTransformer {
         }
 
         // Instrument
+        var data = new InstrumentData(units, body, runtime, method.getDeclaringClass().getName());
+        var statementSwitch = new StatementSwitch(data);
         it = units.snapshotIterator();
         while (it.hasNext()) {
             var unit = it.next();
             System.out.println("\t"+unit);
-            unit.apply(new StatementSwitch(new InstrumentData(units, body, runtime, method.getDeclaringClass().getName())));
+            unit.apply(statementSwitch);
         }
 
         if (method.getSubSignature().equals("void main(java.lang.String[])")) {
-            it = units.snapshotIterator();
             var init = runtime.getMethod("void init()");
             var initStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(init.makeRef()));
-            while (it.hasNext()) {
-                var unit = it.next();
-                if (unit instanceof IdentityStmt) {
-                    var idStmt = (IdentityStmt) unit;
-                    var right = idStmt.getRightOp();
-                    if (right instanceof ParameterRef || right instanceof ThisRef) continue;
-                }
-                units.insertBefore(initStmt, unit);
-                break;
-            }
+            body.getUnits().insertBefore(initStmt, data.bodyBegin);
         }
 
         wrapInsideTryCatch(body);

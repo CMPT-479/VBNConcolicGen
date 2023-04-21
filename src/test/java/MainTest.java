@@ -109,4 +109,10 @@ public class MainTest {
         soot.Main.main(args);
     }
 
+    @Test
+    final void basicFunction() {
+        final String[] args = new String[] {"vbn.examples.Test_08_Function"};
+        soot.Main.main(args);
+    }
+
 }
