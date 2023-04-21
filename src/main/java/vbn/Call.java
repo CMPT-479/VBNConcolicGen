@@ -184,7 +184,6 @@ public class Call {
     /**
      * After the program is completed
      */
-    // FIXME: GitHub Issue #33
     public static void terminatedWithError() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
