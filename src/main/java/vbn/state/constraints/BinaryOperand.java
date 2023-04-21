@@ -25,13 +25,19 @@ public enum BinaryOperand implements IOperand {
     MULTIPLY,
     DIVIDE,
 
-    // POWER, // SOOT likely does not have power
+    // POWER, // SOOT does not have power
 
     // Integer Comparison
     LT, // less than
     LTE, // less than or equal
     GT,
     GTE,
+
+    // Floating Point Comparison
+    CMPL,
+    CMPG,
+    CMP, // Don't know how to handle
+
     ;
 
     @Override
