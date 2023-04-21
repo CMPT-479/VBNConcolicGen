@@ -51,7 +51,12 @@ public class VBNRunner {
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
-                            new BooleanConstant(DEFAULT_BOOL_CONSTANT)))
+                            new BooleanConstant(DEFAULT_BOOL_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_05_If",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT)))
 
     );
 
