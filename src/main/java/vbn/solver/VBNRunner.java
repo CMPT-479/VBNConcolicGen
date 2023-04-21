@@ -1,9 +1,9 @@
 package vbn.solver;
 
-import vbn.state.constraints.Constraint;
+import vbn.state.constraints.AbstractConstraint;
 import vbn.state.State;
-import vbn.state.value.AbstractSymbolConstant;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractConstant;
+import vbn.state.value.AbstractSymbol;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,12 +16,12 @@ public class VBNRunner {
         soot.Main.main(args);
         InstrumentedRunner.runInstrumented(programName, programInputs);
 
-        Stack<Constraint> stateConstraint;
-        while (true) {
+        Stack<AbstractConstraint> stateConstraint;
+//        while (true) {
             // this global state needs to be obtained from an external data store
-            State state = new State(); // shouldn't be a "new"
-            ArrayList<AbstractSymbolConstant> solved = Z3Solver.solve(state);   // need to save these solved values somewhere
-            stateConstraint = state.getConstraints();
+//            State state = new State(); // shouldn't be a "new"
+//            ArrayList<AbstractConstant> solved = Z3Solver.solve(state);   // need to save these solved values somewhere
+//            stateConstraint = state.getConstraints();
 //            while (!(stateConstraint.empty()) && (stateConstraint.peek().negated)) {
 //                stateConstraint.pop();
 //            }
@@ -29,7 +29,7 @@ public class VBNRunner {
 //                break;
 //            }
 //            stateConstraint.peek().negated = true;
-            InstrumentedRunner.runInstrumented(programName, programInputs);
-        }
+//            InstrumentedRunner.runInstrumented(programName, programInputs);
+//        }
     }
 }

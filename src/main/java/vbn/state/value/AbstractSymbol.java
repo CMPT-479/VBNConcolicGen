@@ -1,7 +1,9 @@
 package vbn.state.value;
 
-import vbn.state.value.Value;
+import java.io.Serializable;
 
-public abstract class AbstractSymbol extends Value {
-    public String id;
+public interface AbstractSymbol extends Value, Serializable {
+    String getName();
+
+    void setValue(Object value);
 }

@@ -1,25 +1,33 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractSymbol;
+import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class BinaryConstraint extends Constraint {
+public class BinaryConstraint extends AbstractConstraint {
 
-    @Nullable public Symbol assigned;
-    @NonNull public Symbol left;
-    @NonNull public BinaryOperand op;
-    @NonNull public Symbol right;
+    @Nullable
+    public AbstractSymbol assigned;
 
-    public BinaryConstraint(@NonNull Symbol left, @NonNull BinaryOperand op, @NonNull Symbol right) {
+    @NonNull
+    public Value left;
+
+    @NonNull
+    public BinaryOperand op;
+
+    @NonNull
+    public Value right;
+
+    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right) {
         this.assigned = null;
         this.left = left;
         this.op = op;
         this.right = right;
     }
-    public BinaryConstraint(@NonNull Symbol left, @NonNull BinaryOperand op, @NonNull Symbol right, Symbol assigned) {
+    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, @Nullable AbstractSymbol assigned) {
         this.assigned = assigned;
         this.left = left;
         this.op = op;

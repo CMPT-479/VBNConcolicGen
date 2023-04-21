@@ -1,31 +1,29 @@
 package vbn;
 
+import lombok.NonNull;
 import vbn.state.*;
+import vbn.state.constraints.CustomOperand;
 import vbn.state.constraints.IOperand;
 import vbn.state.helpers.ComputeConstraints;
+import vbn.state.helpers.ComputeValueType;
+import vbn.state.value.*;
+
+import javax.annotation.Nullable;
 
 import static vbn.state.helpers.ComputeOperand.*;
 
 /**
  *
  */
-
 public class Call {
     static State globalState;
 
     static ComputeConstraints computeConstraints;
 
     /**
-     * Hello World just to test involving a function
-     */
-    public static void helloWorld() {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
-    }
-
-    /**
      * When the program begins
      */
+    @SuppressWarnings("unused")
     public static void init() {
         // Create new to avoid carried over state
         globalState = new State();
@@ -36,33 +34,48 @@ public class Call {
     }
 
     /**
-     * Handle any assignment that we don't control the value of
-     * e.g. user input, external functions, etc.
-     */
-    public static void initNewInput(String symName, Object value) {
-//        var valueType = computeType.get(value);
-//        globalState.addSymbol(symName, valueType, value);
-    }
-
-    /**
      * Push symbols used in the computation.
      * The left operand is pushed first for binary operations.
      */
-    public static void pushSym(String symName, Object value) {
-        computeConstraints.pushSymbol(symName);
+    @SuppressWarnings("unused")
+    public static void pushSym(@NonNull String symName, Object value) {
+        AbstractSymbol result = updateSymbolValueAndInitializeIfNecessary(symName, value);
+
+        computeConstraints.pushSymbol(result);
     }
 
     /**
      *
      * @param value the concrete value to store
      */
+    @SuppressWarnings("unused")
     public static void pushConstant(Object value) {
+        var type = ComputeValueType.getType(value);
+        AbstractConstant constant;
+
+        switch (type) {
+            case INT_TYPE:
+                constant = new IntConstant((int) value);
+                break;
+            case REAL_TYPE:
+                constant = new RealConstant((double) value);
+                break;
+            case BOOL_TYPE:
+                constant = new BooleanConstant((boolean) value);
+                break;
+            case UNKNOWN:
+            default:
+                throw new RuntimeException("A type was not handled");
+        }
+
+        computeConstraints.pushConstant(constant);
     }
 
     /**
      * Applies an Operand expressed as a string
      * @param op the untrimmed string
      */
+    @SuppressWarnings("unused")
     public static void apply(String op){
         var opTrimmed = op.trim();
 
@@ -80,40 +93,61 @@ public class Call {
     }
 
     /**
-     * To cast an object to a type
-     * @param typeToCast the type to cast the symbol into
-     */
-    public static void applyCast(String typeToCast) {
-
-    }
-
-    /**
      * Select the operand used for computation
      * @param operand the operand (e.g. + or -) to be applied to the symbols
-     * @param <JEnum> the type of operand
      */
-    private static <JEnum extends IOperand> void applyOperand(JEnum operand) {
+    private static void applyOperand(IOperand operand) {
         computeConstraints.setOperand(operand);
     }
 
+
+    /**
+     * To cast an object to a type
+     * @param typeToCast the type to cast the symbol into
+     */
+    @SuppressWarnings("unused")
+    public static void applyCast(String typeToCast) {
+        // TODO: Do I need to do something with `typeToCast`
+        applyOperand(CustomOperand.CAST);
+    }
+
+    /**
+     * Set the operand to "reassign"
+     * Handle $r1 = $r2
+     */
+    public static void applyReassignment() {
+        applyOperand(CustomOperand.REASSIGN);
+    }
     /**
      * Store the result of this operand in the constraints
+     * We decided not to update the value of symName, using a strategy of "Update on Use"
      * @param symName the name of the symbol to store the expression
      */
-    public static void finalizeStore(String symName, Object object) {
-        computeConstraints.generateFromPushes(globalState, symName);
+    @SuppressWarnings("unused")
+    public static void finalizeStore(String symName, Object value) {
+        var symbol = updateSymbolValueAndInitializeIfNecessary(symName, value);
+
+        // Note: this should ideally be in the instrumented code
+        if (computeConstraints.isReassignment()) {
+            applyReassignment();
+        }
+
+        var constraint = computeConstraints.generateFromPushes(globalState.getSymbol(symName));
+        globalState.pushConstraint(constraint);
     }
 
     /**
      * Store the result of this operand in the constraints
      */
+    @SuppressWarnings("unused")
     public static void finalizeIf(int lineNumber) {
-        computeConstraints.generateFromPushes(globalState);
+        var constraint = computeConstraints.generateFromPushes();
     }
 
     /**
      * When the DFS search hits an error, return, etc.
      */
+    @SuppressWarnings("unused")
     public static void terminatePath(int lineNumber) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
@@ -136,11 +170,41 @@ public class Call {
     }
 
     /**
+     * After a return statement
+     * @param lineNumber Jimple's line number
+     */
+    public static void finalizeReturn(int lineNumber) {
+
+    }
+
+    /**
      * After the program is completed
      */
-    public static void error() {
+    // FIXME: GitHub Issue #33
+    public static void terminatedWithError() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
+    }
+
+
+    /**
+     * Update the symbol value and initialize it if necessary
+     * @param symName the name of the symbol (used as a unique id)
+     * @param value the value of the symbol
+     * @return the updated or newly create symbol
+     */
+    private static AbstractSymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object value) {
+        @Nullable
+        var result = globalState.getSymbolCanBeNull(symName);
+
+        if (result == null) {
+            Value.Type type = ComputeValueType.getType(value);
+            result = globalState.addSymbol(symName, type, value);
+        }
+        else {
+            globalState.updateSymbolConcreteValue(symName, value);
+        }
+        return result;
     }
 }
 

@@ -1,28 +1,41 @@
 package vbn.state.helpers;
 
 import lombok.NonNull;
-import vbn.state.constraints.BinaryOperand;
-import vbn.state.State;
-import vbn.state.constraints.UnaryOperand;
+import vbn.state.constraints.*;
+import vbn.state.value.AbstractConstant;
+import vbn.state.value.AbstractSymbol;
+import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
 import java.util.Stack;
 
 public class ComputeConstraints {
 
-    @NonNull private final Stack<String> symbols = new Stack<>();
+    @NonNull private final Stack<Value> valueStack = new Stack<>();
 
-    private Object operand = null;
+    private IOperand operand = null;
+
+    private final GenerateConstraintVisitor opVisitor = new GenerateConstraintVisitor();
 
     /**
      * Add a symbol to be later used for constraints.
      * Left goes first.
      * @param symName the name of the symbol
      */
-    public void pushSymbol(@NonNull String symName) {
-        symbols.push(symName);
+    public void pushSymbol(@NonNull AbstractSymbol symName) {
+        valueStack.push(symName);
     }
-    public void setOperand(@NonNull Object operand) {
+
+    /**
+     * Add a constant to be later used for constraints.
+     * Left goes first.
+     * @param constant the constant object
+     */
+    public void pushConstant(@NonNull AbstractConstant constant) {
+        valueStack.push(constant);
+    }
+
+    public void setOperand(@NonNull IOperand operand) {
         this.operand = operand;
     }
 
@@ -30,69 +43,85 @@ public class ComputeConstraints {
      * Clear the Compute Constraints after computing constraints
      */
     private void clear() {
-        symbols.clear();
+        valueStack.clear();
         operand = null;
     }
 
     /**
      * Generate constraints based on the calls
-     * @param globalState the global state to store the newly generated constraints
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public void generateFromPushes(@NonNull State globalState, @Nullable final String assignmentSymName) {
-        var numOfOps = symbols.size();
+    public AbstractConstraint generateFromPushes(@Nullable final AbstractSymbol assignmentSymName) {
+        var numOfOps = valueStack.size();
+        AbstractConstraint resultingConstraint;
 
         try { // FIXME: Is this good practice?
             if (operand == null) {
-                throw new ComputeConstraintsException("The temp operand is null when it should be filled when there > 1 operands");
+                throw new MissingOperandException("The apply operator must be applied unless it is a reassignment");
             }
 
-            switch (numOfOps) {
-                case 2:
-                    if (!(operand instanceof BinaryOperand)) {
-                        throw new ComputeConstraintsException("The operand is not binary when there are two symbols to be operated on");
-                    }
+            opVisitor.assignmentSymName = assignmentSymName;
+            opVisitor.valueStack = valueStack;
+            operand.accept(opVisitor);
 
-                    String right = symbols.pop();
-                    String left = symbols.pop();
-                    if (assignmentSymName == null) {
-                        globalState.pushConstraint(left, (BinaryOperand) operand, right);
-                    }
-                    else {
-                        globalState.pushConstraint(left, (BinaryOperand) operand, right, assignmentSymName);
-                    }
-                    break;
+            resultingConstraint = opVisitor.getGeneratedConstraint();
+            clear();
 
-                case 1:
-                    // A unary operator
-                    if (!(operand instanceof UnaryOperand)) {
-                        throw new ComputeConstraintsException("The operand is not unary when there is one symbol to be operated on");
-                    }
-
-                    String symbol = symbols.pop();
-                    if (assignmentSymName == null) {
-                        globalState.pushConstraint((UnaryOperand) operand, symbol);
-                    }
-                    else {
-                        globalState.pushConstraint((UnaryOperand) operand, symbol, assignmentSymName);
-                    }
-                    break;
-
-                default:
-                    throw new ComputeConstraintsException("Too many symbols have been pushed on to the stack.");
-            }
-        } catch (ComputeConstraintsException e) {
+        } catch (MissingOperandException e) {
             throw new RuntimeException(e);
         }
-
-        clear();
+        return resultingConstraint;
     }
 
     /**
      * Generate constraints based on the calls
-     * @param globalState the global state to store the newly generated constraints
+     *
+     * @return the newly created constraint
      */
-    public void generateFromPushes(State globalState) {
-        generateFromPushes(globalState, null);
+    public AbstractConstraint generateFromPushes() {
+        return generateFromPushes(null);
+    }
+
+    public boolean isReassignment() {
+        return valueStack.size() == 1 && operand == null;
+    }
+
+    static class GenerateConstraintVisitor implements IOperandVisitor {
+        private AbstractConstraint generatedConstraint;
+        public AbstractSymbol assignmentSymName;
+        public Stack<Value> valueStack;
+
+        public void visit(BinaryOperand binOp) {
+            var right = valueStack.pop();
+            var left = valueStack.pop();
+            if (assignmentSymName == null) {
+                generatedConstraint = new BinaryConstraint(left, binOp, right);
+            }
+            else {
+                generatedConstraint = new BinaryConstraint(left, binOp, right, assignmentSymName);
+            }
+        }
+
+        public void visit(UnaryOperand unOp) {
+            var symbol = valueStack.pop();
+            if (assignmentSymName == null) {
+                generatedConstraint = new UnaryConstraint(unOp, symbol);
+            }
+            else {
+                generatedConstraint = new UnaryConstraint(unOp, symbol, assignmentSymName);
+            }
+        }
+
+        public void visit(CustomOperand customOp) {
+
+        }
+
+        public void visit(IOperand op) {
+            throw new RuntimeException("An operator is not handled");
+        }
+
+        public AbstractConstraint getGeneratedConstraint() {
+            return generatedConstraint;
+        }
     }
 }

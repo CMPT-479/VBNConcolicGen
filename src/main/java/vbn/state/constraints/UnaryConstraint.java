@@ -1,23 +1,28 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractSymbol;
+import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class UnaryConstraint extends Constraint {
+public class UnaryConstraint extends AbstractConstraint {
+    @Nullable
+    public AbstractSymbol assigned;
 
-    @Nullable public Symbol assigned;
-    @NonNull public UnaryOperand op;
-    @NonNull public Symbol symbol;
+    @NonNull
+    public UnaryOperand op;
 
-    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Symbol symbol) {
+    @NonNull
+    public Value symbol;
+
+    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol) {
         this.assigned = null;
         this.symbol = symbol;
         this.op = op;
     }
-    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Symbol symbol, Symbol assigned) {
+    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, @Nullable AbstractSymbol assigned) {
         this.assigned = assigned;
         this.symbol = symbol;
         this.op = op;

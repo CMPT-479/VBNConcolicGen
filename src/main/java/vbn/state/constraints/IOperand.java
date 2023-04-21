@@ -1,4 +1,7 @@
 package vbn.state.constraints;
 
-public interface IOperand {
+import vbn.state.helpers.ComputeConstraints;
+
+public interface IOperand{
+    public void accept(IOperandVisitor visitor);
 }

@@ -27,4 +27,10 @@ public enum BinaryOperand implements IOperand {
     LTE, // less than or equal
     GT,
     GTE,
+    ;
+
+    @Override
+    public void accept(IOperandVisitor visitor) {
+        visitor.visit(this);
+    }
 }

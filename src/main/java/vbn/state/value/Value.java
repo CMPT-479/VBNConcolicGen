@@ -1,15 +1,16 @@
 package vbn.state.value;
 
-public abstract class Value {
+public interface Value {
     public enum Type {
         INT_TYPE,
         REAL_TYPE,
-        BOOL_TYPE
+        BOOL_TYPE,
+        UNKNOWN,
     }
 
-    public Type type;
+    Type getType();
 
-    public abstract Object getValue();
+    Object getValue();
 
 }
 
