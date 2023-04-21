@@ -139,6 +139,7 @@ public class VBNRunner {
 
         @NonNull Stack<IConstraint> constraints = state.getConstraints();
         addConstraintsToNegatedMap(constraints);
+        constraints = removeInvalidConstraints(constraints);
         putInitialConstraintPathDirection(constraints);
 
         while (!(constraints.empty())) {
