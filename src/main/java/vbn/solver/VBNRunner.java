@@ -17,11 +17,11 @@ public class VBNRunner {
         InstrumentedRunner.runInstrumented(programName, programInputs);
 
         Stack<AbstractConstraint> stateConstraint;
-        while (true) {
+//        while (true) {
             // this global state needs to be obtained from an external data store
-            State state = new State(); // shouldn't be a "new"
+//            State state = new State(); // shouldn't be a "new"
 //            ArrayList<AbstractConstant> solved = Z3Solver.solve(state);   // need to save these solved values somewhere
-            stateConstraint = state.getConstraints();
+//            stateConstraint = state.getConstraints();
 //            while (!(stateConstraint.empty()) && (stateConstraint.peek().negated)) {
 //                stateConstraint.pop();
 //            }
@@ -29,7 +29,7 @@ public class VBNRunner {
 //                break;
 //            }
 //            stateConstraint.peek().negated = true;
-            InstrumentedRunner.runInstrumented(programName, programInputs);
-        }
+//            InstrumentedRunner.runInstrumented(programName, programInputs);
+//        }
     }
 }

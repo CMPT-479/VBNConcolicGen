@@ -16,6 +16,7 @@ import vbn.state.constraints.BinaryOperand;
 import vbn.state.constraints.AbstractConstraint;
 import vbn.state.constraints.UnaryConstraint;
 import vbn.state.value.AbstractSymbol;
+import vbn.state.value.BooleanSymbol;
 import vbn.state.value.Value;
 
 import java.io.*;
@@ -44,53 +45,58 @@ public class MainTest {
 
     @Test
     final void basic() {
-//        VBNRunner.execute("vbn.examples.Test_00_Basic", new String[]{"0", "1"});
+        VBNRunner.execute("vbn.examples.Test_00_Basic", new String[]{"0", "1"});
     }
 
     @Test
     final void testWritingAndReadingSymbolListWithExternalDataStore() {
-//        State state = new State();
-//        state.addSymbol("123", Value.Type.BOOL_TYPE, true);
-//        state.addSymbol("567", Value.Type.INT_TYPE, 1);
-//        String fileName = "symbols.ser";
-//        ObjectIO.writeObjectToFile(state.getSymbols(), fileName);
-//
-//        ArrayList<AbstractSymbol> symbols = (ArrayList<AbstractSymbol>) ObjectIO.readObjectFromFile(fileName);
-//        Assertions.assertNotNull(symbols);
-//        System.out.println(symbols);
-//        Assertions.assertNotEquals(symbols.size(), 0);
-//        for (AbstractSymbol s : symbols) {
-//            System.out.println("Found symbol from file: " + s.id + " " + s.type + " " + s.value);
-//        }
-//        ObjectIO.deleteFile(fileName);
+        State state = new State();
+        state.addSymbol("123", Value.Type.BOOL_TYPE, true);
+        state.addSymbol("567", Value.Type.INT_TYPE, 1);
+        String fileName = "symbols.ser";
+        ObjectIO.writeObjectToFile(state.getSymbols(), fileName);
+
+        ArrayList<AbstractSymbol> symbols = (ArrayList<AbstractSymbol>) ObjectIO.readObjectFromFile(fileName);
+        Assertions.assertNotNull(symbols);
+        System.out.println(symbols);
+        Assertions.assertNotEquals(symbols.size(), 0);
+        for (AbstractSymbol s : symbols) {
+            System.out.println("Found symbol from file: " + s.getName() + " " + s.getType() + " " + s.getValue());
+        }
+        ObjectIO.deleteFile(fileName);
     }
 
     @Test
     final void testWritingAndReadingConstraintListWithExternalDataStore() {
-//        State state = new State();
-//        state.addSymbol("1", Value.Type.BOOL_TYPE, null);
-//        state.addSymbol("2", Value.Type.BOOL_TYPE, null);
-//        state.pushConstraint("1", BinaryOperand.AND, "2");
-//
-//        String fileName = "constraints.ser";
-//        ObjectIO.writeObjectToFile(state.getConstraints(), fileName);
-//
-//        Stack<AbstractConstraint> constraints = (Stack<AbstractConstraint>) ObjectIO.readObjectFromFile(fileName);
-//        Assertions.assertNotNull(constraints);
-//        System.out.println(constraints);
-//        Assertions.assertNotEquals(constraints.size(), 0);
-//        for (AbstractConstraint c : constraints) {
-//            if (c instanceof BinaryConstraint) {
-//                BinaryConstraint bc = (BinaryConstraint) c;
-//                System.out.println("Found instance of constraint " + bc.left.id + " " + bc.op + " " + bc.right.id);
-//            } else if (c instanceof UnaryConstraint) {
-//                UnaryConstraint uc = (UnaryConstraint) c;
-//                System.out.println("Found instance of constraint" + uc.symbol.id + " " + uc.op);
-//            } else {
-//                System.out.println("Found ineligible instance of constraint");
-//            }
-//        }
-//        ObjectIO.deleteFile(fileName);
+        State state = new State();
+        BooleanSymbol symbol1 = new BooleanSymbol("1", false); // set with random variable
+        BooleanSymbol symbol2 = new BooleanSymbol("2", true);
+        state.addSymbol(symbol1);
+        state.addSymbol(symbol2);
+        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2));
+
+        String fileName = "constraints.ser";
+        ObjectIO.writeObjectToFile(state.getConstraints(), fileName);
+
+        Stack<AbstractConstraint> constraints = (Stack<AbstractConstraint>) ObjectIO.readObjectFromFile(fileName);
+        Assertions.assertNotNull(constraints);
+        System.out.println(constraints);
+        Assertions.assertNotEquals(constraints.size(), 0);
+        for (AbstractConstraint c : constraints) {
+            if (c instanceof BinaryConstraint) {
+                BinaryConstraint bc = (BinaryConstraint) c;
+                System.out.println("Found instance of constraint "
+                        + ((BooleanSymbol) bc.left).getName()
+                        + " " + bc.op + " "
+                        + ((BooleanSymbol) bc.right).getName());
+            } else if (c instanceof UnaryConstraint) {
+                UnaryConstraint uc = (UnaryConstraint) c;
+                System.out.println("Found instance of constraint" + ((BooleanSymbol) uc.symbol).getName() + " " + uc.op);
+            } else {
+                System.out.println("Found ineligible instance of constraint");
+            }
+        }
+        ObjectIO.deleteFile(fileName);
     }
 
     @Test

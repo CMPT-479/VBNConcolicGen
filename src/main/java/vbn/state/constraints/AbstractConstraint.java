@@ -1,5 +1,7 @@
 package vbn.state.constraints;
 
-public abstract class AbstractConstraint {
+import java.io.Serializable;
+
+public abstract class AbstractConstraint implements Serializable {
 //    void push(PushConstaintsVisitor visitor);
 }
