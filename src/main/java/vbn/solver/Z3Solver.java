@@ -71,7 +71,7 @@ public class Z3Solver {
                 exprToReturn = ctx.mkGe(leftExpr, rightExpr);
                 break;
             default:
-                throw new RuntimeException("Error, binary constraint operation not handled " + op);
+                throw new VBNSolverRuntimeError("Error, binary constraint operation not handled " + op);
         }
         if (exprToReturn != null && assigned != null) {
             @NonNull Expr assignedExpr = z3ExprMap.get(assigned.getName());
@@ -98,7 +98,7 @@ public class Z3Solver {
                 exprToReturn = ctx.mkMul(symbolExpr, ctx.mkInt(-1));
                 break;
             default:
-                throw new RuntimeException("Error, unary constraint operation not handled " + op);
+                throw new VBNSolverRuntimeError("Error, unary constraint operation not handled " + op);
         }
         if (exprToReturn != null && assigned != null) {
             @NonNull Expr assignedExpr = z3ExprMap.get(assigned.getName());
@@ -124,7 +124,7 @@ public class Z3Solver {
                     z3ExprMap.put(sym.getName(), ctx.mkBoolConst(sym.getName()));
                     break;
                 default:
-                    throw new RuntimeException("Error, symbol " + sym.getType() + " wasn't of expected type");
+                    throw new VBNSolverRuntimeError("Error, symbol " + sym.getType() + " wasn't of expected type");
             }
         }
 
@@ -148,7 +148,7 @@ public class Z3Solver {
                     solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
                 }
             } else {
-                throw new RuntimeException("Error, constraint type does not exist");
+                throw new VBNSolverRuntimeError("Error, constraint type does not exist");
             }
         }
 
@@ -171,14 +171,14 @@ public class Z3Solver {
                             returnList.add(new BooleanSymbol(k, true));
                             break;
                         default:
-                            throw new RuntimeException("Error, BoolExpr return value " + evaluatedBookExprEnumIntVal + " does not exist");
+                            throw new VBNSolverRuntimeError("Error, BoolExpr return value " + evaluatedBookExprEnumIntVal + " does not exist");
                     }
                 } else if (evaluatedValue instanceof IntNum) {
                     IntNum evaluatedValueIntNum = (IntNum) evaluatedValue;
                     int val = evaluatedValueIntNum.getInt();
                     returnList.add(new IntSymbol(k, val));
                 } else {
-                    throw new RuntimeException("Error, evaluatedValue instance of an unhandled class");
+                    throw new VBNSolverRuntimeError("Error, evaluatedValue instance of an unhandled class");
 
                 }
             }

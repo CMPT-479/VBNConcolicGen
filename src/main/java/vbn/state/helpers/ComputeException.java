@@ -1,6 +1,8 @@
 package vbn.state.helpers;
 
-public class ComputeException extends Exception {
+import vbn.state.IVBNException;
+
+public class ComputeException extends Exception implements IVBNException {
     private static final long serialVersionUID = 0L;
 
     public ComputeException(String errorMessage) {

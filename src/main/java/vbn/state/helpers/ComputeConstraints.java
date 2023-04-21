@@ -2,6 +2,7 @@ package vbn.state.helpers;
 
 import lombok.NonNull;
 import org.junit.Test;
+import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.constraints.*;
 import vbn.state.value.IConstant;
 import vbn.state.value.ISymbol;
@@ -72,7 +73,7 @@ public class ComputeConstraints {
             clear();
 
         } catch (MissingOperandException e) {
-            throw new RuntimeException(e);
+            throw new VBNLibraryRuntimeException(e);
         }
         return resultingConstraint;
     }
@@ -149,7 +150,7 @@ public class ComputeConstraints {
         }
 
         public void visit(IOperand op) {
-            throw new RuntimeException("An operator is not handled");
+            throw new VBNLibraryRuntimeException("An operator is not handled");
         }
 
         public IConstraint getGeneratedConstraint() {
