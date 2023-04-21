@@ -1,7 +1,5 @@
 package vbn.state.constraints;
 
-import vbn.state.helpers.ComputeConstraints;
-
 /**
  * Note: We could separate these into different enums, but decided the additional complexity was not worth it
  */
