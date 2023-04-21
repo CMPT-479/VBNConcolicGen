@@ -18,8 +18,6 @@ import vbn.state.value.IntSymbol;
 import java.io.*;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-
 public class MainTest {
 
     @BeforeEach
@@ -40,9 +38,8 @@ public class MainTest {
 
     @Test
     final void basic() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_00_Basic", new String[]{"0", "1"});
-
-        assertEquals(exitCode, 0);
+        var exitCode = VBNRunner.execute("vbn.examples.Test_00_Basic");
+        Assertions.assertEquals(exitCode, 0);
     }
 
     @Test
