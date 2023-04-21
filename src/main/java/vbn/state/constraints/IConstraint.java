@@ -1,5 +1,7 @@
 package vbn.state.constraints;
 
+import vbn.state.VBNLibraryRuntimeException;
+
 import java.io.Serializable;
 
 public interface IConstraint extends Serializable {
@@ -11,7 +13,7 @@ public interface IConstraint extends Serializable {
      * (Implemented manually in instrumentation using a counter)
      * @return the "line number"
      */
-    int getLineNumber();
+    int getLineNumber() throws VBNLibraryRuntimeException;
 
     /**
      * Set the line number
