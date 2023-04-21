@@ -1,3 +1,4 @@
+import org.junit.jupiter.api.Assertions;
 import vbn.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import vbn.state.value.IntSymbol;
 
 import java.io.*;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class MainTest {
 
@@ -37,7 +40,9 @@ public class MainTest {
 
     @Test
     final void basic() {
-        VBNRunner.execute("vbn.examples.Test_00_Basic", new String[]{"0", "1"});
+        var exitCode = VBNRunner.execute("vbn.examples.Test_00_Basic", new String[]{"0", "1"});
+
+        assertEquals(exitCode, 0);
     }
 
     @Test
