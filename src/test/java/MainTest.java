@@ -63,6 +63,14 @@ public class MainTest {
     }
 
     @Test
+    final void basicIf() {
+        var exitCode = VBNRunner.execute("vbn.examples.Test_05_If");
+        Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished if test");
+        printSolvedConstraints();
+    }
+
+    @Test
     final void basicClass() {
         final String[] args = new String[] {"vbn.examples.Test_03_Class"};
         soot.Main.main(args);
