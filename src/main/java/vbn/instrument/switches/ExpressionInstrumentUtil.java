@@ -12,6 +12,12 @@ public class ExpressionInstrumentUtil {
     public static void invoke(InvokeExpr expr, Unit unit, InstrumentData data) {
         var invokeMethod = expr.getMethod();
         if (!invokeMethod.getDeclaringClass().getName().equals(data.mainClass)) return;
+        var funBegin = data.runtime.getMethod("void beforeInvokeFunc()").makeRef();
+        var funEnd = data.runtime.getMethod("void afterInvokeFunc()").makeRef();
+        var beginStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(funBegin));
+        var endStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(funEnd));
+        data.units.insertBefore(beginStmt, unit);
+        data.units.insertAfter(endStmt, unit);
     }
 
     public static void length(LengthExpr expr, Unit unit, InstrumentData data) {
