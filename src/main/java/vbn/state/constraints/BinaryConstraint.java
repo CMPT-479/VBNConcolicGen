@@ -75,4 +75,9 @@ public class BinaryConstraint implements IConstraint {
             System.out.println("Binary Constraint line " + lineNumber + " { " + assigned + " = " + left + " " + op + " " + right + " }");
         }
     }
+
+    @Override
+    public boolean getOriginalEvaluation() {
+        return false;
+    }
 }
