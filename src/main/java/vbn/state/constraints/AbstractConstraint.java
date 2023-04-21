@@ -2,6 +2,8 @@ package vbn.state.constraints;
 
 import java.io.Serializable;
 
-public abstract class AbstractConstraint implements Serializable {
-//    void push(PushConstaintsVisitor visitor);
+public interface AbstractConstraint extends Serializable {
+
+    int getLineNumber();
+    void setLineNumber(int lineNumber);
 }

@@ -7,7 +7,7 @@ import vbn.state.value.Value;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class BinaryConstraint extends AbstractConstraint {
+public class BinaryConstraint implements AbstractConstraint {
 
     @Nullable
     public AbstractSymbol assigned;
@@ -20,6 +20,7 @@ public class BinaryConstraint extends AbstractConstraint {
 
     @NonNull
     public Value right;
+    private int lineNumber = -1;
 
     public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right) {
         this.assigned = null;
@@ -54,5 +55,14 @@ public class BinaryConstraint extends AbstractConstraint {
                     && Objects.equals(this.right, otherBinaryConstraint.right)
                     && this.op == otherBinaryConstraint.op;
         }
+    }
+
+    @Override
+    public int getLineNumber() {
+        return lineNumber;
+    }
+    @Override
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 }

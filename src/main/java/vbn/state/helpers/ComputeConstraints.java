@@ -52,7 +52,6 @@ public class ComputeConstraints {
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
     public AbstractConstraint generateFromPushes(@Nullable final AbstractSymbol assignmentSymName) {
-        var numOfOps = valueStack.size();
         AbstractConstraint resultingConstraint;
 
         try {
@@ -73,6 +72,12 @@ public class ComputeConstraints {
         return resultingConstraint;
     }
 
+    public AbstractConstraint generateFromPushes(int lineNumber, @Nullable final AbstractSymbol assignmentSymName) {
+        var constraint = generateFromPushes(assignmentSymName);
+        constraint.setLineNumber(lineNumber);
+        return constraint;
+    }
+
     /**
      * Generate constraints based on the calls
      *
@@ -91,6 +96,7 @@ public class ComputeConstraints {
         public AbstractSymbol assignmentSymName;
         public Stack<Value> valueStack;
 
+        @SuppressWarnings("unused")
         public void visit(BinaryOperand binOp) {
             var right = valueStack.pop();
             var left = valueStack.pop();
@@ -102,6 +108,7 @@ public class ComputeConstraints {
             }
         }
 
+        @SuppressWarnings("unused")
         public void visit(UnaryOperand unOp) {
             var symbol = valueStack.pop();
             if (assignmentSymName == null) {
@@ -112,8 +119,9 @@ public class ComputeConstraints {
             }
         }
 
+        @SuppressWarnings("unused")
         public void visit(CustomOperand customOp) {
-
+            System.out.println("Need to handle customOp's such as cast");
         }
 
         public void visit(IOperand op) {
