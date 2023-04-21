@@ -159,6 +159,7 @@ public class VBNRunner {
                 return 0;
             }
 
+            printConstraintNegationStatus();
             constraintNegatedMap.put(linenumber, true);
             solved = Z3Solver.solve(state); // solve for negated end
             programInputs = abstractSymbolListToStringArray(solved, false);
@@ -166,11 +167,21 @@ public class VBNRunner {
 
             // printable for debugging
             System.out.println("Solved " + Arrays.toString(abstractSymbolListToStringArray(solved, true)));
-            printConstraintNegationStatus();
             // Step 2: Run program on negated inputs
             exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
             if (exitCode != 0) {
                 return exitCode;
+            }
+
+            state = returnStateFromIO();
+            constraints = state.getConstraints();
+            for (@NonNull IConstraint constraint : constraints) {
+                if (constraint.getLineNumber() == -1) {
+                    continue;
+                }
+                if (!(constraintNegatedMap.containsKey(constraint.getLineNumber()))) {
+                    constraintNegatedMap.put(constraint.getLineNumber(), false);
+                }
             }
         }
 
