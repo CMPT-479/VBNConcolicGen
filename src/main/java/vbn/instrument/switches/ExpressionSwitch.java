@@ -3,9 +3,7 @@ package vbn.instrument.switches;
 import soot.RefType;
 import soot.Unit;
 import soot.jimple.*;
-import vbn.instrument.Instrument;
 import vbn.instrument.InstrumentData;
-import vbn.instrument.old_switches.ExpressionInstrument;
 
 import java.util.List;
 
