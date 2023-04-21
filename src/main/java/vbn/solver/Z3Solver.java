@@ -14,7 +14,6 @@ import java.util.*;
 
 public class Z3Solver {
 
-
     public static Expr handleBinaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
                                                @NonNull BinaryConstraint binaryConstraint) {
         @NonNull AbstractSymbol leftSymbol = (AbstractSymbol) binaryConstraint.left;
@@ -48,9 +47,9 @@ public class Z3Solver {
             case DIVIDE:
                 exprToReturn = ctx.mkDiv(leftExpr, rightExpr);
                 break;
-            case POWER:
-                exprToReturn = ctx.mkPower(leftExpr, rightExpr);
-                break;
+//            case POWER:
+//                exprToReturn = ctx.mkPower(leftExpr, rightExpr);
+//                break;
             case LT:
                 exprToReturn = ctx.mkLt(leftExpr, rightExpr);
                 break;

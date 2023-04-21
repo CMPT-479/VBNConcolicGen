@@ -7,7 +7,7 @@ import vbn.state.value.Value;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public class UnaryConstraint extends AbstractConstraint {
+public class UnaryConstraint implements AbstractConstraint {
     @Nullable
     public AbstractSymbol assigned;
 
@@ -16,6 +16,7 @@ public class UnaryConstraint extends AbstractConstraint {
 
     @NonNull
     public Value symbol;
+    private int lineNumber = -1;
 
     public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol) {
         this.assigned = null;
@@ -46,5 +47,15 @@ public class UnaryConstraint extends AbstractConstraint {
                     && Objects.equals(this.assigned, otherUnaryConstraint.assigned)
                     && this.op == otherUnaryConstraint.op;
         }
+    }
+
+    @Override
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    @Override
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 }

@@ -20,7 +20,8 @@ public enum BinaryOperand implements IOperand {
     MINUS,
     MULTIPLY,
     DIVIDE,
-    POWER, // SOOT likely does not have power
+
+    // POWER, // SOOT likely does not have power
 
     // Integer Comparison
     LT, // less than

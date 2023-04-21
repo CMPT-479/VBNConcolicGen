@@ -10,6 +10,7 @@ import vbn.state.value.*;
 
 import javax.annotation.Nullable;
 
+import static vbn.solver.VBNRunner.insertStateIntoIO;
 import static vbn.state.helpers.ComputeOperand.*;
 
 /**
@@ -141,7 +142,8 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void finalizeIf(int lineNumber) {
-        var constraint = computeConstraints.generateFromPushes();
+        var constraint = computeConstraints.generateFromPushes(lineNumber, null);
+        globalState.pushConstraint(constraint);
     }
 
     /**
@@ -151,6 +153,8 @@ public class Call {
     public static void terminatePath(int lineNumber) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
+
+        pushStateToIO();
     }
 
     /**
@@ -184,6 +188,8 @@ public class Call {
     public static void terminatedWithError() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
+
+        pushStateToIO();
     }
 
 
@@ -223,6 +229,13 @@ public class Call {
             globalState.updateSymbolConcreteValue(symName, concreteValue);
         }
         return result;
+    }
+
+    /**
+     * Store the state in an external datastore, so it can be accessed by VBN
+     */
+    private static void pushStateToIO() {
+        insertStateIntoIO(globalState);
     }
 }
 

@@ -3,15 +3,15 @@ package vbn.state;
 import lombok.NonNull;
 import vbn.state.constraints.*;
 import vbn.state.value.*;
-import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * This class handles all state necessary to solve an equation at a certain point
  */
-public class State {
+public class State implements Serializable {
     public State() {
         super();
         symbols = new HashMap<>();
