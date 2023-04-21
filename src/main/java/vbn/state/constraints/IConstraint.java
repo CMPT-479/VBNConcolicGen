@@ -11,7 +11,6 @@ public interface IConstraint extends Serializable {
      * (Implemented manually in instrumentation using a counter)
      * @return the "line number"
      */
-
     int getLineNumber();
 
     /**
