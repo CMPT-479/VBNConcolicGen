@@ -101,32 +101,32 @@ public class MainTest {
 
     @Test
     final void testCollectionStore() {
-//        List<Serializable> names = new ArrayList<>();
-//        names.add("Alice");
-//        names.add(1);
-//        names.add(true);
-//        Serializable insert = (Serializable) names;
-//
-//        File file = new File("names.dat");
-//
-//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-//            oos.writeObject(insert);
-//            System.out.println("Names written to file");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
-//            List<Serializable> readNames = (List<Serializable>) ois.readObject();
-//            System.out.println("Names read from file:");
-//            for (Serializable name : readNames) {
-//                System.out.println(name.toString());
-//            }
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//        file.delete();
+        List<Serializable> names = new ArrayList<>();
+        names.add("Alice");
+        names.add(1);
+        names.add(true);
+        Serializable insert = (Serializable) names;
+
+        File file = new File("names.dat");
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(insert);
+            System.out.println("Names written to file");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            List<Serializable> readNames = (List<Serializable>) ois.readObject();
+            System.out.println("Names read from file:");
+            for (Serializable name : readNames) {
+                System.out.println(name.toString());
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        file.delete();
     }
 
     @Test
@@ -147,51 +147,51 @@ public class MainTest {
         soot.Main.main(args);
     }
 
-//    @Test
-//    final void testZ3SimpleOr() {
-//        // x or y
-//        State state = new State();
-//        state.addSymbol("x", Value.ValueType.BOOL_TYPE);
-//        state.addSymbol("y", Value.ValueType.BOOL_TYPE);
-//        state.pushConstraint(
-//                new BinaryConstraint(
-//                        state.getSymbol("x"),
-//                        BinaryOperand.OR,
-//                        state.getSymbol("y")));
-//
-//        List<AbstractSymbolConstant> solved = Z3Solver.solve(state);
-//        Z3Solver.printSolvedValuesBasedOnList(solved);
-//    }
-//
-//    @Test
-//    final void testZ3SimpleAnd() {
-//        // x and y
-//        State state = new State();
-//        state.addSymbol("x", Value.ValueType.BOOL_TYPE);
-//        state.addSymbol("y", Value.ValueType.BOOL_TYPE);
-//        state.pushConstraint(
-//                new BinaryConstraint(
-//                        state.getSymbol("x"),
-//                        BinaryOperand.AND,
-//                        state.getSymbol("y")));
-//
-//        List<AbstractSymbolConstant> solved = Z3Solver.solve(state);
-//        Z3Solver.printSolvedValuesBasedOnList(solved);
-//    }
-//
-//    @Test
-//    final void testZ3Gt() {
-//        // x > y
-//        State state = new State();
-//        state.addSymbol("x", Value.ValueType.INT_TYPE);
-//        state.addSymbol("y", Value.ValueType.INT_TYPE);
-//        state.pushConstraint(
-//                new BinaryConstraint(
-//                        state.getSymbol("x"),
-//                        BinaryOperand.GT,
-//                        state.getSymbol("y")));
-//
-//        List<AbstractSymbolConstant> solved = Z3Solver.solve(state);
-//        Z3Solver.printSolvedValuesBasedOnList(solved);
-//    }
+    @Test
+    final void testZ3SimpleOr() {
+        // x or y
+        State state = new State();
+        state.addSymbol("x", Value.Type.BOOL_TYPE, false);  // concrete value doesn't matter
+        state.addSymbol("y", Value.Type.BOOL_TYPE, false);  // concrete value doesn't matter
+        state.pushConstraint(
+                new BinaryConstraint(
+                        state.getSymbol("x"),
+                        BinaryOperand.OR,
+                        state.getSymbol("y")));
+
+        List<AbstractSymbol> solved = Z3Solver.solve(state);
+        Z3Solver.printSolvedValuesBasedOnList(solved);
+    }
+
+    @Test
+    final void testZ3SimpleAnd() {
+        // x and y
+        State state = new State();
+        state.addSymbol("x", Value.Type.BOOL_TYPE, false);  // concrete value doesn't matter
+        state.addSymbol("y", Value.Type.BOOL_TYPE, false);  // concrete value doesn't matter
+        state.pushConstraint(
+                new BinaryConstraint(
+                        state.getSymbol("x"),
+                        BinaryOperand.AND,
+                        state.getSymbol("y")));
+
+        List<AbstractSymbol> solved = Z3Solver.solve(state);
+        Z3Solver.printSolvedValuesBasedOnList(solved);
+    }
+
+    @Test
+    final void testZ3Gt() {
+        // x > y
+        State state = new State();
+        state.addSymbol("x", Value.Type.INT_TYPE, 1);  // concrete value doesn't matter
+        state.addSymbol("y", Value.Type.INT_TYPE, 1);  // concrete value doesn't matter
+        state.pushConstraint(
+                new BinaryConstraint(
+                        state.getSymbol("x"),
+                        BinaryOperand.GT,
+                        state.getSymbol("y")));
+
+        List<AbstractSymbol> solved = Z3Solver.solve(state);
+        Z3Solver.printSolvedValuesBasedOnList(solved);
+    }
 }
