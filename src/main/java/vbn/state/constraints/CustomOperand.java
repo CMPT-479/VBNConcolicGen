@@ -11,7 +11,7 @@ public enum CustomOperand implements IOperand {
     ;
 
     @Override
-    public void accept(IOperandVisitor visitor) {
+    public void accept(ComputeConstraints.GenerateConstraintVisitor visitor) {
         visitor.visit(this);
     }
 }
