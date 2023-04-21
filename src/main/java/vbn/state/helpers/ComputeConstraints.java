@@ -59,11 +59,12 @@ public class ComputeConstraints {
         AbstractConstraint resultingConstraint;
 
         try {
+
             if (operand == null) {
                 throw new MissingOperandException("The apply operator must be applied unless it is a reassignment");
             }
 
-            opVisitor.assignmentSymName = assignmentSymName;
+            opVisitor.assignSym = assignmentSymName;
             opVisitor.valueStack = valueStack;
             operand.accept(opVisitor);
 
@@ -97,35 +98,54 @@ public class ComputeConstraints {
 
     static public class GenerateConstraintVisitor implements IOperandVisitor {
         private AbstractConstraint generatedConstraint;
-        public AbstractSymbol assignmentSymName;
+        public AbstractSymbol assignSym;
         public Stack<Value> valueStack;
 
-        @SuppressWarnings("unused")
-        public void visit(BinaryOperand binOp) {
+        public void visit(BinaryOperand binOp) throws IncorrectNumberOfValuesException {
+            assertNumberOfValuesEqual(2);
+
             var right = valueStack.pop();
             var left = valueStack.pop();
-            if (assignmentSymName == null) {
+            if (assignSym == null) {
                 generatedConstraint = new BinaryConstraint(left, binOp, right);
             }
             else {
-                generatedConstraint = new BinaryConstraint(left, binOp, right, assignmentSymName);
+                generatedConstraint = new BinaryConstraint(left, binOp, right, assignSym);
             }
         }
 
-        @SuppressWarnings("unused")
-        public void visit(UnaryOperand unOp) {
+        public void visit(UnaryOperand unOp) throws IncorrectNumberOfValuesException {
+            assertNumberOfValuesEqual(1);
+
             var symbol = valueStack.pop();
-            if (assignmentSymName == null) {
+            if (assignSym == null) {
                 generatedConstraint = new UnaryConstraint(unOp, symbol);
             }
             else {
-                generatedConstraint = new UnaryConstraint(unOp, symbol, assignmentSymName);
+                generatedConstraint = new UnaryConstraint(unOp, symbol, assignSym);
             }
         }
 
-        @SuppressWarnings("unused")
-        public void visit(CustomOperand customOp) {
-            System.out.println("Need to handle customOp's such as cast");
+        public void visit(CustomOperand customOp) throws MissingAssignmentSymbolException, InvalidOperandStrException, IncorrectNumberOfValuesException {
+            switch (customOp) {
+                case CAST:
+                    assertNumberOfValuesEqual(1);
+                    break;
+
+                case REASSIGN:
+                    if (assignSym == null) {
+                        throw new MissingAssignmentSymbolException("Reassign needs an assignment");
+                    }
+
+                    assertNumberOfValuesEqual(1);
+
+                    var symbol = valueStack.pop();
+                    generatedConstraint = new BinaryConstraint(assignSym, BinaryOperand.EQ, symbol);
+                    break;
+
+                default:
+                    throw new InvalidOperandStrException("There is an Operand that is not covered");
+            }
         }
 
         public void visit(IOperand op) {
@@ -135,7 +155,22 @@ public class ComputeConstraints {
         public AbstractConstraint getGeneratedConstraint() {
             return generatedConstraint;
         }
+
+        /**
+         * Check the number of values on the stack
+         * @param expectedVars the number of values that should be on the stack
+         * @throws IncorrectNumberOfValuesException If invalid
+         */
+        private void assertNumberOfValuesEqual(final int expectedVars) throws IncorrectNumberOfValuesException {
+            if (valueStack.size() < expectedVars) {
+                throw new IncorrectNumberOfValuesException("Need exactly " + expectedVars + " operand. Found less than " + expectedVars + ".");
+            }
+            if (valueStack.size() > expectedVars) {
+                throw new IncorrectNumberOfValuesException("Need exactly " + expectedVars + " operand. Found more than " + expectedVars + ".");
+            }
+        }
     }
+
     @Test
     public void testSimpleCompute() {
         clear();
@@ -151,5 +186,23 @@ public class ComputeConstraints {
         var groundTruth = new BinaryConstraint(boolX, BinaryOperand.AND, boolY);
         assertEquals(result, groundTruth);
 
+        clear();
+    }
+
+    @Test
+    public void testCustomOperand() {
+        clear();
+
+        var boolX = new BooleanSymbol("x", true);
+        var boolY = new BooleanSymbol("y", false);
+
+        pushSymbol(boolY);
+        setOperand(CustomOperand.REASSIGN);
+
+        var result = generateFromPushes(boolX);
+        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.EQ, boolY);
+        assertEquals(result, groundTruth);
+
+        clear();
     }
 }

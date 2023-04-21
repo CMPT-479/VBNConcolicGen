@@ -184,10 +184,16 @@ public class Call {
     /**
      * After the program is completed
      */
-    public static void terminatedWithError() {
+    public static void terminatedWithError(Throwable theError) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
 
+        System.out.println("System failed with an error:");
+        System.out.println("----------------------------------------------------------------------");
+        System.err.println(theError.getMessage());
+        System.out.println("----------------------------------------------------------------------");
+
+        // Give VBN.run() the state object in order to know the constraints and values
         pushStateToIO();
     }
 
