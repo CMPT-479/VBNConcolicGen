@@ -76,7 +76,7 @@ public class Call {
      * @param op the untrimmed string
      */
     @SuppressWarnings("unused")
-    public static void apply(String op){
+    public static void apply(@NonNull String op){
         var opTrimmed = op.trim();
 
         var binOp = getBinaryOperand(opTrimmed);
@@ -190,19 +190,37 @@ public class Call {
     /**
      * Update the symbol value and initialize it if necessary
      * @param symName the name of the symbol (used as a unique id)
-     * @param value the value of the symbol
+     * @param concreteValue the concrete value of the symbol
      * @return the updated or newly create symbol
      */
-    private static AbstractSymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object value) {
+    private static AbstractSymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object concreteValue) {
         @Nullable
         var result = globalState.getSymbolCanBeNull(symName);
 
         if (result == null) {
-            Value.Type type = ComputeValueType.getType(value);
-            result = globalState.addSymbol(symName, type, value);
+            Value.Type valueType = ComputeValueType.getType(concreteValue);
+
+            switch (valueType) {
+                case INT_TYPE:
+                    result = new IntSymbol(symName, (int) concreteValue);
+                    break;
+                case REAL_TYPE:
+                    result = new RealSymbol(symName, (double) concreteValue);
+                    break;
+                case BOOL_TYPE:
+                    result = new BooleanSymbol(symName, (boolean) concreteValue);
+                    break;
+                case UNKNOWN:
+                    result = new UnknownSymbol(symName, concreteValue);
+                    break;
+                default:
+                    throw new RuntimeException("A type was not handled");
+            }
+
+            globalState.addSymbol(result);
         }
         else {
-            globalState.updateSymbolConcreteValue(symName, value);
+            globalState.updateSymbolConcreteValue(symName, concreteValue);
         }
         return result;
     }

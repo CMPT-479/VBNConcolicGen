@@ -55,7 +55,7 @@ public class ComputeConstraints {
         var numOfOps = valueStack.size();
         AbstractConstraint resultingConstraint;
 
-        try { // FIXME: Is this good practice?
+        try {
             if (operand == null) {
                 throw new MissingOperandException("The apply operator must be applied unless it is a reassignment");
             }

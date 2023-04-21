@@ -6,47 +6,7 @@ import vbn.state.value.*;
 import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import java.util.*;
-
-
-//class PushConstaintsVisitor {
-//
-//    public ConstraintItem newConstraintItem;
-//
-//    public ArrayList<AbstractSymbol> newSymbols = new ArrayList<>(2);
-//
-//    public void push(ConstraintItemBool constraint) {
-//        newSymbols.clear();
-//        newConstraintItem = constraint;
-//        newSymbols.add(constraint.left, constraint.right);
-//    }
-//
-//    public void push(ConstraintItemInt constraint) {
-//        newSymbols.clear();
-//        newConstraintItem = constraint;
-//        newSymbols.add(constraint.left, constraint.right);
-//    }
-//}
-
-//class PushConstraintsVisitor {
-//
-//    public ConstraintItem newConstraintItem;
-//
-//    public ArrayList<AbstractSymbol> newSymbols = new ArrayList<>(2);
-//
-//    public void push(ConstraintItemBool constraint) {
-//        newSymbols.clear();
-//        newConstraintItem = constraint;
-//        newSymbols.add(constraint.left, constraint.right);
-//    }
-//
-//    public void push(ConstraintItemInt constraint) {
-//        newSymbols.clear();
-//        newConstraintItem = constraint;
-//        newSymbols.add(constraint.left, constraint.right);
-//    }
-//}
 
 /**
  * This class handles all state necessary to solve an equation at a certain point
@@ -81,38 +41,6 @@ public class State {
      */
     public void addSymbol(AbstractSymbol symbol) {
         symbols.put(symbol.getName(), symbol);
-    }
-
-    /**
-     * Add a symbol shortcut
-     *
-     * @param symName       the name of the symbol
-     * @param valueType     the Z3 type of the symbol
-     * @param concreteValue the current value of the symbol
-     * @return the symbol that was just created
-     */
-    public AbstractSymbol addSymbol(String symName, Value.Type valueType, Object concreteValue) {
-        AbstractSymbol newSymbol;
-
-        switch (valueType) {
-            case INT_TYPE:
-                newSymbol = new IntSymbol(symName, (int) concreteValue);
-                break;
-            case REAL_TYPE:
-                newSymbol = new RealSymbol(symName, (double) concreteValue);
-                break;
-            case BOOL_TYPE:
-                newSymbol = new BooleanSymbol(symName, (boolean) concreteValue);
-                break;
-            case UNKNOWN:
-                newSymbol = new UnknownSymbol(symName, concreteValue);
-                break;
-            default:
-                throw new RuntimeException("A type was not handled");
-        }
-
-        symbols.put(symName, newSymbol);
-        return newSymbol;
     }
 
     /**
@@ -156,7 +84,7 @@ public class State {
         sym.setValue(concreteValue);
     }
 
-    public void initSymbol(String symName, Object value) {
-
-    }
+//    public void initSymbol(String symName, Object value) {
+//
+//    }
 }
