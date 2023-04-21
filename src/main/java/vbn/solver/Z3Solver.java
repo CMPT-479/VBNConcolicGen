@@ -18,15 +18,41 @@ import static vbn.solver.VBNRunner.constraintNegatedMap;
 public class Z3Solver {
 
     @NonNull
+    private static Expr handleConstant(@NonNull Context ctx, @NonNull IConstant constant) {
+        if (constant instanceof IntConstant) {
+            return ctx.mkInt(((int) constant.getValue()));
+        } else if (constant instanceof RealConstant) {
+//            return ctx.mkReal(((RealConstant) constant).value);
+            throw new RuntimeException("RealConstant cannot be handled");
+        } else if (constant instanceof BooleanConstant) {
+            return ctx.mkBool(((BooleanConstant) constant).value);
+        } else if (constant instanceof UnknownConstant) {
+            throw new RuntimeException("UnknownConstant cannot be handled");
+        } else {
+            throw new RuntimeException("Did not expect to reach this location in handleConstant");
+        }
+    }
+
+    public static Expr handleExprBasedOnValue(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
+                                                         @NonNull Value value) {
+        if (value instanceof ISymbol) {
+            @NonNull ISymbol symbol = (ISymbol) value;
+            return z3ExprMap.get(symbol.getName());
+        } else if (value instanceof IConstant) {
+            return handleConstant(ctx, (IConstant) value);
+        } else {
+            throw new RuntimeException("Unable to handle value of unknown instance type");
+        }
+    }
+
+    @NonNull
     public static Expr handleBinaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
                                                @NonNull BinaryConstraint binaryConstraint) {
-        @NonNull ISymbol leftSymbol = (ISymbol) binaryConstraint.left;
-        @NonNull ISymbol rightSymbol = (ISymbol) binaryConstraint.right;
+
+        @NonNull Expr leftExpr = handleExprBasedOnValue(ctx, z3ExprMap, binaryConstraint.left);
+        @NonNull Expr rightExpr = handleExprBasedOnValue(ctx, z3ExprMap, binaryConstraint.right);
         @NonNull BinaryOperand op = binaryConstraint.op;
         @Nullable ISymbol assigned = binaryConstraint.assigned;  // optional
-
-        @NonNull Expr leftExpr = z3ExprMap.get(leftSymbol.getName());
-        @NonNull Expr rightExpr = z3ExprMap.get(rightSymbol.getName());
 
         Expr exprToReturn = null;
         switch (op) {
@@ -86,11 +112,10 @@ public class Z3Solver {
     @NonNull
     public static Expr handleUnaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
                                               @NonNull UnaryConstraint unaryConstraint) {
-        @NonNull ISymbol symbol = (ISymbol) unaryConstraint.symbol;
+        @NonNull Expr symbolExpr = handleExprBasedOnValue(ctx, z3ExprMap, unaryConstraint.symbol);
         @NonNull UnaryOperand op = unaryConstraint.op;
         @Nullable ISymbol assigned = unaryConstraint.assigned; // optional
 
-        @NonNull Expr symbolExpr = z3ExprMap.get(symbol.getName());
         Expr exprToReturn = null;
 
         switch(op) {
