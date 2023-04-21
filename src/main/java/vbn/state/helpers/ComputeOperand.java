@@ -30,7 +30,7 @@ public class ComputeOperand {
 
             // FIXME: Floating Point comparison
             Map.entry("cmpl", BinaryOperand.LTE),
-            Map.entry("cmpg", BinaryOperand.LTE)
+            Map.entry("cmpg", BinaryOperand.GTE)
     );
     static final Map<String, UnaryOperand> unaryEnumsMap = Map.ofEntries(
             Map.entry(Jimple.NEG, UnaryOperand.NEG)
