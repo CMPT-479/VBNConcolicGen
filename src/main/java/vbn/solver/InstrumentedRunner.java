@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 
 public class InstrumentedRunner {
-    public static void runInstrumented(String programName, String[] programArgs) {
+    public static int runInstrumented(String programName, String[] programArgs) {
         try {
             String[] pbArgs = {
                     "java",
@@ -39,8 +39,11 @@ public class InstrumentedRunner {
             p.waitFor(); // wait for the process to finish
             int exitCode = p.exitValue();
             System.out.println("Program exited with code " + exitCode);
+
+            return exitCode;
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+        return 0;
     }
 }

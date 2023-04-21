@@ -4,7 +4,6 @@ import lombok.NonNull;
 import vbn.ObjectIO;
 import vbn.state.constraints.AbstractConstraint;
 import vbn.state.State;
-import vbn.state.value.AbstractConstant;
 import vbn.state.value.AbstractSymbol;
 
 import java.util.*;
@@ -35,11 +34,12 @@ public class VBNRunner {
         return new State(symbolMap, constraints);
     }
 
-    public static void execute(String programName, String[] programInputs) {
+    public static int execute(String programName, String[] programInputs) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
-        InstrumentedRunner.runInstrumented(programName, programInputs);
+
+        var exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
 
         Stack<AbstractConstraint> stateConstraint;
 //        while (true) {
@@ -56,5 +56,7 @@ public class VBNRunner {
 //            stateConstraint.peek().negated = true;
 //            InstrumentedRunner.runInstrumented(programName, programInputs);
 //        }
+
+        return exitCode;
     }
 }
