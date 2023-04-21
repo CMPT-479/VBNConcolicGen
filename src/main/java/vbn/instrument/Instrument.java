@@ -78,8 +78,8 @@ public class Instrument extends BodyTransformer {
                 units.getFirst(), units.getLast(), eStmt);
         body.getTraps().addLast(trap);
         body.getUnits().addLast(eStmt);
-        var errorMethod = runtime.getMethod("void terminatedWithError()").makeRef();
-        var errorCall = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(errorMethod));
+        var errorMethod = runtime.getMethod("void terminatedWithError(java.lang.Throwable)").makeRef();
+        var errorCall = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(errorMethod, exception));
         body.getUnits().addLast(errorCall);
         body.getUnits().addLast(Jimple.v().newReturnVoidStmt());
     }
