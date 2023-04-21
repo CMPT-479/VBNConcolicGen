@@ -56,11 +56,17 @@ public class VBNRunner {
                     "vbn.examples.Test_05_If",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT)))
-
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_06_If_Multiple",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new BooleanConstant(DEFAULT_BOOL_CONSTANT)))
     );
 
-    static String[] getProgramInputs(List<IConstant> constants) {
+    static String[] getProgramInputs(@NonNull List<IConstant> constants) {
         String[] inputs = new String[constants.size()];
         for (int i = 0; i < constants.size(); i++) {
             Value.Type type = constants.get(i).getType();
@@ -82,10 +88,14 @@ public class VBNRunner {
         return inputs;
     }
 
-    static String[] abstractSymbolListToStringArray(List<ISymbol> abstractSymbolList) {
+    static String[] abstractSymbolListToStringArray(List<ISymbol> abstractSymbolList, boolean printable) {
         String[] abstractSymbolArray = new String[abstractSymbolList.size()];
         for (int i = 0; i < abstractSymbolList.size(); i++) {
-            abstractSymbolArray[i] = String.valueOf(abstractSymbolList.get(i).getValue());
+            if (printable) {
+                abstractSymbolArray[i] = (String) abstractSymbolList.get(i).getValue();
+            } else {
+                abstractSymbolArray[i] = abstractSymbolList.get(i).getName() + " = " + abstractSymbolList.get(i).getValue();
+            }
         }
         return abstractSymbolArray;
     }
@@ -145,8 +155,12 @@ public class VBNRunner {
 
             constraintNegatedMap.put(linenumber, true);
             solved = Z3Solver.solve(state); // solve for negated end
-            programInputs = abstractSymbolListToStringArray(solved);
+            programInputs = abstractSymbolListToStringArray(solved, false);
             solvedConstraints.add(programInputs);
+
+            // printable for debugging
+            System.out.println(Arrays.toString(abstractSymbolListToStringArray(solved, true)));
+            // Step 2: Run program on negated inputs
             exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
             if (exitCode != 0) {
                 return exitCode;
@@ -157,8 +171,10 @@ public class VBNRunner {
     }
 
     public static void printSolvedConstraints() {
+        int i = 0;
         for (String[] s : solvedConstraints) {
-            System.out.println(Arrays.toString(s));
+            System.out.println("Solved input (" + i + "): " + Arrays.toString(s));
+            i++;
         }
     }
 }

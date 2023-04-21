@@ -26,7 +26,7 @@ public class ComputeValueType {
             return Value.Type.REAL_TYPE;
         }
         else if (concreteValue instanceof Boolean) {
-            return Value.Type.REAL_TYPE;
+            return Value.Type.BOOL_TYPE;
         }
         return Value.Type.UNKNOWN;
     }

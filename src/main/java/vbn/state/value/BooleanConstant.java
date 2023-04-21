@@ -19,4 +19,9 @@ public class BooleanConstant implements IConstant {
     public Object getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "BooleanConstant {value: " + getValue().toString() + "}";
+    }
 }
