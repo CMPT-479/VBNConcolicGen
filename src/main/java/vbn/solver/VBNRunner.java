@@ -97,7 +97,7 @@ public class VBNRunner {
     static String[] abstractSymbolListToStringArray(List<ISymbol> abstractSymbolList, boolean printable) {
         String[] abstractSymbolArray = new String[abstractSymbolList.size()];
         for (int i = 0; i < abstractSymbolList.size(); i++) {
-            if (printable) {
+            if (!printable) {
                 abstractSymbolArray[i] = abstractSymbolList.get(i).getValue().toString();
             } else {
                 abstractSymbolArray[i] = abstractSymbolList.get(i).getName() + " = " + abstractSymbolList.get(i).getValue().toString();
@@ -165,7 +165,8 @@ public class VBNRunner {
             solvedConstraints.add(programInputs);
 
             // printable for debugging
-            System.out.println(Arrays.toString(abstractSymbolListToStringArray(solved, true)));
+            System.out.println("Solved " + Arrays.toString(abstractSymbolListToStringArray(solved, true)));
+            printConstraintNegationStatus();
             // Step 2: Run program on negated inputs
             exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
             if (exitCode != 0) {
@@ -181,6 +182,13 @@ public class VBNRunner {
         for (String[] s : solvedConstraints) {
             System.out.println("Solved input (" + i + "): " + Arrays.toString(s));
             i++;
+        }
+    }
+
+    public static void printConstraintNegationStatus() {
+        for (Map.Entry<Integer, Boolean> entry : constraintNegatedMap.entrySet()) {
+            System.out.print(entry.getKey() + ": " + entry.getValue() + ", ");
+            System.out.println();
         }
     }
 }
