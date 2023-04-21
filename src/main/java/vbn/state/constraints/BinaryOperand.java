@@ -1,5 +1,6 @@
 package vbn.state.constraints;
 
+import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.helpers.ComputeConstraints;
 import vbn.state.helpers.IncorrectNumberOfValuesException;
 
@@ -38,7 +39,7 @@ public enum BinaryOperand implements IOperand {
         try {
             visitor.visit(this);
         } catch (IncorrectNumberOfValuesException e) {
-            throw new RuntimeException(e);
+            throw new VBNLibraryRuntimeException(e);
         }
     }
 }

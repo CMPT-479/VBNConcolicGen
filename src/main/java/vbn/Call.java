@@ -66,7 +66,7 @@ public class Call {
                 break;
             case UNKNOWN:
             default:
-                throw new RuntimeException("A type was not handled");
+                throw new VBNLibraryRuntimeException("A type was not handled");
         }
 
         computeConstraints.pushConstant(constant);
@@ -92,7 +92,7 @@ public class Call {
             return;
         }
 
-        throw new RuntimeException("Tried processing an op that does not exist: '" + opTrimmed + "'");
+        throw new VBNLibraryRuntimeException("Tried processing an op that does not exist: '" + opTrimmed + "'");
     }
 
     /**
@@ -190,10 +190,18 @@ public class Call {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
 
-        System.out.println("System failed with an error:");
-        System.out.println("----------------------------------------------------------------------");
-        theError.printStackTrace();
-        System.out.println("----------------------------------------------------------------------");
+        if (theError instanceof IVBNException) {
+            System.out.println("VBN's Runtime Library for the instrumentation failed with an error:");
+            System.out.println("----------------------------------------------------------------------");
+            theError.printStackTrace();
+            System.out.println("----------------------------------------------------------------------");
+        }
+        else {
+            System.out.println("System failed with an error:");
+            System.out.println("----------------------------------------------------------------------");
+            theError.printStackTrace();
+            System.out.println("----------------------------------------------------------------------");
+        }
 
         // Give VBN.run() the state object in order to know the constraints and values
         pushStateToIO();
@@ -227,7 +235,7 @@ public class Call {
                     result = new UnknownSymbol(symName, concreteValue);
                     break;
                 default:
-                    throw new RuntimeException("A type was not handled");
+                    throw new VBNLibraryRuntimeException("A type was not handled");
             }
 
             globalState.addSymbol(result);

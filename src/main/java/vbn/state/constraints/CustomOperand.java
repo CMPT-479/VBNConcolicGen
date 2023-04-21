@@ -1,5 +1,6 @@
 package vbn.state.constraints;
 
+import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.helpers.ComputeConstraints;
 import vbn.state.helpers.ComputeException;
 import vbn.state.helpers.MissingAssignmentSymbolException;
@@ -17,7 +18,7 @@ public enum CustomOperand implements IOperand {
         try {
             visitor.visit(this);
         } catch (ComputeException e) {
-            throw new RuntimeException(e);
+            throw new VBNLibraryRuntimeException(e);
         }
     }
 }

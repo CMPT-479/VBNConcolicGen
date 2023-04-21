@@ -75,7 +75,7 @@ public class VBNRunner {
                     inputs[i] = String.valueOf(RandomHandler.getRandomBoolean());
                     break;
                 case UNKNOWN:
-                    throw new RuntimeException("Unknown type as program input");
+                    throw new VBNSolverRuntimeError("Unknown type as program input");
             }
         }
 

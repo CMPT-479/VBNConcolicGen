@@ -42,7 +42,7 @@ public class StackHandler {
                 }
 
             } else {
-                throw new RuntimeException("Error, constraint not a type of a class we expect");
+                throw new VBNSolverRuntimeError("Error, constraint not a type of a class we expect");
             }
         }
 
