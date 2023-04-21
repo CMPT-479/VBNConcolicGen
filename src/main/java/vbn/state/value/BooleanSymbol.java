@@ -16,11 +16,11 @@ public class BooleanSymbol implements AbstractSymbol, Serializable {
     /**
      * The current concrete value for this symbol
      */
-    private boolean value;
+    private boolean concreteValue;
 
-    public BooleanSymbol(String varName, boolean value) {
+    public BooleanSymbol(String varName, boolean concreteValue) {
         this.varName = varName;
-        this.value = value;
+        this.concreteValue = concreteValue;
     }
 
     @Override
@@ -30,12 +30,12 @@ public class BooleanSymbol implements AbstractSymbol, Serializable {
 
     @Override
     public Object getValue() {
-        return value;
+        return concreteValue;
     }
 
     @Override
     public void setValue(Object value) {
-        this.value = (boolean) value;
+        this.concreteValue = (boolean) value;
     }
 
     @Override
