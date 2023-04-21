@@ -39,7 +39,7 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void pushSym(@NonNull String symName, Object value) {
-        Symbol result = updateSymbolValueAndInitializeIfNecessary(symName, value);
+        AbstractSymbol result = updateSymbolValueAndInitializeIfNecessary(symName, value);
 
         computeConstraints.pushSymbol(result);
     }
@@ -193,7 +193,7 @@ public class Call {
      * @param value the value of the symbol
      * @return the updated or newly create symbol
      */
-    private static Symbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object value) {
+    private static AbstractSymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object value) {
         @Nullable
         var result = globalState.getSymbolCanBeNull(symName);
 

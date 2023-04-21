@@ -2,7 +2,7 @@ package vbn.state;
 
 import lombok.NonNull;
 import vbn.state.constraints.*;
-import vbn.state.value.Symbol;
+import vbn.state.value.*;
 import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
@@ -14,7 +14,7 @@ import java.util.*;
 //
 //    public ConstraintItem newConstraintItem;
 //
-//    public ArrayList<Symbol> newSymbols = new ArrayList<>(2);
+//    public ArrayList<AbstractSymbol> newSymbols = new ArrayList<>(2);
 //
 //    public void push(ConstraintItemBool constraint) {
 //        newSymbols.clear();
@@ -33,7 +33,7 @@ import java.util.*;
 //
 //    public ConstraintItem newConstraintItem;
 //
-//    public ArrayList<Symbol> newSymbols = new ArrayList<>(2);
+//    public ArrayList<AbstractSymbol> newSymbols = new ArrayList<>(2);
 //
 //    public void push(ConstraintItemBool constraint) {
 //        newSymbols.clear();
@@ -56,7 +56,7 @@ public class State {
         super();
     }
 
-    private final Map<String, Symbol> symbols = new HashMap<>();
+    private final Map<String, AbstractSymbol> symbols = new HashMap<>();
 
     private final Stack<AbstractConstraint> constraints = new Stack<>();
 
@@ -72,8 +72,8 @@ public class State {
      * Add a general symbol
      * @param symbol the symbol object to add
      */
-    public void addSymbol(Symbol symbol) {
-        symbols.put(symbol.varName, symbol);
+    public void addSymbol(AbstractSymbol symbol) {
+        symbols.put(symbol.getName(), symbol);
     }
 
     /**
@@ -84,8 +84,26 @@ public class State {
      * @param concreteValue the current value of the symbol
      * @return the symbol that was just created
      */
-    public Symbol addSymbol(String symName, Value.Type valueType, Object concreteValue) {
-        var newSymbol = new Symbol(symName, valueType, concreteValue);
+    public AbstractSymbol addSymbol(String symName, Value.Type valueType, Object concreteValue) {
+        AbstractSymbol newSymbol;
+
+        switch (valueType) {
+            case INT_TYPE:
+                newSymbol = new IntSymbol(symName, (int) concreteValue);
+                break;
+            case REAL_TYPE:
+                newSymbol = new RealSymbol(symName, (double) concreteValue);
+                break;
+            case BOOL_TYPE:
+                newSymbol = new BooleanSymbol(symName, (boolean) concreteValue);
+                break;
+            case UNKNOWN:
+                newSymbol = new UnknownSymbol(symName, concreteValue);
+                break;
+            default:
+                throw new RuntimeException("A type was not handled");
+        }
+
         symbols.put(symName, newSymbol);
         return newSymbol;
     }
@@ -104,7 +122,7 @@ public class State {
      * @param symbolName The name of the symbol
      * @return the symbol object
       */
-    public Symbol getSymbol(String symbolName) {
+    public AbstractSymbol getSymbol(String symbolName) {
         @NonNull
         var result = symbols.get(symbolName);
 
@@ -112,12 +130,12 @@ public class State {
     }
 
     @Nullable
-    public Symbol getSymbolCanBeNull(String symbolName) {
+    public AbstractSymbol getSymbolCanBeNull(String symbolName) {
         return symbols.get(symbolName);
     }
 
     @NonNull
-    public ArrayList<Symbol> getSymbols() {
+    public ArrayList<AbstractSymbol> getSymbols() {
         return new ArrayList<>(symbols.values());
     }
 
@@ -127,7 +145,8 @@ public class State {
      * @param concreteValue the value to update the concrete value to
      */
     public void updateSymbolConcreteValue(String symName, Object concreteValue) {
-        getSymbol(symName).value = concreteValue;
+        var sym = getSymbol(symName);
+        sym.setValue(concreteValue);
     }
 
     public void initSymbol(String symName, Object value) {

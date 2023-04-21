@@ -15,7 +15,7 @@ import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
 import vbn.state.constraints.AbstractConstraint;
 import vbn.state.constraints.UnaryConstraint;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractSymbol;
 import vbn.state.value.Value;
 
 import java.io.*;
@@ -55,11 +55,11 @@ public class MainTest {
 //        String fileName = "symbols.ser";
 //        ObjectIO.writeObjectToFile(state.getSymbols(), fileName);
 //
-//        ArrayList<Symbol> symbols = (ArrayList<Symbol>) ObjectIO.readObjectFromFile(fileName);
+//        ArrayList<AbstractSymbol> symbols = (ArrayList<AbstractSymbol>) ObjectIO.readObjectFromFile(fileName);
 //        Assertions.assertNotNull(symbols);
 //        System.out.println(symbols);
 //        Assertions.assertNotEquals(symbols.size(), 0);
-//        for (Symbol s : symbols) {
+//        for (AbstractSymbol s : symbols) {
 //            System.out.println("Found symbol from file: " + s.id + " " + s.type + " " + s.value);
 //        }
 //        ObjectIO.deleteFile(fileName);

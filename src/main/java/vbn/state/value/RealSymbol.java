@@ -11,12 +11,12 @@ public class RealSymbol implements AbstractSymbol, Serializable {
     /**
      * The unique identifier for this string
      */
-    public String varName;
+    private String varName;
 
     /**
      * The current concrete value for this symbol
      */
-    public double value;
+    private double value;
 
     public RealSymbol(String varName, double value) {
         this.varName = varName;
@@ -31,6 +31,16 @@ public class RealSymbol implements AbstractSymbol, Serializable {
     @Override
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public void setValue(Object value) {
+        this.value = (double) value;
+    }
+
+    @Override
+    public String getName() {
+        return varName;
     }
 
     @Override
