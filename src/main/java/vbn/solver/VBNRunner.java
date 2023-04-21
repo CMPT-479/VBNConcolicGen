@@ -100,9 +100,10 @@ public class VBNRunner {
      * @return boolean representing if we were able to negate successfully, if false, unsuccessful in negating
      */
     private static boolean negateConstraints(Stack<IConstraint> constraints) {
-        int lineNumber = -1;
+        printConstraintNegationStatus();
+
         while (!(constraints.empty())) {
-            lineNumber = constraints.peek().getLineNumber();
+            int lineNumber = constraints.peek().getLineNumber();
             if (!constraintNegatedMap.containsKey(lineNumber)) {
                 throw new RuntimeException("Constraint negated map did not contain the constraint line number");
             }
@@ -111,19 +112,13 @@ public class VBNRunner {
                 // map contains the key
                 // the top has a line number (is negateable)
                 // the top is not negated
-                break;
+                constraintNegatedMap.put(lineNumber, true);
+                return true;
             } else {
                 constraints.pop();
             }
         }
-        if (constraints.empty()) {
-            return false;
-        }
-
-        printConstraintNegationStatus();
-        constraintNegatedMap.put(lineNumber, true);
-
-        return true;
+        return false;
     }
 
     public static int execute(String programName) {

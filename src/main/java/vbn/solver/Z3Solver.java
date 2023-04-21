@@ -211,13 +211,6 @@ public class Z3Solver {
         for (IConstraint constraint : constraintStack) {
             constraint.print();
             // System.out.println(constraint.getClass());
-            int constraintLineNumber = constraint.getLineNumber();
-            if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
-                throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
-            }
-            if (constraintLineNumber == -1) {
-                throw new RuntimeException("Constraint doesn't have its line number");
-            }
 
             Expr constraintExpr;
             if (constraint instanceof UnaryConstraint) {
@@ -228,11 +221,17 @@ public class Z3Solver {
                 throw new VBNSolverRuntimeError("Error, constraint type does not exist");
             }
 
-            if (constraintOriginallyNegated.get(constraintLineNumber)) {
-                constraintExpr = negate(ctx, constraintExpr);
-            }
-            if (constraintNegatedMap.get(constraintLineNumber)) {
-                constraintExpr = negate(ctx, constraintExpr);
+            if (constraint.hasLineNumber()) {
+                int constraintLineNumber = constraint.getLineNumber();
+                if (constraintOriginallyNegated.containsKey(constraintLineNumber) && constraintOriginallyNegated.get(constraintLineNumber)) {
+                    constraintExpr = negate(ctx, constraintExpr);
+                }
+
+                if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
+                    throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
+                } else if (constraintNegatedMap.get(constraintLineNumber)) {
+                    constraintExpr = negate(ctx, constraintExpr);
+                }
             }
 
             solver.add(constraintExpr);
