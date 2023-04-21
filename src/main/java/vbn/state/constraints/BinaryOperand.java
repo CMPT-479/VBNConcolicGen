@@ -32,6 +32,6 @@ public enum BinaryOperand implements IOperand {
 
     @Override
     public void accept(IOperandVisitor visitor) {
-        visitor.visit(this);
+        visitor.visit((BinaryOperand) this);
     }
 }

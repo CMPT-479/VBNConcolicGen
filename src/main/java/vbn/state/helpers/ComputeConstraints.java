@@ -1,9 +1,11 @@
 package vbn.state.helpers;
 
 import lombok.NonNull;
+import org.junit.Test;
 import vbn.state.constraints.*;
 import vbn.state.value.AbstractConstant;
 import vbn.state.value.AbstractSymbol;
+import vbn.state.value.BooleanSymbol;
 import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
@@ -131,5 +133,21 @@ public class ComputeConstraints {
         public AbstractConstraint getGeneratedConstraint() {
             return generatedConstraint;
         }
+    }
+    @Test
+    void testSimpleCompute() {
+        clear();
+
+        var boolX = new BooleanSymbol("x", true);
+        var boolY = new BooleanSymbol("y", false);
+
+        pushSymbol(boolX);
+        pushSymbol(boolY);
+        setOperand(BinaryOperand.AND);
+
+        var result = generateFromPushes();
+
+        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.AND, boolY);
+        assertEquals(true,result.equals(groundTruth));
     }
 }
