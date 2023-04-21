@@ -1,6 +1,6 @@
 package vbn.state.value;
 
-public class RealConstant implements AbstractConstant {
+public class RealConstant implements IConstant {
     public double value;
 
     public RealConstant(double value) {

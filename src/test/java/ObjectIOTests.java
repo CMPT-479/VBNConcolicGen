@@ -7,7 +7,7 @@ import vbn.state.constraints.AbstractConstraint;
 import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
 import vbn.state.constraints.UnaryConstraint;
-import vbn.state.value.AbstractSymbol;
+import vbn.state.value.ISymbol;
 import vbn.state.value.BooleanSymbol;
 import vbn.state.value.IntSymbol;
 
@@ -26,11 +26,11 @@ public class ObjectIOTests {
         String fileName = "symbols.ser";
         ObjectIO.writeObjectToFile(state.getSymbols(), fileName);
 
-        ArrayList<AbstractSymbol> symbols = (ArrayList<AbstractSymbol>) ObjectIO.readObjectFromFile(fileName);
+        ArrayList<ISymbol> symbols = (ArrayList<ISymbol>) ObjectIO.readObjectFromFile(fileName);
         Assertions.assertNotNull(symbols);
         System.out.println(symbols);
         Assertions.assertNotEquals(symbols.size(), 0);
-        for (AbstractSymbol s : symbols) {
+        for (ISymbol s : symbols) {
             System.out.println("Found symbol from file: " + s.getName() + " " + s.getType() + " " + s.getValue());
         }
         ObjectIO.deleteFile(fileName);
@@ -110,12 +110,12 @@ public class ObjectIOTests {
 
         VBNRunner.insertStateIntoIO(state);
         State returnedState = VBNRunner.returnStateFromIO();
-        ArrayList<AbstractSymbol> symbols = returnedState.getSymbols();
+        ArrayList<ISymbol> symbols = returnedState.getSymbols();
 
         Assertions.assertNotNull(symbols);
         System.out.println(symbols);
         Assertions.assertNotEquals(symbols.size(), 0);
-        for (AbstractSymbol s : symbols) {
+        for (ISymbol s : symbols) {
             System.out.println("Found symbol from file: " + s.getName() + " " + s.getType() + " " + s.getValue());
         }
 

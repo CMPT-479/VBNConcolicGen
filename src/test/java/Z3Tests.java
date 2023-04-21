@@ -3,7 +3,7 @@ import vbn.solver.Z3Solver;
 import vbn.state.State;
 import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
-import vbn.state.value.AbstractSymbol;
+import vbn.state.value.ISymbol;
 import vbn.state.value.BooleanSymbol;
 import vbn.state.value.IntSymbol;
 
@@ -22,7 +22,7 @@ public class Z3Tests {
                         BinaryOperand.OR,
                         state.getSymbol("y")));
 
-        List<AbstractSymbol> solved = Z3Solver.solve(state);
+        List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
@@ -38,7 +38,7 @@ public class Z3Tests {
                         BinaryOperand.AND,
                         state.getSymbol("y")));
 
-        List<AbstractSymbol> solved = Z3Solver.solve(state);
+        List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
@@ -54,7 +54,7 @@ public class Z3Tests {
                         BinaryOperand.GT,
                         state.getSymbol("y")));
 
-        List<AbstractSymbol> solved = Z3Solver.solve(state);
+        List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 }

@@ -3,7 +3,7 @@ package vbn.state.value;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class RealSymbol implements AbstractSymbol, Serializable {
+public class RealSymbol implements ISymbol, Serializable {
 
     // For Serializable
     private static final long serialVersionUID = 0L;

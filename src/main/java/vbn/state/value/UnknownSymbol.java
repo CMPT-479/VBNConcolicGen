@@ -3,7 +3,7 @@ package vbn.state.value;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class UnknownSymbol implements AbstractSymbol, IUnknownValue, Serializable {
+public class UnknownSymbol implements ISymbol, IUnknownValue, Serializable {
 
     // For Serializable
     private static final long serialVersionUID = 0L;

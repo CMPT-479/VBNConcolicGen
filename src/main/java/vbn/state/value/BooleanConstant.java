@@ -1,6 +1,6 @@
 package vbn.state.value;
 
-public class BooleanConstant implements AbstractConstant {
+public class BooleanConstant implements IConstant {
     public boolean value;
     public BooleanConstant(boolean value) {
         this.value = value;

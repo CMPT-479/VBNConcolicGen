@@ -40,7 +40,7 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void pushSym(@NonNull String symName, Object value) {
-        AbstractSymbol result = updateSymbolValueAndInitializeIfNecessary(symName, value);
+        ISymbol result = updateSymbolValueAndInitializeIfNecessary(symName, value);
 
         computeConstraints.pushSymbol(result);
     }
@@ -52,7 +52,7 @@ public class Call {
     @SuppressWarnings("unused")
     public static void pushConstant(Object value) {
         var type = ComputeValueType.getType(value);
-        AbstractConstant constant;
+        IConstant constant;
 
         switch (type) {
             case INT_TYPE:
@@ -206,7 +206,7 @@ public class Call {
      * @param concreteValue the concrete value of the symbol
      * @return the updated or newly create symbol
      */
-    private static AbstractSymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object concreteValue) {
+    private static ISymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object concreteValue) {
         @Nullable
         var result = globalState.getSymbolCanBeNull(symName);
 

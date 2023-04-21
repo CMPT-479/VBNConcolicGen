@@ -2,7 +2,7 @@ package vbn.state.value;
 
 import java.util.Objects;
 
-public class IntSymbol implements AbstractSymbol {
+public class IntSymbol implements ISymbol {
 
     // For Serializable
     private static final long serialVersionUID = 0L;
