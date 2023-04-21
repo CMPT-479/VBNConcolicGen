@@ -12,6 +12,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 import static vbn.solver.VBNRunner.constraintNegatedMap;
+import static vbn.solver.VBNRunner.constraintOriginallyNegated;
 
 // IMPORTANT: IGNORE ALL CONCRETE VALUES OF SYMBOLS
 
@@ -179,6 +180,11 @@ public class Z3Solver {
         return sortedInputSymbols;
     }
 
+    @NonNull
+    private static Expr negate(@NonNull Context ctx, @NonNull Expr expr) {
+        return ctx.mkNot(expr);
+    }
+
     public static ArrayList<ISymbol> solve(@NonNull State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
@@ -204,41 +210,32 @@ public class Z3Solver {
         // will need to keep negating the top of the stack and then removing it while going down
         for (IConstraint constraint : constraintStack) {
             constraint.print();
-//            System.out.println(constraint.getClass());
+            // System.out.println(constraint.getClass());
             int constraintLineNumber = constraint.getLineNumber();
-            if (constraint instanceof UnaryConstraint) {
-                if (constraintLineNumber != -1) {
-                    // if negated is true, then we negate the constraint
-                    if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
-                        throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
-                    }
-                    if (constraintNegatedMap.get(constraintLineNumber)) {
-                        System.out.println("Line " + constraintLineNumber + " negated in Z3Solver");
-                        solver.add(ctx.mkNot(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint)));
-                    } else {
-                        solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
-                    }
-                } else {
-                    solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
-                }
+            if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
+                throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
+            }
+            if (constraintLineNumber == -1) {
+                throw new RuntimeException("Constraint doesn't have its line number");
+            }
 
+            Expr constraintExpr;
+            if (constraint instanceof UnaryConstraint) {
+                constraintExpr = handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint);
             } else if (constraint instanceof BinaryConstraint) {
-                if (constraintLineNumber != -1) {
-                    if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
-                        throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
-                    }
-                    if (constraintNegatedMap.get(constraintLineNumber)) {
-                        System.out.println("Line " + constraintLineNumber + " negated in Z3Solver");
-                        solver.add(ctx.mkNot(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint)));
-                    } else {
-                        solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
-                    }
-                } else {
-                    solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
-                }
+                constraintExpr = handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint);
             } else {
                 throw new VBNSolverRuntimeError("Error, constraint type does not exist");
             }
+
+            if (constraintOriginallyNegated.get(constraintLineNumber)) {
+                constraintExpr = negate(ctx, constraintExpr);
+            }
+            if (constraintNegatedMap.get(constraintLineNumber)) {
+                constraintExpr = negate(ctx, constraintExpr);
+            }
+
+            solver.add(constraintExpr);
         }
         System.out.println("============== SOLVER CONSTRAINTS ==============");
         System.out.println(solver);
