@@ -122,10 +122,6 @@ public class ComputeTests {
         assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getValue());
 
     }
-
-    /**
-     * Tests to test setting the evaluated result properly
-     */
     @Test
     public void testBinaryConstraintBooleanIntMix_BoolThenInt() {
         var visitor = new ComputeConstraints.GenerateConstraintVisitor();
@@ -155,6 +151,10 @@ public class ComputeTests {
         assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getValue());
     }
 
+    /**
+     * Tests to test setting the evaluated result properly
+     */
+
     @Test
     public void testSetEvaluatedResult() {
         var visitor = new ComputeConstraints.GenerateConstraintVisitor();
@@ -175,12 +175,9 @@ public class ComputeTests {
 
         valueStack.push(left);
         valueStack.push(right);
-        visitor.setValues(valueStack, false, null);
+        visitor.setValues(valueStack, evaluatedResult, null);
         operand.accept(visitor);
 
-        assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getType());
-        assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getValue());
-        assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getType());
-        assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getValue());
+        assertEquals(groundTruth.getOriginalEvaluation(), ((BinaryConstraint) visitor.getGeneratedConstraint()).getOriginalEvaluation());
     }
 }
