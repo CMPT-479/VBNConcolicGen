@@ -80,4 +80,9 @@ public class BinaryConstraint implements IConstraint {
     public boolean getOriginalEvaluation() {
         return false;
     }
+
+    @Override
+    public boolean hasLineNumber() {
+        return false;
+    }
 }
