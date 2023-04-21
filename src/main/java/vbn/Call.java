@@ -242,7 +242,7 @@ public class Call {
      * Store the state in an external datastore, so it can be accessed by VBN
      */
     private static void pushStateToIO() {
-        insertStateIntoIO(globalState);
+        insertStateIntoIO(globalState.getSerializeState());
     }
 }
 
