@@ -3,6 +3,7 @@ package vbn.solver;
 import vbn.state.value.BooleanConstant;
 import vbn.state.value.IConstant;
 import vbn.state.value.IntConstant;
+import vbn.state.value.RealConstant;
 
 import java.util.List;
 import java.util.Map;
@@ -46,7 +47,15 @@ public class InputMap {
             Map.entry(
                     "vbn.examples.Test_08_If_Value",
                     List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT)))
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_09_If_Double",
+                    List.of(
+                            new RealConstant(DEFAULT_REAL_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_10_If_Float",
+                    List.of(
+                            new RealConstant(DEFAULT_REAL_CONSTANT)))
 
     );
 }

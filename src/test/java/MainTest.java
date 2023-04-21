@@ -28,6 +28,7 @@ public class MainTest {
         final var cute = new Instrument();
         final var transform = new Transform("jtp.Instrument", cute);
         PackManager.v().getPack("jtp").add(transform);
+        VBNRunner.reset();
     }
 
     @Test
@@ -83,6 +84,22 @@ public class MainTest {
         var exitCode = VBNRunner.execute("vbn.examples.Test_08_If_Value");
         Assertions.assertEquals(exitCode, 0);
         System.out.println("Finished if value test");
+        printSolvedConstraints();
+    }
+
+    @Test
+    final void basicIfDouble() {
+        var exitCode = VBNRunner.execute("vbn.examples.Test_09_If_Double");
+        Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished if double test");
+        printSolvedConstraints();
+    }
+
+    @Test
+    final void basicIfFloat() {
+        var exitCode = VBNRunner.execute("vbn.examples.Test_10_If_Float");
+        Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished if float test");
         printSolvedConstraints();
     }
 
