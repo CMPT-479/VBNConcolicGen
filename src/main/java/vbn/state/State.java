@@ -54,11 +54,18 @@ import java.util.*;
 public class State {
     public State() {
         super();
+        symbols = new HashMap<>();
+        constraints = new Stack<>();
     }
 
-    private final Map<String, AbstractSymbol> symbols = new HashMap<>();
+    public State(Map<String, AbstractSymbol> symbols, Stack<AbstractConstraint> constraints) {
+        this.symbols = symbols;
+        this.constraints = constraints;
+    }
 
-    private final Stack<AbstractConstraint> constraints = new Stack<>();
+    private final Map<String, AbstractSymbol> symbols;
+
+    private final Stack<AbstractConstraint> constraints;
 
     /**
      * Push a general constraint

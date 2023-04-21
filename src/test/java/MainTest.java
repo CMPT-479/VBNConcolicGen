@@ -100,6 +100,45 @@ public class MainTest {
     }
 
     @Test
+    final void testWritingAndReadingStateWithExternalDataStore() {
+        State state = new State();
+        BooleanSymbol symbol1 = new BooleanSymbol("1", false); // set with random variable
+        BooleanSymbol symbol2 = new BooleanSymbol("2", true);
+        state.addSymbol(symbol1);
+        state.addSymbol(symbol2);
+        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2));
+
+        VBNRunner.insertStateIntoIO(state);
+        State returnedState = VBNRunner.returnStateFromIO();
+        ArrayList<AbstractSymbol> symbols = returnedState.getSymbols();
+
+        Assertions.assertNotNull(symbols);
+        System.out.println(symbols);
+        Assertions.assertNotEquals(symbols.size(), 0);
+        for (AbstractSymbol s : symbols) {
+            System.out.println("Found symbol from file: " + s.getName() + " " + s.getType() + " " + s.getValue());
+        }
+
+        Stack<AbstractConstraint> constraints = returnedState.getConstraints();
+        Assertions.assertNotNull(constraints);
+        System.out.println(constraints);
+        for (AbstractConstraint c : constraints) {
+            if (c instanceof BinaryConstraint) {
+                BinaryConstraint bc = (BinaryConstraint) c;
+                System.out.println("Found instance of constraint "
+                        + ((BooleanSymbol) bc.left).getName()
+                        + " " + bc.op + " "
+                        + ((BooleanSymbol) bc.right).getName());
+            } else if (c instanceof UnaryConstraint) {
+                UnaryConstraint uc = (UnaryConstraint) c;
+                System.out.println("Found instance of constraint" + ((BooleanSymbol) uc.symbol).getName() + " " + uc.op);
+            } else {
+                System.out.println("Found ineligible instance of constraint");
+            }
+        }
+    }
+
+    @Test
     final void testCollectionStore() {
         List<Serializable> names = new ArrayList<>();
         names.add("Alice");

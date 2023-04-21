@@ -1,15 +1,40 @@
 package vbn.solver;
 
+import lombok.NonNull;
+import vbn.ObjectIO;
 import vbn.state.constraints.AbstractConstraint;
 import vbn.state.State;
 import vbn.state.value.AbstractConstant;
 import vbn.state.value.AbstractSymbol;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Stack;
+import java.util.*;
 
 public class VBNRunner {
+
+    static String fileNameSymbols = "stateSymbols.ser";
+    static String fileNameConstraints = "stateConstraints.ser";
+
+    public static void insertStateIntoIO(State state) {
+        ObjectIO.writeObjectToFile(state.getSymbols(), fileNameSymbols);
+        ObjectIO.writeObjectToFile(state.getConstraints(), fileNameConstraints);
+    }
+
+    public static State returnStateFromIO() {
+        @NonNull ArrayList<AbstractSymbol> symbols = (ArrayList<AbstractSymbol>) ObjectIO.readObjectFromFile(fileNameSymbols);
+        @NonNull Stack<AbstractConstraint> constraints = (Stack<AbstractConstraint>) ObjectIO.readObjectFromFile(fileNameConstraints);
+
+        // convert symbol arrayList to symbol map
+        Map<String, AbstractSymbol> symbolMap = new HashMap<>();
+        for (AbstractSymbol symbol : symbols) {
+            symbolMap.put(symbol.getName(), symbol);
+        }
+
+        ObjectIO.deleteFile(fileNameSymbols);
+        ObjectIO.deleteFile(fileNameConstraints);
+
+        return new State(symbolMap, constraints);
+    }
+
     public static void execute(String programName, String[] programInputs) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
