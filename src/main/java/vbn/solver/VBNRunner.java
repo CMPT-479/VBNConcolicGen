@@ -43,7 +43,7 @@ public class VBNRunner {
         return new State(symbolMap, constraints);
     }
 
-    static String[] getProgramInputs(@NonNull List<IConstant> constants) {
+    private static String[] getProgramInputs(@NonNull List<IConstant> constants) {
         String[] inputs = new String[constants.size()];
         for (int i = 0; i < constants.size(); i++) {
             Value.Type type = constants.get(i).getType();
@@ -65,7 +65,7 @@ public class VBNRunner {
         return inputs;
     }
 
-    static String[] abstractSymbolListToStringArray(List<ISymbol> abstractSymbolList, boolean printable) {
+    private static String[] abstractSymbolListToStringArray(List<ISymbol> abstractSymbolList, boolean printable) {
         String[] abstractSymbolArray = new String[abstractSymbolList.size()];
         for (int i = 0; i < abstractSymbolList.size(); i++) {
             if (!printable) {
@@ -75,6 +75,12 @@ public class VBNRunner {
             }
         }
         return abstractSymbolArray;
+    }
+
+    private static void putInitialConstraintPathDirection(Stack<IConstraint> constraints) {
+        for (IConstraint constraint : constraints) {
+            constraintNegatedMap.put(constraint.getLineNumber(), constraint.getOriginalEvaluation());
+        }
     }
 
     public static int execute(String programName) {
@@ -95,6 +101,7 @@ public class VBNRunner {
 
         @NonNull Stack<IConstraint> constraints = state.getConstraints();
         addConstraintsToNegatedMap(constraints);
+        putInitialConstraintPathDirection(constraints);
 
         while (!(constraints.empty())) {
             // this global state needs to be obtained from an external data store
