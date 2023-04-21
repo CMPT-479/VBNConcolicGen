@@ -90,27 +90,31 @@ public class State implements Serializable {
      */
     public State getSerializeState() {
         Stack<AbstractConstraint> newConstraints = (Stack<AbstractConstraint>) this.constraints.clone();
+        Stack<AbstractConstraint> finalConstraints = new Stack<>();
+        Map<String, AbstractSymbol> finalSymbols = new HashMap<>();
 
-        newConstraints.forEach((constraint) -> {
-            if (constraint instanceof BinaryConstraint) {
-                BinaryConstraint binConst = (BinaryConstraint) constraint;
-                if (binConst.left instanceof UnknownSymbol) {
-                    ((UnknownSymbol) binConst.left).setValue(-1);
-                }
-                if (binConst.right instanceof UnknownSymbol) {
-                    ((UnknownSymbol) binConst.right).setValue(-1);
-                }
-            }
-
-            if (constraint instanceof UnaryConstraint) {
-                UnaryConstraint unaryConstraint = (UnaryConstraint) constraint;
-                if (unaryConstraint.symbol instanceof UnknownSymbol) {
-                    ((UnknownSymbol) unaryConstraint.symbol).setValue(-1);
-                }
+        this.symbols.forEach((key, val) -> {
+            if (!(val instanceof UnknownSymbol)) {
+                finalSymbols.put(key, val);
             }
         });
 
-        return new State(symbols, newConstraints);
+        for (AbstractConstraint constraint : newConstraints) {
+            if (constraint instanceof BinaryConstraint) {
+                BinaryConstraint binConst = (BinaryConstraint) constraint;
+                if (!(binConst.left instanceof UnknownSymbol) && !(binConst.right instanceof UnknownSymbol)) {
+                    finalConstraints.push(binConst);
+                }
+            }
+            else if (constraint instanceof UnaryConstraint) {
+                UnaryConstraint unaryConstraint = (UnaryConstraint) constraint;
+                if (!(unaryConstraint.symbol instanceof UnknownSymbol)) {
+                    finalConstraints.push(unaryConstraint);
+                }
+            }
+        }
+
+        return new State(finalSymbols, finalConstraints);
 
     }
 
