@@ -26,7 +26,11 @@ public class ComputeOperand {
             Map.entry("<", BinaryOperand.LT),
             Map.entry("<=", BinaryOperand.LTE),
             Map.entry(">", BinaryOperand.GT),
-            Map.entry(">=", BinaryOperand.GTE)
+            Map.entry(">=", BinaryOperand.GTE),
+
+            // FIXME: Floating Point comparison
+            Map.entry("cmpl", BinaryOperand.LTE),
+            Map.entry("cmpg", BinaryOperand.LTE)
     );
     static final Map<String, UnaryOperand> unaryEnumsMap = Map.ofEntries(
             Map.entry(Jimple.NEG, UnaryOperand.NEG)
