@@ -16,11 +16,13 @@ public class JimpleValueInstrument {
         if (v instanceof Constant) {
             var typeSwitch = new ValueTypeSwitch(data, unit, v);
             v.getType().apply(typeSwitch);
+            var units = typeSwitch.getResult();
             var pushConstant = data.runtime.getMethod("pushConstant", List.of(
                     RefType.v("java.lang.Object")
             ));
             var invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(pushConstant.makeRef(), typeSwitch.v));
-            data.units.insertBefore(invokeStmt, unit);
+            units.add(invokeStmt);
+            data.units.insertBefore(units, unit);
             return;
         }
         if (!(v instanceof Expr)) {
