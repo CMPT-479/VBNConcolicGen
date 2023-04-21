@@ -19,4 +19,9 @@ public class IntConstant implements IConstant {
     public Type getType() {
         return Type.INT_TYPE;
     }
+
+    @Override
+    public String toString() {
+        return "IntConstant {value: " + getValue().toString() + "}";
+    }
 }

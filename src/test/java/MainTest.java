@@ -63,6 +63,14 @@ public class MainTest {
     }
 
     @Test
+    final void basicIfMultiple() {
+        var exitCode = VBNRunner.execute("vbn.examples.Test_06_If_Multiple");
+        Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished if multiple test");
+        printSolvedConstraints();
+    }
+
+    @Test
     final void basicClass() {
         final String[] args = new String[] {"vbn.examples.Test_03_Class"};
         soot.Main.main(args);

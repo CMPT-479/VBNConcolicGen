@@ -1,6 +1,7 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
+import vbn.state.value.BooleanSymbol;
 import vbn.state.value.ISymbol;
 import vbn.state.value.Value;
 
@@ -64,5 +65,14 @@ public class BinaryConstraint implements IConstraint {
     @Override
     public void setLineNumber(int lineNumber) {
         this.lineNumber = lineNumber;
+    }
+
+    @Override
+    public void print() {
+        if (assigned == null) {
+            System.out.println("Binary Constraint " + left + " " + op + " " + right);
+        } else {
+            System.out.println("Binary Constraint " + assigned + " = " + left + " " + op + " " + right);
+        }
     }
 }

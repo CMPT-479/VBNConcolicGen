@@ -51,4 +51,9 @@ public class BooleanSymbol implements ISymbol {
         BooleanSymbol otherSymbol = (BooleanSymbol) obj;
         return Objects.equals(this.varName, otherSymbol.varName) && this.getType() == otherSymbol.getType();
     }
+
+    @Override
+    public String toString() {
+        return "BooleanSymbol {name: " + getName() + ", concrete_value: " + getValue().toString() + "}";
+    }
 }

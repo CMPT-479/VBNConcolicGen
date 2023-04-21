@@ -50,4 +50,9 @@ public class IntSymbol implements ISymbol {
         IntSymbol otherSymbol = (IntSymbol) obj;
         return Objects.equals(this.varName, otherSymbol.varName) && this.getType() == otherSymbol.getType();
     }
+
+    @Override
+    public String toString() {
+        return "IntSymbol {name: " + getName() + ", concrete_value: " + getValue().toString() + "}";
+    }
 }

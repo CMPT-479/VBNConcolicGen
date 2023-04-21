@@ -16,6 +16,7 @@ import static vbn.solver.VBNRunner.constraintNegatedMap;
 
 public class Z3Solver {
 
+    @NonNull
     public static Expr handleBinaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
                                                @NonNull BinaryConstraint binaryConstraint) {
         @NonNull ISymbol leftSymbol = (ISymbol) binaryConstraint.left;
@@ -81,6 +82,7 @@ public class Z3Solver {
         return exprToReturn;
     }
 
+    @NonNull
     public static Expr handleUnaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
                                               @NonNull UnaryConstraint unaryConstraint) {
         @NonNull ISymbol symbol = (ISymbol) unaryConstraint.symbol;
@@ -131,7 +133,8 @@ public class Z3Solver {
         Stack<IConstraint> constraintStack = state.getConstraints();
         // will need to keep negating the top of the stack and then removing it while going down
         for (IConstraint constraint : constraintStack) {
-            System.out.println(constraint.getClass());
+            constraint.print();
+//            System.out.println(constraint.getClass());
             int constraintLineNumber = constraint.getLineNumber();
             if (constraint instanceof UnaryConstraint) {
                 if (constraintLineNumber != -1 && constraintNegatedMap.get(constraintLineNumber)) {
