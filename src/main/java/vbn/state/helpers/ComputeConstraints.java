@@ -4,10 +4,7 @@ import lombok.NonNull;
 import org.junit.Test;
 import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.constraints.*;
-import vbn.state.value.IConstant;
-import vbn.state.value.ISymbol;
-import vbn.state.value.BooleanSymbol;
-import vbn.state.value.Value;
+import vbn.state.value.*;
 
 import javax.annotation.Nullable;
 import java.util.Stack;
@@ -102,11 +99,21 @@ public class ComputeConstraints {
         public ISymbol assignSym;
         public Stack<Value> valueStack;
 
-        public void visit(BinaryOperand binOp) throws IncorrectNumberOfValuesException {
+        public void visit(@NonNull BinaryOperand binOp) throws IncorrectNumberOfValuesException {
             assertNumberOfValuesEqual(2);
 
             var right = valueStack.pop();
             var left = valueStack.pop();
+
+            // Jimple converts booleans into an int that is one or zero
+            // We need to convert it back into an boolean
+            right = handleBoolAndIntComparison(left, binOp, right);
+            left = handleBoolAndIntComparison(right, binOp, left);
+
+            if (right.getType() != left.getType()) {
+                throw new VBNLibraryRuntimeException("The value types are not equal when creating a constraint");
+            }
+
             if (assignSym == null) {
                 generatedConstraint = new BinaryConstraint(left, binOp, right);
             }
@@ -115,7 +122,29 @@ public class ComputeConstraints {
             }
         }
 
-        public void visit(UnaryOperand unOp) throws IncorrectNumberOfValuesException {
+        /**
+         * Jimple converts booleans into an int that is one or zero (e.g. if (BOOL == 0))
+         *
+         * @param boolSymbol the boolean symbol
+         * @param binOp the operation to confirm is equal
+         * @param intSymbol the int symbol to convert to a bool symbol
+         * @return the int symbol, potentially converted to a bool symbol
+         */
+        private static Value handleBoolAndIntComparison(@NonNull Value boolSymbol, @NonNull BinaryOperand binOp, @NonNull Value intSymbol) {
+            if (boolSymbol instanceof BooleanSymbol && intSymbol instanceof IntConstant) {
+                int leftValue = (int) intSymbol.getValue();
+                if (!(leftValue == 0 || leftValue == 1)) {
+                    throw new VBNLibraryRuntimeException("The int value handled must be 0 or 1 when converting to bool");
+                }
+                if (!(binOp == BinaryOperand.EQ)) {
+                    throw new VBNLibraryRuntimeException("The operator must be 'equal to' when converting ");
+                }
+                intSymbol = new BooleanConstant(leftValue == 1);
+            }
+            return intSymbol;
+        }
+
+        public void visit(@NonNull UnaryOperand unOp) throws IncorrectNumberOfValuesException {
             assertNumberOfValuesEqual(1);
 
             var symbol = valueStack.pop();
@@ -127,7 +156,7 @@ public class ComputeConstraints {
             }
         }
 
-        public void visit(CustomOperand customOp) throws MissingAssignmentSymbolException, InvalidOperandStrException, IncorrectNumberOfValuesException {
+        public void visit(@NonNull CustomOperand customOp) throws MissingAssignmentSymbolException, InvalidOperandStrException, IncorrectNumberOfValuesException {
             switch (customOp) {
                 case CAST:
                     assertNumberOfValuesEqual(1);
@@ -169,6 +198,88 @@ public class ComputeConstraints {
             if (valueStack.size() > expectedVars) {
                 throw new IncorrectNumberOfValuesException("Need exactly " + expectedVars + " operand. Found more than " + expectedVars + ".");
             }
+        }
+
+        @Test
+        public void testBinaryConstraintNormal() {
+            var visitor = new GenerateConstraintVisitor();
+            ISymbol left;
+            ISymbol right;
+            BinaryOperand operand;
+            BinaryConstraint groundTruth;
+
+            // Normal Ints Binary
+            left = new IntSymbol("left", 4);
+            right = new IntSymbol("right", 5);
+            operand = BinaryOperand.EQ;
+
+            groundTruth = new BinaryConstraint(left, operand, right);
+
+            visitor.valueStack = new Stack<>();
+            visitor.valueStack.push(left);
+            visitor.valueStack.push(right);
+            operand.accept(visitor);
+
+            assertEquals(groundTruth, visitor.generatedConstraint);
+
+            // Normal Boolean Binary
+            left = new BooleanSymbol("left", true);
+            right = new BooleanSymbol("right", false);
+            operand = BinaryOperand.GT;
+
+            groundTruth = new BinaryConstraint(left, operand, right);
+
+            visitor.valueStack = new Stack<>();
+            visitor.valueStack.push(left);
+            visitor.valueStack.push(right);
+            operand.accept(visitor);
+
+            assertEquals(groundTruth, visitor.generatedConstraint);
+        }
+        @Test
+        public void testBinaryConstraintBooleanIntMix() {
+            var visitor = new GenerateConstraintVisitor();
+            Value left;
+            Value right;
+            BooleanConstant boolSymbol;
+            BinaryOperand operand;
+            BinaryConstraint groundTruth;
+
+            // Right is the constant
+            left = new IntConstant(0);
+            boolSymbol = new BooleanConstant(false);
+            right = new BooleanSymbol("right", true);
+            operand = BinaryOperand.EQ;
+
+            groundTruth = new BinaryConstraint(boolSymbol, operand, right);
+
+            visitor.valueStack = new Stack<>();
+            visitor.valueStack.push(left);
+            visitor.valueStack.push(right);
+            operand.accept(visitor);
+
+            assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.generatedConstraint).left.getType());
+            assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) visitor.generatedConstraint).left.getValue());
+            assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.generatedConstraint).right.getType());
+            assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.generatedConstraint).right.getValue());
+
+            // Left is the constant
+            left = new BooleanSymbol("left", true);
+            right = new IntConstant(1);
+            boolSymbol = new BooleanConstant(true);
+            operand = BinaryOperand.EQ;
+
+            groundTruth = new BinaryConstraint(left, operand, boolSymbol);
+
+            visitor.valueStack = new Stack<>();
+            visitor.valueStack.push(left);
+            visitor.valueStack.push(right);
+            operand.accept(visitor);
+
+            assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.generatedConstraint).left.getType());
+            assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) visitor.generatedConstraint).left.getValue());
+            assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.generatedConstraint).right.getType());
+            assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.generatedConstraint).right.getValue());
         }
     }
 
