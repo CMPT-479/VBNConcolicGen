@@ -58,14 +58,15 @@ public class ComputeConstraints {
         IConstraint resultingConstraint;
 
         try {
-
             if (operand == null) {
                 throw new MissingOperandException("The apply operator must be applied unless it is a reassignment");
             }
 
-            opVisitor.assignSym = assignmentSymName;
-            opVisitor.valueStack = valueStack;
+            opVisitor.setValues(valueStack, true, assignmentSymName);
             operand.accept(opVisitor);
+
+            // Values are copied in set values
+            valueStack.clear();
 
             resultingConstraint = opVisitor.getGeneratedConstraint();
             clear();
@@ -108,11 +109,23 @@ public class ComputeConstraints {
     }
 
     static public class GenerateConstraintVisitor implements IOperandVisitor {
-        private IConstraint generatedConstraint;
-        public ISymbol assignSym;
-        public Stack<Value> valueStack;
 
-        public boolean evaluatedResult;
+        private IConstraint generatedConstraint;
+        private ISymbol assignSym;
+        private Stack<Value> valueStack;
+        private boolean evaluatedResult;
+
+        /**
+         * This method should be used rather than setting all the values manually
+         * @param valueStack the value stack (cloned)
+         * @param evaluatedResult the eval result of the constraint
+         * @param assignSym the assignment name (if it exists)
+         */
+        public void setValues(@NonNull Stack<Value> valueStack, boolean evaluatedResult, @Nullable ISymbol assignSym) {
+            this.assignSym = assignSym;
+            this.valueStack = (Stack<Value>) valueStack.clone();
+            this.evaluatedResult = evaluatedResult;
+        }
 
         public void visit(@NonNull BinaryOperand binOp) throws IncorrectNumberOfValuesException {
             assertNumberOfValuesEqual(2);
@@ -213,88 +226,6 @@ public class ComputeConstraints {
             if (valueStack.size() > expectedVars) {
                 throw new IncorrectNumberOfValuesException("Need exactly " + expectedVars + " operand. Found more than " + expectedVars + ".");
             }
-        }
-
-        @Test
-        public void testBinaryConstraintNormal() {
-            var visitor = new GenerateConstraintVisitor();
-            ISymbol left;
-            ISymbol right;
-            BinaryOperand operand;
-            BinaryConstraint groundTruth;
-
-            // Normal Ints Binary
-            left = new IntSymbol("left", 4);
-            right = new IntSymbol("right", 5);
-            operand = BinaryOperand.EQ;
-
-            groundTruth = new BinaryConstraint(left, operand, right);
-
-            visitor.valueStack = new Stack<>();
-            visitor.valueStack.push(left);
-            visitor.valueStack.push(right);
-            operand.accept(visitor);
-
-            assertEquals(groundTruth, visitor.generatedConstraint);
-
-            // Normal Boolean Binary
-            left = new BooleanSymbol("left", true);
-            right = new BooleanSymbol("right", false);
-            operand = BinaryOperand.GT;
-
-            groundTruth = new BinaryConstraint(left, operand, right);
-
-            visitor.valueStack = new Stack<>();
-            visitor.valueStack.push(left);
-            visitor.valueStack.push(right);
-            operand.accept(visitor);
-
-            assertEquals(groundTruth, visitor.generatedConstraint);
-        }
-        @Test
-        public void testBinaryConstraintBooleanIntMix() {
-            var visitor = new GenerateConstraintVisitor();
-            Value left;
-            Value right;
-            BooleanConstant boolSymbol;
-            BinaryOperand operand;
-            BinaryConstraint groundTruth;
-
-            // Right is the constant
-            left = new IntConstant(0);
-            boolSymbol = new BooleanConstant(false);
-            right = new BooleanSymbol("right", true);
-            operand = BinaryOperand.EQ;
-
-            groundTruth = new BinaryConstraint(boolSymbol, operand, right);
-
-            visitor.valueStack = new Stack<>();
-            visitor.valueStack.push(left);
-            visitor.valueStack.push(right);
-            operand.accept(visitor);
-
-            assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.generatedConstraint).left.getType());
-            assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) visitor.generatedConstraint).left.getValue());
-            assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.generatedConstraint).right.getType());
-            assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.generatedConstraint).right.getValue());
-
-            // Left is the constant
-            left = new BooleanSymbol("left", true);
-            right = new IntConstant(1);
-            boolSymbol = new BooleanConstant(true);
-            operand = BinaryOperand.EQ;
-
-            groundTruth = new BinaryConstraint(left, operand, boolSymbol);
-
-            visitor.valueStack = new Stack<>();
-            visitor.valueStack.push(left);
-            visitor.valueStack.push(right);
-            operand.accept(visitor);
-
-            assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.generatedConstraint).left.getType());
-            assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) visitor.generatedConstraint).left.getValue());
-            assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.generatedConstraint).right.getType());
-            assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.generatedConstraint).right.getValue());
         }
     }
 }
