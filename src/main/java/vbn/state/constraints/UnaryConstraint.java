@@ -1,6 +1,7 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
+import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.value.ISymbol;
 import vbn.state.value.Value;
 
@@ -16,7 +17,10 @@ public class UnaryConstraint implements IConstraint {
 
     @NonNull
     public Value symbol;
-    private int lineNumber = -1;
+
+    public boolean evaluatedResult;
+
+    private Integer lineNumber = null;
 
     public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, boolean evaluatedResult) {
         this.assigned = null;
@@ -50,7 +54,15 @@ public class UnaryConstraint implements IConstraint {
     }
 
     @Override
+    public boolean hasLineNumber() {
+        return lineNumber != null;
+    }
+
+    @Override
     public int getLineNumber() {
+        if (lineNumber == null) {
+            throw new VBNLibraryRuntimeException("The line number is not set. Check hasLineNumber before running");
+        }
         return lineNumber;
     }
 
@@ -70,11 +82,6 @@ public class UnaryConstraint implements IConstraint {
 
     @Override
     public boolean getOriginalEvaluation() {
-        return false;
-    }
-
-    @Override
-    public boolean hasLineNumber() {
-        return lineNumber != -1;
+        return evaluatedResult;
     }
 }
