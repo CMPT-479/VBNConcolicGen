@@ -1,7 +1,6 @@
 package vbn.instrument;
 
-import soot.jimple.Jimple;
-import soot.jimple.Stmt;
+import soot.jimple.*;
 import soot.jimple.internal.JCaughtExceptionRef;
 import soot.tagkit.LineNumberTag;
 import vbn.instrument.switches.StatementSwitch;
@@ -9,7 +8,6 @@ import soot.*;
 import soot.util.Chain;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 public class Instrument extends BodyTransformer {
@@ -42,9 +40,19 @@ public class Instrument extends BodyTransformer {
         }
 
         if (method.getSubSignature().equals("void main(java.lang.String[])")) {
+            it = units.snapshotIterator();
             var init = runtime.getMethod("void init()");
-            var stmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(init.makeRef()));
-            body.getUnits().addFirst(stmt);
+            var initStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(init.makeRef()));
+            while (it.hasNext()) {
+                var unit = it.next();
+                if (unit instanceof IdentityStmt) {
+                    var idStmt = (IdentityStmt) unit;
+                    var right = idStmt.getRightOp();
+                    if (right instanceof ParameterRef || right instanceof ThisRef) continue;
+                }
+                units.insertBefore(initStmt, unit);
+                break;
+            }
         }
 
         wrapInsideTryCatch(body);
@@ -55,6 +63,9 @@ public class Instrument extends BodyTransformer {
             var unit = it.next();
             System.out.println("\t" + unit);
         }
+
+        body.validate();
+
     }
 
     private void wrapInsideTryCatch(Body body) {
