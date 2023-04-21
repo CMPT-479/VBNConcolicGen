@@ -20,14 +20,6 @@ public class InstrumentedRunner {
             System.arraycopy(programArgs, 0, pbArgsWithProgramArgs, pbArgs.length, programArgs.length);
             System.out.println(Arrays.toString(pbArgsWithProgramArgs));
             ProcessBuilder pb = new ProcessBuilder(pbArgsWithProgramArgs);
-            // this is currently breaking due to Call finalizeStore not working correctly, but it is actually executing what we want
-            /*
-            Exception in thread "main" java.lang.NullPointerException
-                at vbn.Call.finalizeStore(Call.java:146)
-                at vbn.Call.finalizeStore(Call.java:152)
-                at vbn.examples.Test_00_Basic.main(Test_00_Basic.java)
-            Program exited with code 1
-             */
 
             pb.redirectErrorStream(true);
             Process p = pb.start();

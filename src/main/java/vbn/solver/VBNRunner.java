@@ -126,13 +126,7 @@ public class VBNRunner {
         ArrayList<ISymbol> solved;
 
         @NonNull Stack<IConstraint> constraints = state.getConstraints();
-
-        for (@NonNull IConstraint constraint : constraints) {
-            if (constraint.getLineNumber() == -1) {
-                continue;
-            }
-            constraintNegatedMap.put(constraint.getLineNumber(), false);
-        }
+        addConstraintsToNegatedMap(constraints);
 
         while (!(constraints.empty())) {
             // this global state needs to be obtained from an external data store
@@ -175,17 +169,21 @@ public class VBNRunner {
 
             state = returnStateFromIO();
             constraints = state.getConstraints();
-            for (@NonNull IConstraint constraint : constraints) {
-                if (constraint.getLineNumber() == -1) {
-                    continue;
-                }
-                if (!(constraintNegatedMap.containsKey(constraint.getLineNumber()))) {
-                    constraintNegatedMap.put(constraint.getLineNumber(), false);
-                }
-            }
+            addConstraintsToNegatedMap(constraints);
         }
 
         return 0;
+    }
+
+    private static void addConstraintsToNegatedMap(@NonNull Stack<IConstraint> constraints) {
+        for (@NonNull IConstraint constraint : constraints) {
+            if (constraint.getLineNumber() == -1) {
+                continue;
+            }
+            if (!(constraintNegatedMap.containsKey(constraint.getLineNumber()))) {
+                constraintNegatedMap.put(constraint.getLineNumber(), false);
+            }
+        }
     }
 
     public static void printSolvedConstraints() {
