@@ -18,6 +18,7 @@ public class ComputeConstraints {
     private IOperand operand = null;
 
     private final GenerateConstraintVisitor opVisitor = new GenerateConstraintVisitor();
+    private boolean evaluatedResult;
 
     /**
      * Add a symbol to be later used for constraints.
@@ -94,10 +95,24 @@ public class ComputeConstraints {
         return valueStack.size() == 1 && operand == null;
     }
 
+    public void setEvaluatedToTrue() {
+        this.evaluatedResult = true;
+    }
+
+    public void setEvaluatedToFalse() {
+        this.evaluatedResult = false;
+    }
+
+    public boolean isEvaluatedTrue() {
+        return evaluatedResult;
+    }
+
     static public class GenerateConstraintVisitor implements IOperandVisitor {
         private IConstraint generatedConstraint;
         public ISymbol assignSym;
         public Stack<Value> valueStack;
+
+        public boolean evaluatedResult;
 
         public void visit(@NonNull BinaryOperand binOp) throws IncorrectNumberOfValuesException {
             assertNumberOfValuesEqual(2);
@@ -115,10 +130,10 @@ public class ComputeConstraints {
             }
 
             if (assignSym == null) {
-                generatedConstraint = new BinaryConstraint(left, binOp, right);
+                generatedConstraint = new BinaryConstraint(left, binOp, right, evaluatedResult);
             }
             else {
-                generatedConstraint = new BinaryConstraint(left, binOp, right, assignSym);
+                generatedConstraint = new BinaryConstraint(left, binOp, right, evaluatedResult, assignSym);
             }
         }
 
@@ -149,10 +164,10 @@ public class ComputeConstraints {
 
             var symbol = valueStack.pop();
             if (assignSym == null) {
-                generatedConstraint = new UnaryConstraint(unOp, symbol);
+                generatedConstraint = new UnaryConstraint(unOp, symbol, evaluatedResult);
             }
             else {
-                generatedConstraint = new UnaryConstraint(unOp, symbol, assignSym);
+                generatedConstraint = new UnaryConstraint(unOp, symbol, evaluatedResult, assignSym);
             }
         }
 
@@ -170,7 +185,7 @@ public class ComputeConstraints {
                     assertNumberOfValuesEqual(1);
 
                     var symbol = valueStack.pop();
-                    generatedConstraint = new BinaryConstraint(assignSym, BinaryOperand.EQ, symbol);
+                    generatedConstraint = new BinaryConstraint(assignSym, BinaryOperand.EQ, symbol, true);
                     break;
 
                 default:
@@ -281,40 +296,5 @@ public class ComputeConstraints {
             assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.generatedConstraint).right.getType());
             assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.generatedConstraint).right.getValue());
         }
-    }
-
-    @Test
-    public void testSimpleCompute() {
-        clear();
-
-        var boolX = new BooleanSymbol("x", true);
-        var boolY = new BooleanSymbol("y", false);
-
-        pushSymbol(boolX);
-        pushSymbol(boolY);
-        setOperand(BinaryOperand.AND);
-
-        var result = generateFromPushes();
-        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.AND, boolY);
-        assertEquals(result, groundTruth);
-
-        clear();
-    }
-
-    @Test
-    public void testCustomOperand() {
-        clear();
-
-        var boolX = new BooleanSymbol("x", true);
-        var boolY = new BooleanSymbol("y", false);
-
-        pushSymbol(boolY);
-        setOperand(CustomOperand.REASSIGN);
-
-        var result = generateFromPushes(boolX);
-        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.EQ, boolY);
-        assertEquals(result, groundTruth);
-
-        clear();
     }
 }

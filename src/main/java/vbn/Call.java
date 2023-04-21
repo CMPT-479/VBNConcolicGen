@@ -148,12 +148,20 @@ public class Call {
         globalState.pushConstraint(constraint);
     }
 
+    /**
+     * Run when the if condition evaluated to TRUE
+     * @param lineNumber the line number of the if condition
+     */
     public static void pushTrueBranch(int lineNumber) {
-
+        computeConstraints.setEvaluatedToTrue();
     }
 
+    /**
+     * Run when the if condition evaluated to FALSE
+     * @param lineNumber the line number of the if condition
+     */
     public static void pushFalseBranch(int lineNumber) {
-
+        computeConstraints.setEvaluatedToFalse();
     }
 
     /**

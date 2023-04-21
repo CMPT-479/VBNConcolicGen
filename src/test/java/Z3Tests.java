@@ -23,7 +23,7 @@ public class Z3Tests {
                 new BinaryConstraint(
                         state.getSymbol("x"),
                         BinaryOperand.OR,
-                        state.getSymbol("y")));
+                        state.getSymbol("y"), false));
 
         List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
@@ -39,7 +39,7 @@ public class Z3Tests {
                 new BinaryConstraint(
                         state.getSymbol("x"),
                         BinaryOperand.AND,
-                        state.getSymbol("y")));
+                        state.getSymbol("y"), false));
 
         List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
@@ -55,7 +55,7 @@ public class Z3Tests {
                 new BinaryConstraint(
                         state.getSymbol("x"),
                         BinaryOperand.GT,
-                        state.getSymbol("y")));
+                        state.getSymbol("y"), false));
 
         List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);

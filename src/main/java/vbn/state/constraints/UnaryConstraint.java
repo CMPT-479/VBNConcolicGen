@@ -18,12 +18,12 @@ public class UnaryConstraint implements IConstraint {
     public Value symbol;
     private int lineNumber = -1;
 
-    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol) {
+    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, boolean evaluatedResult) {
         this.assigned = null;
         this.symbol = symbol;
         this.op = op;
     }
-    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, @Nullable ISymbol assigned) {
+    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, boolean evaluatedResult, @Nullable ISymbol assigned) {
         this.assigned = assigned;
         this.symbol = symbol;
         this.op = op;
