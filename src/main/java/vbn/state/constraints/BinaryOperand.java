@@ -13,7 +13,7 @@ public enum BinaryOperand implements IOperand {
 
 
     // Boolean Arithmetic
-    // TODO: Implement LOG_AND, LOG_OR, LOG_NOR, etc.
+    // Implement LOG_AND, LOG_OR, LOG_NOR, etc.
 
     // Arithmetic
     ADD,
