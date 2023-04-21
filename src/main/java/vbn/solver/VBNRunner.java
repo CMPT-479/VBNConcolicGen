@@ -14,7 +14,12 @@ public class VBNRunner {
     private static final String fileNameSymbols = "stateSymbols.ser";
     private static final String fileNameConstraints = "stateConstraints.ser";
 
-    public static Map<Integer, Boolean> constraintNegatedMap = new HashMap<>();   // false represents not negated, true negated
+    // false represents not negated, true negated
+    // these keep track of our personally negated branches when we try to explore every branch
+    public static Map<Integer, Boolean> constraintNegatedMap = new HashMap<>();
+
+    // this is the original negations upon the initial run (if we go down a false branch)
+    public static Map<Integer, Boolean> constraintOriginallyNegated = new HashMap<>();
     public static List<String[]> solvedConstraints = new ArrayList<>();
 
     public static void insertStateIntoIO(State state) {
