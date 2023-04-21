@@ -135,6 +135,9 @@ public class Call {
             applyReassignment();
         }
 
+        // This constraint is always true
+        computeConstraints.setEvaluatedToTrue();
+
         var constraint = computeConstraints.generateFromPushes(globalState.getSymbol(symName));
         globalState.pushConstraint(constraint);
     }

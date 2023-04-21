@@ -1,15 +1,12 @@
 package vbn.state.helpers;
 
 import lombok.NonNull;
-import org.junit.Test;
 import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.constraints.*;
 import vbn.state.value.*;
 
 import javax.annotation.Nullable;
 import java.util.Stack;
-
-import static org.junit.Assert.*;
 
 public class ComputeConstraints {
 
@@ -18,7 +15,7 @@ public class ComputeConstraints {
     private IOperand operand = null;
 
     private final GenerateConstraintVisitor opVisitor = new GenerateConstraintVisitor();
-    private boolean evaluatedResult;
+    private Boolean evaluatedResult;
 
     /**
      * Add a symbol to be later used for constraints.
@@ -48,6 +45,7 @@ public class ComputeConstraints {
     private void clear() {
         valueStack.clear();
         operand = null;
+        evaluatedResult = null;
     }
 
     /**
@@ -57,23 +55,19 @@ public class ComputeConstraints {
     public IConstraint generateFromPushes(@Nullable final ISymbol assignmentSymName) {
         IConstraint resultingConstraint;
 
-        try {
-            if (operand == null) {
-                throw new MissingOperandException("The apply operator must be applied unless it is a reassignment");
-            }
-
-            opVisitor.setValues(valueStack, true, assignmentSymName);
-            operand.accept(opVisitor);
-
-            // Values are copied in set values
-            valueStack.clear();
-
-            resultingConstraint = opVisitor.getGeneratedConstraint();
-            clear();
-
-        } catch (MissingOperandException e) {
-            throw new VBNLibraryRuntimeException(e);
+        if (operand == null) {
+            throw new VBNLibraryRuntimeException("The operator must be set before generating constraint from pushes");
         }
+
+        opVisitor.setValues(valueStack, isEvaluatedTrue(), assignmentSymName);
+        operand.accept(opVisitor);
+
+        // Values are copied in set values
+        valueStack.clear();
+
+        resultingConstraint = opVisitor.getGeneratedConstraint();
+        clear();
+
         return resultingConstraint;
     }
 
@@ -104,7 +98,15 @@ public class ComputeConstraints {
         this.evaluatedResult = false;
     }
 
+    private boolean evaluatedResultIsNull() {
+        return evaluatedResult == null;
+    }
+
     public boolean isEvaluatedTrue() {
+        if (evaluatedResult == null) {
+            throw new VBNLibraryRuntimeException("Tried fetching evaluation when it was null");
+        }
+
         return evaluatedResult;
     }
 
@@ -121,7 +123,7 @@ public class ComputeConstraints {
          * @param evaluatedResult the eval result of the constraint
          * @param assignSym the assignment name (if it exists)
          */
-        public void setValues(@NonNull Stack<Value> valueStack, boolean evaluatedResult, @Nullable ISymbol assignSym) {
+        public void setValues(@NonNull Stack<Value> valueStack, @NonNull Boolean evaluatedResult, @Nullable ISymbol assignSym) {
             this.assignSym = assignSym;
             this.valueStack = (Stack<Value>) valueStack.clone();
             this.evaluatedResult = evaluatedResult;
