@@ -5,10 +5,7 @@ import vbn.ObjectIO;
 import vbn.RandomHandler;
 import vbn.state.constraints.AbstractConstraint;
 import vbn.state.State;
-import vbn.state.value.AbstractConstant;
-import vbn.state.value.AbstractSymbol;
-import vbn.state.value.BooleanConstant;
-import vbn.state.value.Value;
+import vbn.state.value.*;
 
 import java.util.*;
 
@@ -38,8 +35,24 @@ public class VBNRunner {
         return new State(symbolMap, constraints);
     }
 
+    // input map constants
+    static int DEFAULT_INT_CONSTANT = -123456; // for instances where we don't care about the int constant
+    static double DEFAULT_REAL_CONSTANT = -123456.0; // for instances where we don't care about the real constant
+    static boolean DEFAULT_BOOL_CONSTANT = false; // for instances where we don't care about the bool constant
+
     static Map<String, List<AbstractConstant>> programInputMap = Map.ofEntries(
-            Map.entry("vbn.examples.Test_00_Basic", List.of(new BooleanConstant(false), new BooleanConstant(false)))
+            Map.entry(
+                    "vbn.examples.Test_00_Basic",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_02_NEG_vs_MINUS",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new BooleanConstant(DEFAULT_BOOL_CONSTANT)))
+
     );
 
     static String[] getProgramInputs(List<AbstractConstant> constants) {
@@ -64,29 +77,83 @@ public class VBNRunner {
         return inputs;
     }
 
+    static String[] abstractSymbolListToStringArray(List<AbstractSymbol> abstractSymbolList) {
+        String[] abstractSymbolArray = new String[abstractSymbolList.size()];
+        for (int i = 0; i < abstractSymbolList.size(); i++) {
+            abstractSymbolArray[i] = (String) abstractSymbolList.get(i).getValue();
+        }
+        return abstractSymbolArray;
+    }
+
+    public static Map<Integer, Boolean> constraintNegatedMap = new HashMap<>();   // false represents not negated, true negated
+    public static List<String[]> solvedConstraints = new ArrayList<>();
+
     public static int execute(String programName) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
         @NonNull List<AbstractConstant> programInputTypes = programInputMap.get(programName);
-        var exitCode = InstrumentedRunner.runInstrumented(programName, getProgramInputs(programInputTypes));
+        String[] programInputs = getProgramInputs(programInputTypes);
+        solvedConstraints.add(programInputs);
+        // Step 1: Run program on random inputs
+        var exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
+        if (exitCode != 0) {
+            return exitCode;
+        }
 
-        Stack<AbstractConstraint> stateConstraint;
-//        while (true) {
+        @NonNull State state = returnStateFromIO();
+        ArrayList<AbstractSymbol> solved;
+
+        @NonNull Stack<AbstractConstraint> constraints = state.getConstraints();
+
+        for (@NonNull AbstractConstraint constraint : constraints) {
+            if (constraint.getLineNumber() == -1) {
+                continue;
+            }
+            constraintNegatedMap.put(constraint.getLineNumber(), false);
+        }
+
+        while (!(constraints.empty())) {
             // this global state needs to be obtained from an external data store
-//            State state = new State(); // shouldn't be a "new"
-//            ArrayList<AbstractConstant> solved = Z3Solver.solve(state);   // need to save these solved values somewhere
-//            stateConstraint = state.getConstraints();
-//            while (!(stateConstraint.empty()) && (stateConstraint.peek().negated)) {
-//                stateConstraint.pop();
-//            }
-//            if (stateConstraint.empty()) {
-//                break;
-//            }
-//            stateConstraint.peek().negated = true;
-//            InstrumentedRunner.runInstrumented(programName, programInputs);
-//        }
+            // solved = Z3Solver.solve(state);   // need to save these solved values somewhere
+            int linenumber = -1;
+            while (!(constraints.empty())) {
+                linenumber = constraints.peek().getLineNumber();
+                if (linenumber == -1) {
+                    constraints.pop();
+                    continue;
+                }
+                if (constraintNegatedMap.containsKey(linenumber) && !constraintNegatedMap.get(linenumber)) {
+                    // map contains the key
+                    // the top has a line number (is negateable)
+                    // the top is not negated
+                    break;
+                } else {
+                    constraints.pop();
+                    continue;
+                }
+            }
+            if (constraints.empty()) {
+                System.out.println("No more constraints to negate");
+                return 0;
+            }
 
-        return exitCode;
+            constraintNegatedMap.put(linenumber, true);
+            solved = Z3Solver.solve(state); // solve for negated end
+            programInputs = abstractSymbolListToStringArray(solved);
+            solvedConstraints.add(programInputs);
+            exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
+            if (exitCode != 0) {
+                return exitCode;
+            }
+        }
+
+        return 0;
+    }
+
+    public static void printSolvedConstraints() {
+        for (String[] s : solvedConstraints) {
+            System.out.println(Arrays.toString(s));
+        }
     }
 }
