@@ -1,6 +1,10 @@
 package vbn.state.value;
 
 public class IntConstant implements IConstant {
+
+    // For Serializable
+    private static final long serialVersionUID = 0L;
+
     private final int value;
 
 

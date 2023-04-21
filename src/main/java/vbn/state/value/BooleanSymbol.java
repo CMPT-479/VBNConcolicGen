@@ -3,7 +3,7 @@ package vbn.state.value;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class BooleanSymbol implements ISymbol, Serializable {
+public class BooleanSymbol implements ISymbol {
 
     // For Serializable
     private static final long serialVersionUID = 0L;
