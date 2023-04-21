@@ -62,9 +62,9 @@ public class UnaryConstraint implements IConstraint {
     @Override
     public void print() {
         if (assigned == null) {
-            System.out.println("Unary Constraint " + op + " " + symbol);
+            System.out.println("Unary Constraint line " + lineNumber + " { " + op + " " + symbol + " }");
         } else {
-            System.out.println("Unary Constraint " + assigned + " = " + op + " " + symbol);
+            System.out.println("Unary Constraint line " + lineNumber + " { " + assigned + " = " + op + " " + symbol + " }");
         }
     }
 }

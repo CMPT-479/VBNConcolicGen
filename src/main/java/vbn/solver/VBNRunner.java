@@ -62,6 +62,12 @@ public class VBNRunner {
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_07_If_Multiple_Diff_Types",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new BooleanConstant(DEFAULT_BOOL_CONSTANT)))
     );
@@ -92,9 +98,9 @@ public class VBNRunner {
         String[] abstractSymbolArray = new String[abstractSymbolList.size()];
         for (int i = 0; i < abstractSymbolList.size(); i++) {
             if (printable) {
-                abstractSymbolArray[i] = (String) abstractSymbolList.get(i).getValue();
+                abstractSymbolArray[i] = abstractSymbolList.get(i).getValue().toString();
             } else {
-                abstractSymbolArray[i] = abstractSymbolList.get(i).getName() + " = " + abstractSymbolList.get(i).getValue();
+                abstractSymbolArray[i] = abstractSymbolList.get(i).getName() + " = " + abstractSymbolList.get(i).getValue().toString();
             }
         }
         return abstractSymbolArray;
