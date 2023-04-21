@@ -20,12 +20,12 @@ public class VBNRunner {
     }
 
     public static State returnStateFromIO() {
-        @NonNull ArrayList<AbstractSymbol> symbols = (ArrayList<AbstractSymbol>) ObjectIO.readObjectFromFile(fileNameSymbols);
+        @NonNull ArrayList<ISymbol> symbols = (ArrayList<ISymbol>) ObjectIO.readObjectFromFile(fileNameSymbols);
         @NonNull Stack<AbstractConstraint> constraints = (Stack<AbstractConstraint>) ObjectIO.readObjectFromFile(fileNameConstraints);
 
         // convert symbol arrayList to symbol map
-        Map<String, AbstractSymbol> symbolMap = new HashMap<>();
-        for (AbstractSymbol symbol : symbols) {
+        Map<String, ISymbol> symbolMap = new HashMap<>();
+        for (ISymbol symbol : symbols) {
             symbolMap.put(symbol.getName(), symbol);
         }
 
@@ -40,7 +40,7 @@ public class VBNRunner {
     static double DEFAULT_REAL_CONSTANT = -123456.0; // for instances where we don't care about the real constant
     static boolean DEFAULT_BOOL_CONSTANT = false; // for instances where we don't care about the bool constant
 
-    static Map<String, List<AbstractConstant>> programInputMap = Map.ofEntries(
+    static Map<String, List<IConstant>> programInputMap = Map.ofEntries(
             Map.entry(
                     "vbn.examples.Test_00_Basic",
                     List.of(
@@ -60,7 +60,7 @@ public class VBNRunner {
 
     );
 
-    static String[] getProgramInputs(List<AbstractConstant> constants) {
+    static String[] getProgramInputs(List<IConstant> constants) {
         String[] inputs = new String[constants.size()];
         for (int i = 0; i < constants.size(); i++) {
             Value.Type type = constants.get(i).getType();
@@ -82,7 +82,7 @@ public class VBNRunner {
         return inputs;
     }
 
-    static String[] abstractSymbolListToStringArray(List<AbstractSymbol> abstractSymbolList) {
+    static String[] abstractSymbolListToStringArray(List<ISymbol> abstractSymbolList) {
         String[] abstractSymbolArray = new String[abstractSymbolList.size()];
         for (int i = 0; i < abstractSymbolList.size(); i++) {
             abstractSymbolArray[i] = String.valueOf(abstractSymbolList.get(i).getValue());
@@ -97,7 +97,7 @@ public class VBNRunner {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
-        @NonNull List<AbstractConstant> programInputTypes = programInputMap.get(programName);
+        @NonNull List<IConstant> programInputTypes = programInputMap.get(programName);
         String[] programInputs = getProgramInputs(programInputTypes);
         solvedConstraints.add(programInputs);
         // Step 1: Run program on random inputs
@@ -107,7 +107,7 @@ public class VBNRunner {
         }
 
         @NonNull State state = returnStateFromIO();
-        ArrayList<AbstractSymbol> solved;
+        ArrayList<ISymbol> solved;
 
         @NonNull Stack<AbstractConstraint> constraints = state.getConstraints();
 

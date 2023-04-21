@@ -1,7 +1,7 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
-import vbn.state.value.AbstractSymbol;
+import vbn.state.value.ISymbol;
 import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class UnaryConstraint implements AbstractConstraint {
     @Nullable
-    public AbstractSymbol assigned;
+    public ISymbol assigned;
 
     @NonNull
     public UnaryOperand op;
@@ -23,7 +23,7 @@ public class UnaryConstraint implements AbstractConstraint {
         this.symbol = symbol;
         this.op = op;
     }
-    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, @Nullable AbstractSymbol assigned) {
+    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, @Nullable ISymbol assigned) {
         this.assigned = assigned;
         this.symbol = symbol;
         this.op = op;

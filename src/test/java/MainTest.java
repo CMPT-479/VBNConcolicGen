@@ -7,16 +7,8 @@ import soot.PackManager;
 import soot.Transform;
 import soot.options.Options;
 import vbn.solver.VBNRunner;
-import vbn.solver.Z3Solver;
-import vbn.state.State;
-import vbn.state.constraints.BinaryConstraint;
-import vbn.state.constraints.BinaryOperand;
-import vbn.state.value.AbstractSymbol;
-import vbn.state.value.BooleanSymbol;
-import vbn.state.value.IntSymbol;
 
 import java.io.*;
-import java.util.List;
 
 import static vbn.solver.VBNRunner.printSolvedConstraints;
 

@@ -1,6 +1,6 @@
 package vbn.state.value;
 
-public class IntConstant implements AbstractConstant {
+public class IntConstant implements IConstant {
     private final int value;
 
 

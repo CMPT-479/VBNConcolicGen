@@ -18,12 +18,12 @@ public class State implements Serializable {
         constraints = new Stack<>();
     }
 
-    public State(Map<String, AbstractSymbol> symbols, Stack<AbstractConstraint> constraints) {
+    public State(Map<String, ISymbol> symbols, Stack<AbstractConstraint> constraints) {
         this.symbols = symbols;
         this.constraints = constraints;
     }
 
-    private final Map<String, AbstractSymbol> symbols;
+    private final Map<String, ISymbol> symbols;
 
     private final Stack<AbstractConstraint> constraints;
 
@@ -39,7 +39,7 @@ public class State implements Serializable {
      * Add a general symbol
      * @param symbol the symbol object to add
      */
-    public void addSymbol(AbstractSymbol symbol) {
+    public void addSymbol(ISymbol symbol) {
         symbols.put(symbol.getName(), symbol);
     }
 
@@ -57,7 +57,7 @@ public class State implements Serializable {
      * @param symbolName The name of the symbol
      * @return the symbol object
       */
-    public AbstractSymbol getSymbol(String symbolName) {
+    public ISymbol getSymbol(String symbolName) {
         @NonNull
         var result = symbols.get(symbolName);
 
@@ -65,12 +65,12 @@ public class State implements Serializable {
     }
 
     @Nullable
-    public AbstractSymbol getSymbolCanBeNull(String symbolName) {
+    public ISymbol getSymbolCanBeNull(String symbolName) {
         return symbols.get(symbolName);
     }
 
     @NonNull
-    public ArrayList<AbstractSymbol> getSymbols() {
+    public ArrayList<ISymbol> getSymbols() {
         return new ArrayList<>(symbols.values());
     }
 
@@ -91,7 +91,7 @@ public class State implements Serializable {
     public State getSerializeState() {
         Stack<AbstractConstraint> newConstraints = (Stack<AbstractConstraint>) this.constraints.clone();
         Stack<AbstractConstraint> finalConstraints = new Stack<>();
-        Map<String, AbstractSymbol> finalSymbols = new HashMap<>();
+        Map<String, ISymbol> finalSymbols = new HashMap<>();
 
         this.symbols.forEach((key, val) -> {
             if (!(val instanceof UnknownSymbol)) {

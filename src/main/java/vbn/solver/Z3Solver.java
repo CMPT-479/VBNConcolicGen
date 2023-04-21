@@ -18,10 +18,10 @@ public class Z3Solver {
 
     public static Expr handleBinaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
                                                @NonNull BinaryConstraint binaryConstraint) {
-        @NonNull AbstractSymbol leftSymbol = (AbstractSymbol) binaryConstraint.left;
-        @NonNull AbstractSymbol rightSymbol = (AbstractSymbol) binaryConstraint.right;
+        @NonNull ISymbol leftSymbol = (ISymbol) binaryConstraint.left;
+        @NonNull ISymbol rightSymbol = (ISymbol) binaryConstraint.right;
         @NonNull BinaryOperand op = binaryConstraint.op;
-        @Nullable AbstractSymbol assigned = binaryConstraint.assigned;  // optional
+        @Nullable ISymbol assigned = binaryConstraint.assigned;  // optional
 
         @NonNull Expr leftExpr = z3ExprMap.get(leftSymbol.getName());
         @NonNull Expr rightExpr = z3ExprMap.get(rightSymbol.getName());
@@ -83,9 +83,9 @@ public class Z3Solver {
 
     public static Expr handleUnaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
                                               @NonNull UnaryConstraint unaryConstraint) {
-        @NonNull AbstractSymbol symbol = (AbstractSymbol) unaryConstraint.symbol;
+        @NonNull ISymbol symbol = (ISymbol) unaryConstraint.symbol;
         @NonNull UnaryOperand op = unaryConstraint.op;
-        @Nullable AbstractSymbol assigned = unaryConstraint.assigned; // optional
+        @Nullable ISymbol assigned = unaryConstraint.assigned; // optional
 
         @NonNull Expr symbolExpr = z3ExprMap.get(symbol.getName());
         Expr exprToReturn = null;
@@ -108,14 +108,14 @@ public class Z3Solver {
         return exprToReturn;
     }
 
-    public static ArrayList<AbstractSymbol> solve(@NonNull State state) {
+    public static ArrayList<ISymbol> solve(@NonNull State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
         Solver solver = ctx.mkSolver();
 
-        Collection<AbstractSymbol> symbols = state.getSymbols();
+        Collection<ISymbol> symbols = state.getSymbols();
         Map<String, Expr> z3ExprMap = new HashMap<>();
-        for (AbstractSymbol sym : symbols) {
+        for (ISymbol sym : symbols) {
             switch (sym.getType()) {
                 case INT_TYPE:
                     z3ExprMap.put(sym.getName(), ctx.mkIntConst(sym.getName()));
@@ -154,7 +154,7 @@ public class Z3Solver {
 
         // Check for satisfying assignment
         Status status = solver.check();
-        ArrayList<AbstractSymbol> returnList = new ArrayList<>();
+        ArrayList<ISymbol> returnList = new ArrayList<>();
         if (status == Status.SATISFIABLE) {
             // Get satisfying assignment
             Model model = solver.getModel();
@@ -195,8 +195,8 @@ public class Z3Solver {
         return returnList;
     }
 
-    public static void printSolvedValuesBasedOnList(List<AbstractSymbol> symbols) {
-        for (AbstractSymbol symbol : symbols) {
+    public static void printSolvedValuesBasedOnList(List<ISymbol> symbols) {
+        for (ISymbol symbol : symbols) {
             System.out.println(symbol.getName() + " = " + symbol.getValue());
 //                System.out.println(symbol.getName() + " = unknown value (instance type: " + symbol.getClass().getName() + ")");
 

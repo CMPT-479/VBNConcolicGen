@@ -3,8 +3,8 @@ package vbn.state.helpers;
 import lombok.NonNull;
 import org.junit.Test;
 import vbn.state.constraints.*;
-import vbn.state.value.AbstractConstant;
-import vbn.state.value.AbstractSymbol;
+import vbn.state.value.IConstant;
+import vbn.state.value.ISymbol;
 import vbn.state.value.BooleanSymbol;
 import vbn.state.value.Value;
 
@@ -26,7 +26,7 @@ public class ComputeConstraints {
      * Left goes first.
      * @param symName the name of the symbol
      */
-    public void pushSymbol(@NonNull AbstractSymbol symName) {
+    public void pushSymbol(@NonNull ISymbol symName) {
         valueStack.push(symName);
     }
 
@@ -35,7 +35,7 @@ public class ComputeConstraints {
      * Left goes first.
      * @param constant the constant object
      */
-    public void pushConstant(@NonNull AbstractConstant constant) {
+    public void pushConstant(@NonNull IConstant constant) {
         valueStack.push(constant);
     }
 
@@ -55,7 +55,7 @@ public class ComputeConstraints {
      * Generate constraints based on the calls
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public AbstractConstraint generateFromPushes(@Nullable final AbstractSymbol assignmentSymName) {
+    public AbstractConstraint generateFromPushes(@Nullable final ISymbol assignmentSymName) {
         AbstractConstraint resultingConstraint;
 
         try {
@@ -77,7 +77,7 @@ public class ComputeConstraints {
         return resultingConstraint;
     }
 
-    public AbstractConstraint generateFromPushes(int lineNumber, @Nullable final AbstractSymbol assignmentSymName) {
+    public AbstractConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName) {
         var constraint = generateFromPushes(assignmentSymName);
         constraint.setLineNumber(lineNumber);
         return constraint;
@@ -98,7 +98,7 @@ public class ComputeConstraints {
 
     static public class GenerateConstraintVisitor implements IOperandVisitor {
         private AbstractConstraint generatedConstraint;
-        public AbstractSymbol assignSym;
+        public ISymbol assignSym;
         public Stack<Value> valueStack;
 
         public void visit(BinaryOperand binOp) throws IncorrectNumberOfValuesException {
