@@ -22,6 +22,12 @@ public class VBNRunner {
     public static Map<Integer, Boolean> constraintOriginallyNegated = new HashMap<>();
     public static List<String[]> solvedConstraints = new ArrayList<>();
 
+    public static void reset() {
+        constraintNegatedMap.clear();
+        constraintOriginallyNegated.clear();
+        solvedConstraints.clear();
+    }
+
     public static void insertStateIntoIO(State state) {
         ObjectIO.writeObjectToFile(state.getSymbols(), fileNameSymbols);
         ObjectIO.writeObjectToFile(state.getConstraints(), fileNameConstraints);

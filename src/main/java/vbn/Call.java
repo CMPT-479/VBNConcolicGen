@@ -244,10 +244,10 @@ public class Call {
 
             switch (valueType) {
                 case INT_TYPE:
-                    result = new IntSymbol(symName, (int) concreteValue);
+                    result = new IntSymbol(symName, ((Number) concreteValue).intValue());
                     break;
                 case REAL_TYPE:
-                    result = new RealSymbol(symName, (double) concreteValue);
+                    result = new RealSymbol(symName, ((Number) concreteValue).doubleValue());
                     break;
                 case BOOL_TYPE:
                     result = new BooleanSymbol(symName, (boolean) concreteValue);
