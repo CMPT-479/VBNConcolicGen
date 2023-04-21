@@ -85,7 +85,7 @@ public class VBNRunner {
     static String[] abstractSymbolListToStringArray(List<AbstractSymbol> abstractSymbolList) {
         String[] abstractSymbolArray = new String[abstractSymbolList.size()];
         for (int i = 0; i < abstractSymbolList.size(); i++) {
-            abstractSymbolArray[i] = (String) abstractSymbolList.get(i).getValue();
+            abstractSymbolArray[i] = String.valueOf(abstractSymbolList.get(i).getValue());
         }
         return abstractSymbolArray;
     }

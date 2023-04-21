@@ -1,6 +1,6 @@
 package vbn.state.value;
 
-public class UnknownConstant implements AbstractConstant {
+public class UnknownConstant implements AbstractConstant, IUnknownValue {
 
     // For Serializable
     private static final long serialVersionUID = 0L;
