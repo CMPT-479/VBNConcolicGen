@@ -84,7 +84,34 @@ public class State implements Serializable {
         sym.setValue(concreteValue);
     }
 
-//    public void initSymbol(String symName, Object value) {
-//
-//    }
+    /**
+     * This EDITS the STATE!!!!!
+     * @return the state that should be Serializable
+     */
+    public State getSerializeState() {
+        Stack<AbstractConstraint> newConstraints = (Stack<AbstractConstraint>) this.constraints.clone();
+
+        newConstraints.forEach((constraint) -> {
+            if (constraint instanceof BinaryConstraint) {
+                BinaryConstraint binConst = (BinaryConstraint) constraint;
+                if (binConst.left instanceof UnknownSymbol) {
+                    ((UnknownSymbol) binConst.left).setValue(-1);
+                }
+                if (binConst.right instanceof UnknownSymbol) {
+                    ((UnknownSymbol) binConst.right).setValue(-1);
+                }
+            }
+
+            if (constraint instanceof UnaryConstraint) {
+                UnaryConstraint unaryConstraint = (UnaryConstraint) constraint;
+                if (unaryConstraint.symbol instanceof UnknownSymbol) {
+                    ((UnknownSymbol) unaryConstraint.symbol).setValue(-1);
+                }
+            }
+        });
+
+        return new State(symbols, newConstraints);
+
+    }
+
 }
