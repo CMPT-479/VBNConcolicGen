@@ -134,14 +134,15 @@ public class Z3Solver {
             System.out.println(constraint.getClass());
             int constraintLineNumber = constraint.getLineNumber();
             if (constraint instanceof UnaryConstraint) {
-                if (constraintLineNumber != -1 && !constraintNegatedMap.get(constraintLineNumber)) {
+                if (constraintLineNumber != -1 && constraintNegatedMap.get(constraintLineNumber)) {
+                    // if negated is true, then we negate the constraint
                     solver.add(ctx.mkNot(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint)))   ;
                 } else {
                     solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
                 }
 
             } else if (constraint instanceof BinaryConstraint) {
-                if (constraintLineNumber != -1 && !constraintNegatedMap.get(constraintLineNumber)) {
+                if (constraintLineNumber != -1 && constraintNegatedMap.get(constraintLineNumber)) {
                     solver.add(ctx.mkNot(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint)))   ;
                 } else {
                     solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
