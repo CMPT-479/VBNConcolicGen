@@ -11,12 +11,12 @@ public class BooleanSymbol implements AbstractSymbol, Serializable {
     /**
      * The unique identifier for this string
      */
-    public String varName;
+    private String varName;
 
     /**
      * The current concrete value for this symbol
      */
-    public boolean value;
+    private boolean value;
 
     public BooleanSymbol(String varName, boolean value) {
         this.varName = varName;
@@ -24,13 +24,23 @@ public class BooleanSymbol implements AbstractSymbol, Serializable {
     }
 
     @Override
-    public Type getType() {
-        return Type.BOOL_TYPE;
+    public Value.Type getType() {
+        return Value.Type.BOOL_TYPE;
     }
 
     @Override
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public void setValue(Object value) {
+        this.value = (boolean) value;
+    }
+
+    @Override
+    public String getName() {
+        return varName;
     }
 
     @Override

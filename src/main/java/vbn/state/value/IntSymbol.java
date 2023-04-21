@@ -16,11 +16,16 @@ public class IntSymbol implements AbstractSymbol {
     /**
      * The current concrete value for this symbol
      */
-    public boolean value;
+    public int value;
 
-    public IntSymbol(String varName, boolean value) {
+    public IntSymbol(String varName, int value) {
         this.varName = varName;
         this.value = value;
+    }
+
+    @Override
+    public String getName() {
+        return varName;
     }
 
     @Override
@@ -31,6 +36,11 @@ public class IntSymbol implements AbstractSymbol {
     @Override
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public void setValue(Object value) {
+        this.value = (int) value;
     }
 
     @Override

@@ -11,12 +11,12 @@ public class UnknownSymbol implements AbstractSymbol, Serializable {
     /**
      * The unique identifier for this string
      */
-    public String varName;
+    private String varName;
 
     /**
      * The current concrete value for this symbol
      */
-    public Object value;
+    private Object value;
 
     public UnknownSymbol(String varName, Object value) {
         this.varName = varName;
@@ -31,6 +31,16 @@ public class UnknownSymbol implements AbstractSymbol, Serializable {
     @Override
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public String getName() {
+        return varName;
+    }
+
+    @Override
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     @Override

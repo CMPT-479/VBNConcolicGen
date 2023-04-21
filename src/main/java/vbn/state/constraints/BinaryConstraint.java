@@ -1,7 +1,7 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractSymbol;
 import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
@@ -10,7 +10,7 @@ import java.util.Objects;
 public class BinaryConstraint extends AbstractConstraint {
 
     @Nullable
-    public Symbol assigned;
+    public AbstractSymbol assigned;
 
     @NonNull
     public Value left;
@@ -27,7 +27,7 @@ public class BinaryConstraint extends AbstractConstraint {
         this.op = op;
         this.right = right;
     }
-    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, @Nullable Symbol assigned) {
+    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, @Nullable AbstractSymbol assigned) {
         this.assigned = assigned;
         this.left = left;
         this.op = op;

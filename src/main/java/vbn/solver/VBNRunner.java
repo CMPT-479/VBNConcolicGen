@@ -3,7 +3,7 @@ package vbn.solver;
 import vbn.state.constraints.AbstractConstraint;
 import vbn.state.State;
 import vbn.state.value.AbstractConstant;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractSymbol;
 
 import java.util.ArrayList;
 import java.util.Collection;

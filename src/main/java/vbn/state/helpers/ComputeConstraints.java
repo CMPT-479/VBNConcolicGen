@@ -3,7 +3,7 @@ package vbn.state.helpers;
 import lombok.NonNull;
 import vbn.state.constraints.*;
 import vbn.state.value.AbstractConstant;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractSymbol;
 import vbn.state.value.Value;
 
 import javax.annotation.Nullable;
@@ -22,7 +22,7 @@ public class ComputeConstraints {
      * Left goes first.
      * @param symName the name of the symbol
      */
-    public void pushSymbol(@NonNull Symbol symName) {
+    public void pushSymbol(@NonNull AbstractSymbol symName) {
         valueStack.push(symName);
     }
 
@@ -51,7 +51,7 @@ public class ComputeConstraints {
      * Generate constraints based on the calls
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public AbstractConstraint generateFromPushes(@Nullable final Symbol assignmentSymName) {
+    public AbstractConstraint generateFromPushes(@Nullable final AbstractSymbol assignmentSymName) {
         var numOfOps = valueStack.size();
         AbstractConstraint resultingConstraint;
 
@@ -88,7 +88,7 @@ public class ComputeConstraints {
 
     static class GenerateConstraintVisitor implements IOperandVisitor {
         private AbstractConstraint generatedConstraint;
-        public Symbol assignmentSymName;
+        public AbstractSymbol assignmentSymName;
         public Stack<Value> valueStack;
 
         public void visit(BinaryOperand binOp) {

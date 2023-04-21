@@ -5,7 +5,7 @@ import lombok.NonNull;
 import vbn.state.*;
 import vbn.state.constraints.*;
 import vbn.state.value.AbstractConstant;
-import vbn.state.value.Symbol;
+import vbn.state.value.AbstractSymbol;
 import vbn.state.value.BooleanConstant;
 import vbn.state.value.IntConstant;
 
@@ -17,10 +17,10 @@ public class Z3Solver {
 
 //    public static Expr handleBinaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
 //                                               @NonNull BinaryConstraint binaryConstraint) {
-//        @NonNull Symbol leftSymbol = binaryConstraint.left;
-//        @NonNull Symbol rightSymbol = binaryConstraint.right;
+//        @NonNull AbstractSymbol leftSymbol = binaryConstraint.left;
+//        @NonNull AbstractSymbol rightSymbol = binaryConstraint.right;
 //        @NonNull BinaryOperand op = binaryConstraint.op;
-//        @Nullable Symbol assigned = binaryConstraint.assigned;  // optional
+//        @Nullable AbstractSymbol assigned = binaryConstraint.assigned;  // optional
 //
 //        @NonNull Expr leftExpr = z3ExprMap.get(leftSymbol.id);
 //        @NonNull Expr rightExpr = z3ExprMap.get(rightSymbol.id);
@@ -82,9 +82,9 @@ public class Z3Solver {
 //
 //    public static Expr handleUnaryConstraints(@NonNull Context ctx, @NonNull Map<String, Expr> z3ExprMap,
 //                                              @NonNull UnaryConstraint unaryConstraint) {
-//        @NonNull Symbol symbol = unaryConstraint.symbol;
+//        @NonNull AbstractSymbol symbol = unaryConstraint.symbol;
 //        @NonNull UnaryOperand op = unaryConstraint.op;
-//        @Nullable Symbol assigned = unaryConstraint.assigned; // optional
+//        @Nullable AbstractSymbol assigned = unaryConstraint.assigned; // optional
 //
 //        @NonNull Expr symbolExpr = z3ExprMap.get(symbol.id);
 //        Expr exprToReturn = null;
@@ -112,7 +112,7 @@ public class Z3Solver {
 //        Context ctx = new Context();
 //        Solver solver = ctx.mkSolver();
 //
-//        Collection<Symbol> symbols = state.getSymbols();
+//        Collection<AbstractSymbol> symbols = state.getSymbols();
 //        Map<String, Expr> z3ExprMap = new HashMap<>();
 //        for (var sym : symbols) {
 //            switch (sym.type) {
