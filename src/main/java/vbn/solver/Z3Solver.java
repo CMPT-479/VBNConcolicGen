@@ -275,7 +275,6 @@ public class Z3Solver {
                     returnList.add(new IntSymbol(k, val));
                 } else {
                     throw new VBNSolverRuntimeError("Error, evaluatedValue instance of an unhandled class");
-
                 }
             }
         } else if (status == Status.UNSATISFIABLE) {
