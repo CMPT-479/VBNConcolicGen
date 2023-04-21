@@ -8,6 +8,7 @@ import vbn.state.value.*;
 import vbn.state.value.IntSymbol;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static vbn.solver.VBNRunner.constraintNegatedMap;
@@ -110,12 +111,56 @@ public class Z3Solver {
         return exprToReturn;
     }
 
+    public static ArrayList<ISymbol> returnSortedSymbols(ArrayList<ISymbol> symbols, Stack<IConstraint> constraintStack) {
+        HashSet<String> hsSymbols = new HashSet<>();
+        for (ISymbol sym : symbols) {
+            hsSymbols.add(sym.getName());
+        }
+
+        ArrayList<ISymbol> sortedInputSymbols = new ArrayList<>();
+        for (IConstraint constraint : constraintStack) {
+            if (constraint instanceof BinaryConstraint) {
+                BinaryConstraint bc = (BinaryConstraint) constraint;
+                if (bc.assigned != null && hsSymbols.contains(bc.assigned.getName())) {
+                    sortedInputSymbols.add(bc.assigned);
+                    hsSymbols.remove(bc.assigned.getName());
+                }
+
+                if (bc.left instanceof ISymbol && hsSymbols.contains(((ISymbol) bc.left).getName())) {
+                    sortedInputSymbols.add((ISymbol) bc.left);
+                    hsSymbols.remove(((ISymbol) bc.left).getName());
+                }
+
+                if (bc.right instanceof ISymbol && hsSymbols.contains(((ISymbol) bc.right).getName())) {
+                    sortedInputSymbols.add((ISymbol) bc.right);
+                    hsSymbols.remove(((ISymbol) bc.right).getName());
+                }
+            } else if (constraint instanceof UnaryConstraint) {
+                UnaryConstraint uc = (UnaryConstraint) constraint;
+                if (uc.assigned != null && hsSymbols.contains(uc.assigned.getName())) {
+                    sortedInputSymbols.add(uc.assigned);
+                    hsSymbols.remove(uc.assigned.getName());
+                }
+
+                if (uc.symbol instanceof ISymbol && hsSymbols.contains(((ISymbol) uc.symbol).getName())) {
+                    sortedInputSymbols.add((ISymbol) uc.symbol);
+                    hsSymbols.remove(((ISymbol) uc.symbol).getName());
+                }
+            } else {
+                throw new RuntimeException("Error, constraint not handled");
+            }
+        }
+
+        return sortedInputSymbols;
+    }
+
     public static ArrayList<ISymbol> solve(@NonNull State state) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
         Solver solver = ctx.mkSolver();
 
-        Collection<ISymbol> symbols = state.getSymbols();
+        ArrayList<ISymbol> symbols = state.getSymbols();
+        System.out.println("DEBUGGING INPUT SYMBOLS: " + symbols);
         Map<String, Expr> z3ExprMap = new HashMap<>();
         for (ISymbol sym : symbols) {
             switch (sym.getType()) {
@@ -137,16 +182,30 @@ public class Z3Solver {
 //            System.out.println(constraint.getClass());
             int constraintLineNumber = constraint.getLineNumber();
             if (constraint instanceof UnaryConstraint) {
-                if (constraintLineNumber != -1 && constraintNegatedMap.get(constraintLineNumber)) {
+                if (constraintLineNumber != -1) {
                     // if negated is true, then we negate the constraint
-                    solver.add(ctx.mkNot(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint)))   ;
+                    if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
+                        throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
+                    }
+                    if (constraintNegatedMap.get(constraintLineNumber)) {
+                        solver.add(ctx.mkNot(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint)));
+                    } else {
+                        solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
+                    }
                 } else {
                     solver.add(handleUnaryConstraints(ctx, z3ExprMap, (UnaryConstraint) constraint));
                 }
 
             } else if (constraint instanceof BinaryConstraint) {
-                if (constraintLineNumber != -1 && constraintNegatedMap.get(constraintLineNumber)) {
-                    solver.add(ctx.mkNot(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint)))   ;
+                if (constraintLineNumber != -1) {
+                    if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
+                        throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
+                    }
+                    if (constraintNegatedMap.get(constraintLineNumber)) {
+                        solver.add(ctx.mkNot(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint)));
+                    } else {
+                        solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
+                    }
                 } else {
                     solver.add(handleBinaryConstraints(ctx, z3ExprMap, (BinaryConstraint) constraint));
                 }
@@ -161,7 +220,14 @@ public class Z3Solver {
         if (status == Status.SATISFIABLE) {
             // Get satisfying assignment
             Model model = solver.getModel();
-            for (String k : z3ExprMap.keySet()) {
+
+            String k;
+            for (ISymbol s : returnSortedSymbols(symbols, constraintStack)) {
+                // TODO: Only solve for the input variables:
+                k = s.getName();
+                if (k.startsWith("$")) {
+                    continue;
+                }
                 Expr evaluatedValue = model.eval(z3ExprMap.get(k), true);
                 if (evaluatedValue instanceof BoolExpr) {
                     BoolExpr evaluatedValueBoolExpr = (BoolExpr) evaluatedValue;
