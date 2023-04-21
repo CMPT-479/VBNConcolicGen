@@ -148,6 +148,14 @@ public class Call {
         globalState.pushConstraint(constraint);
     }
 
+    public static void pushTrueBranch(int lineNumber) {
+
+    }
+
+    public static void pushFalseBranch(int lineNumber) {
+
+    }
+
     /**
      * When the DFS search hits an error, return, etc.
      */
