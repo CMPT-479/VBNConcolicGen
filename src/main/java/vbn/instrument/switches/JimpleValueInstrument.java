@@ -8,29 +8,20 @@ import soot.jimple.Constant;
 import soot.jimple.Expr;
 import soot.jimple.Jimple;
 import vbn.instrument.InstrumentData;
+import vbn.instrument.InstrumentResult;
 
 import java.util.List;
 
 public class JimpleValueInstrument {
-    public static void instrument(Value v, Value left, Unit unit, InstrumentData data) {
-        if (v instanceof Constant) {
-            var typeSwitch = new ValueTypeSwitch(data, unit, v);
-            v.getType().apply(typeSwitch);
-            var units = typeSwitch.getResult();
-            var pushConstant = data.runtime.getMethod("pushConstant", List.of(
-                    RefType.v("java.lang.Object")
-            ));
-            var invokeStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(pushConstant.makeRef(), typeSwitch.v));
-            units.add(invokeStmt);
-            data.units.insertBefore(units, unit);
-            return;
-        }
+    public static InstrumentResult instrument(Value v, Value left, InstrumentData data) {
         if (!(v instanceof Expr)) {
-            v.apply(new RightReferenceSwitch(data, unit));
-            return;
+            var refSwitch = new RightReferenceSwitch(data);
+            v.apply(refSwitch);
+            return refSwitch.getResult();
+        } else {
+            var exprSwitch = new ExpressionSwitch(data);
+            v.apply(exprSwitch);
+            return exprSwitch.getResult();
         }
-        // Dealing with expression
-        var expressionSwitch = new ExpressionSwitch(data, unit);
-        v.apply(expressionSwitch);
     }
 }
