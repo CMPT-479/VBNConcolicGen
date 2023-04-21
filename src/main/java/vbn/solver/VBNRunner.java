@@ -79,7 +79,15 @@ public class VBNRunner {
 
     private static void putInitialConstraintPathDirection(Stack<IConstraint> constraints) {
         for (IConstraint constraint : constraints) {
-            constraintNegatedMap.put(constraint.getLineNumber(), constraint.getOriginalEvaluation());
+            constraintOriginallyNegated.put(constraint.getLineNumber(), constraint.getOriginalEvaluation());
+        }
+    }
+
+    @NonNull
+    private static Stack<IConstraint> removeInvalidConstraints(@NonNull Stack<IConstraint> constraints) {
+        Stack<IConstraint> validConstraints = new Stack<>();
+        for (IConstraint constraint : constraints) {
+//            if (constraint.)
         }
     }
 
