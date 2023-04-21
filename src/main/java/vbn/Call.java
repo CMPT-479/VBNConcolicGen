@@ -83,14 +83,16 @@ public class Call {
         var binOp = getBinaryOperand(opTrimmed);
         if (binOp != null) {
             applyOperand(binOp);
+            return;
         }
 
         var unaOp = getUnaryOperand(opTrimmed);
         if (unaOp != null) {
             applyOperand(unaOp);
+            return;
         }
 
-        throw new RuntimeException("Tried processing an op that does not exist");
+        throw new RuntimeException("Tried processing an op that does not exist: '" + opTrimmed + "'");
     }
 
     /**
@@ -190,7 +192,7 @@ public class Call {
 
         System.out.println("System failed with an error:");
         System.out.println("----------------------------------------------------------------------");
-        System.err.println(theError.getMessage());
+        theError.printStackTrace();
         System.out.println("----------------------------------------------------------------------");
 
         // Give VBN.run() the state object in order to know the constraints and values
