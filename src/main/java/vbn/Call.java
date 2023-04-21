@@ -194,11 +194,15 @@ public class Call {
         System.out.println("From " + name);
     }
 
-    /**
-     * After a return statement
-     * @param lineNumber Jimple's line number
-     */
-    public static void finalizeReturn(int lineNumber) {
+    public static void pushArg(String symbol, Object value) {
+
+    }
+
+    public static void pushArgConst(Object value) {
+
+    }
+
+    public static void popArg(String symbol, Object value) {
 
     }
 

@@ -4,6 +4,7 @@ import soot.Unit;
 import soot.tagkit.LineNumberTag;
 import vbn.instrument.InstrumentData;
 import soot.jimple.*;
+import vbn.instrument.InstrumentResult;
 
 import java.util.List;
 
@@ -19,24 +20,24 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         // Handle assignment statements
         var left = stmt.getLeftOp();
         var right = stmt.getRightOp();
-        JimpleValueInstrument.instrument(right, left, stmt, data);
-
-        // FIXME: Temporary fix. Need to handle these cases later on.
-        if (right instanceof LengthExpr || right instanceof InvokeExpr) return;
-
-        left.apply(new LeftReferenceSwitch(data, stmt));
+        var rightSwitch = new RightReferenceSwitch(data);
+        var leftSwitch = new LeftReferenceSwitch(data);
+        right.apply(rightSwitch);
+        left.apply(leftSwitch);
     }
 
     public void caseInvokeStmt(InvokeStmt stmt) {
         // Handle method invocation statements
         var invokeExpr = stmt.getInvokeExpr();
-        ExpressionInstrumentUtil.invoke(invokeExpr, stmt, data);
+        var units = ExpressionInstrumentUtil.invoke(invokeExpr, data);
+        instrument(stmt, units);
     }
 
     public void caseIfStmt(IfStmt stmt) {
         var condition = stmt.getCondition();
         if (!(condition instanceof BinopExpr)) return;
-        JimpleValueInstrument.instrument(condition, null, stmt, data);
+        var result = JimpleValueInstrument.instrument(condition, null, data);
+        instrument(stmt, result);
         var trueBranch = data.runtime.getMethod("void pushTrueBranch(int)").makeRef();
         var falseBranch = data.runtime.getMethod("void pushFalseBranch(int)").makeRef();
         var finalizeIf = data.runtime.getMethod("void finalizeIf(int)").makeRef();
@@ -54,11 +55,17 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {
-
+        var right = stmt.getRightOp();
+        if (!(right instanceof ParameterRef || right instanceof ThisRef)) return;
+        var popSwitch = new PopSwitch(data);
+        stmt.getLeftOp().apply(popSwitch);
+        instrument(data.bodyBegin, popSwitch.getResult());
     }
 
     public void caseReturnStmt(ReturnStmt stmt) {
-
+        var pushSwitch = new PushSwitch(data);
+        stmt.getOp().apply(pushSwitch);
+        instrument(stmt, pushSwitch.getResult());
     }
 
     public void caseReturnVoidStmt(ReturnVoidStmt stmt) {
@@ -66,5 +73,10 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var terminate = data.runtime.getMethod("void terminatePath(int)").makeRef();
         var lineNumber = ((LineNumberTag) stmt.getTag("LineNumberTag")).getLineNumber();
         data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(terminate, IntConstant.v(lineNumber))), stmt);
+    }
+
+    public void instrument(Unit u, InstrumentResult result) {
+        data.units.insertBefore(result.beforeUnits, u);
+        data.units.insertAfter(result.afterUnits, u);
     }
 }

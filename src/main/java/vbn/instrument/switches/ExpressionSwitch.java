@@ -1,114 +1,89 @@
 package vbn.instrument.switches;
 
 import soot.RefType;
-import soot.Unit;
 import soot.jimple.*;
 import vbn.instrument.InstrumentData;
+import vbn.instrument.InstrumentResult;
 
 import java.util.List;
 
-public class ExpressionSwitch extends AbstractExprSwitch<Boolean> {
+public class ExpressionSwitch extends AbstractJimpleValueSwitch<InstrumentResult> {
     public InstrumentData data;
-    public Unit unit;
 
-    public ExpressionSwitch(InstrumentData data, Unit unit) {
+    public ExpressionSwitch(InstrumentData data) {
         this.data = data;
-        this.unit = unit;
-        setResult(false);
+        setResult(new InstrumentResult());
     }
 
     public void caseAddExpr(AddExpr v) {
-        ExpressionInstrumentUtil.arithmetic(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.arithmetic(v, data));
     }
 
     public void caseSubExpr(SubExpr v) {
-        ExpressionInstrumentUtil.arithmetic(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.arithmetic(v, data));
     }
 
     public void caseMulExpr(MulExpr v) {
-        ExpressionInstrumentUtil.arithmetic(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.arithmetic(v, data));
     }
 
     public void caseAndExpr(AndExpr v) {
-        ExpressionInstrumentUtil.logical(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.logical(v, data));
     }
 
     public void caseCmpExpr(CmpExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseCmpgExpr(CmpgExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseCmplExpr(CmplExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseDivExpr(DivExpr v) {
-        ExpressionInstrumentUtil.arithmetic(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.arithmetic(v, data));
     }
 
     public void caseEqExpr(EqExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseNeExpr(NeExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseGeExpr(GeExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseGtExpr(GtExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseLeExpr(LeExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseLtExpr(LtExpr v) {
-        ExpressionInstrumentUtil.comparison(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.comparison(v, data));
     }
 
     public void caseOrExpr(OrExpr v) {
-        ExpressionInstrumentUtil.logical(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.logical(v, data));
     }
 
     public void caseRemExpr(RemExpr v) {
-        ExpressionInstrumentUtil.logical(v, unit, data);
-        setResult(true);
+        getResult().combine(ExpressionInstrumentUtil.logical(v, data));
     }
 
     public void caseNegExpr(NegExpr v) {
         var op = v.getOp();
-        JimpleValueInstrument.instrument(op, null, unit, data);
+        setResult(JimpleValueInstrument.instrument(op, null, data));
         var apply = data.runtime.getMethod("apply", List.of(RefType.v("java.lang.String"))).makeRef();
         var symbol = StringConstant.v("neg");
-        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)), unit);
-    }
-
-    public void caseCastExpr(CastExpr v) {
-        JimpleValueInstrument.instrument(v.getOp(), null, unit, data);
-        var apply = data.runtime.getMethod("applyCast", List.of(RefType.v("java.lang.String"))).makeRef();
-        var symbol = StringConstant.v(v.getCastType().toString());
-        data.units.insertBefore(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)), unit);
+        getResult().beforeUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)));
     }
 }

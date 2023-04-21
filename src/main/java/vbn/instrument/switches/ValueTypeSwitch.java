@@ -12,11 +12,9 @@ import java.util.List;
 public class ValueTypeSwitch extends TypeSwitch<List<Unit>> {
     public InstrumentData data;
     public Value v;
-    public Unit unit;
-    public ValueTypeSwitch(InstrumentData data, Unit unit, Value v) {
+    public ValueTypeSwitch(InstrumentData data, Value v) {
         this.data = data;
         this.v = v;
-        this.unit = unit;
         setResult(new ArrayList<>());
     }
 
