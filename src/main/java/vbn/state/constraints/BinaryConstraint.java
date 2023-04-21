@@ -1,7 +1,6 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
-import vbn.state.value.BooleanSymbol;
 import vbn.state.value.ISymbol;
 import vbn.state.value.Value;
 
@@ -21,19 +20,26 @@ public class BinaryConstraint implements IConstraint {
 
     @NonNull
     public Value right;
+
+    @NonNull
+    public boolean evaluatedResult;
+
     private int lineNumber = -1;
 
-    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right) {
+    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, boolean evaluatedResult) {
         this.assigned = null;
         this.left = left;
         this.op = op;
         this.right = right;
+        this.evaluatedResult = evaluatedResult;
     }
-    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, @Nullable ISymbol assigned) {
+
+    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, boolean evaluatedResult, @Nullable ISymbol assigned) {
         this.assigned = assigned;
         this.left = left;
         this.op = op;
         this.right = right;
+        this.evaluatedResult = evaluatedResult;
     }
 
     @Override
