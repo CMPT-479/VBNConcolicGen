@@ -18,6 +18,8 @@ import vbn.state.value.IntSymbol;
 import java.io.*;
 import java.util.List;
 
+import static vbn.solver.VBNRunner.printSolvedConstraints;
+
 public class MainTest {
 
     @BeforeEach
@@ -40,6 +42,8 @@ public class MainTest {
     final void basic() {
         var exitCode = VBNRunner.execute("vbn.examples.Test_00_Basic");
         Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished basic test");
+        printSolvedConstraints();
     }
 
     @Test
@@ -50,8 +54,12 @@ public class MainTest {
 
     @Test
     final void basicNegAndMinus() {
-        final String[] args = new String[] {"vbn.examples.Test_02_NEG_vs_MINUS"};
-        soot.Main.main(args);
+//        final String[] args = new String[] {"vbn.examples.Test_02_NEG_vs_MINUS"};
+//        soot.Main.main(args);
+        var exitCode = VBNRunner.execute("vbn.examples.Test_02_NEG_vs_MINUS");
+        Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished neg vs minus test");
+        printSolvedConstraints();
     }
 
     @Test
