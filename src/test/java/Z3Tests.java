@@ -62,7 +62,7 @@ public class Z3Tests {
     }
 
     @Test
-    final void testZ3If() {
+    final void testZ3If_Multiple_Diff_Types() {
         try {
             String[] var0 = {"12", "123", "1234", "false"};
             var x = 1;

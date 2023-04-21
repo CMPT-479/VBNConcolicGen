@@ -9,26 +9,20 @@ public class Test_06_If_Multiple {
         x = Integer.parseInt(args[0]);
         y = Integer.parseInt(args[1]);
         z = Integer.parseInt(args[2]);
-        t = Boolean.parseBoolean(args[3]);
-        if (t) {
-            if (x > y) {
-                System.out.println("Path 1");
-                if (y > z) {
-                    System.out.println("Path 1.1");
-                } else {
-                    System.out.println("Path 1.2");
-                }
+        if (x > y) {
+            System.out.println("Path 1");
+            if (y > z) {
+                System.out.println("Path 1.1");
             } else {
-                System.out.println("Path 2");
-                if (x > z) {
-                    System.out.println("Path 2.1");
-                } else {
-                    System.out.println("Path 2.2");
-                }
+                System.out.println("Path 1.2");
             }
         } else {
-            System.out.println("Path 3");
+            System.out.println("Path 2");
+            if (x > z) {
+                System.out.println("Path 2.1");
+            } else {
+                System.out.println("Path 2.2");
+            }
         }
-
     }
 }

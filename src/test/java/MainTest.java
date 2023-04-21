@@ -71,6 +71,14 @@ public class MainTest {
     }
 
     @Test
+    final void basicIfMultipleDiffTypes() {
+        var exitCode = VBNRunner.execute("vbn.examples.Test_07_If_Multiple_Diff_Types");
+        Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished if multiple test");
+        printSolvedConstraints();
+    }
+
+    @Test
     final void basicClass() {
         final String[] args = new String[] {"vbn.examples.Test_03_Class"};
         soot.Main.main(args);

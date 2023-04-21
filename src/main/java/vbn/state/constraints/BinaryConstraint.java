@@ -70,9 +70,9 @@ public class BinaryConstraint implements IConstraint {
     @Override
     public void print() {
         if (assigned == null) {
-            System.out.println("Binary Constraint " + left + " " + op + " " + right);
+            System.out.println("Binary Constraint line " + lineNumber + " { " + left + " " + op + " " + right + " }");
         } else {
-            System.out.println("Binary Constraint " + assigned + " = " + left + " " + op + " " + right);
+            System.out.println("Binary Constraint line " + lineNumber + " { " + assigned + " = " + left + " " + op + " " + right + " }");
         }
     }
 }
