@@ -11,8 +11,11 @@ import java.util.*;
 
 public class VBNRunner {
 
-    static String fileNameSymbols = "stateSymbols.ser";
-    static String fileNameConstraints = "stateConstraints.ser";
+    private static final String fileNameSymbols = "stateSymbols.ser";
+    private static final String fileNameConstraints = "stateConstraints.ser";
+
+    public static Map<Integer, Boolean> constraintNegatedMap = new HashMap<>();   // false represents not negated, true negated
+    public static List<String[]> solvedConstraints = new ArrayList<>();
 
     public static void insertStateIntoIO(State state) {
         ObjectIO.writeObjectToFile(state.getSymbols(), fileNameSymbols);
@@ -34,48 +37,6 @@ public class VBNRunner {
 
         return new State(symbolMap, constraints);
     }
-
-    // input map constants
-    static int DEFAULT_INT_CONSTANT = -123456; // for instances where we don't care about the int constant
-    static double DEFAULT_REAL_CONSTANT = -123456.0; // for instances where we don't care about the real constant
-    static boolean DEFAULT_BOOL_CONSTANT = false; // for instances where we don't care about the bool constant
-
-    static Map<String, List<IConstant>> programInputMap = Map.ofEntries(
-            Map.entry(
-                    "vbn.examples.Test_00_Basic",
-                    List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT))),
-            Map.entry(
-                    "vbn.examples.Test_02_NEG_vs_MINUS",
-                    List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new BooleanConstant(DEFAULT_BOOL_CONSTANT))),
-            Map.entry(
-                    "vbn.examples.Test_05_If",
-                    List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT))),
-            Map.entry(
-                    "vbn.examples.Test_06_If_Multiple",
-                    List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT))),
-            Map.entry(
-                    "vbn.examples.Test_07_If_Multiple_Diff_Types",
-                    List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new BooleanConstant(DEFAULT_BOOL_CONSTANT))),
-            Map.entry(
-                    "vbn.examples.Test_08_If_Value",
-                    List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT)))
-
-            );
 
     static String[] getProgramInputs(@NonNull List<IConstant> constants) {
         String[] inputs = new String[constants.size()];
@@ -111,14 +72,11 @@ public class VBNRunner {
         return abstractSymbolArray;
     }
 
-    public static Map<Integer, Boolean> constraintNegatedMap = new HashMap<>();   // false represents not negated, true negated
-    public static List<String[]> solvedConstraints = new ArrayList<>();
-
     public static int execute(String programName) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
-        @NonNull List<IConstant> programInputTypes = programInputMap.get(programName);
+        @NonNull List<IConstant> programInputTypes = InputMap.programInputMap.get(programName);
         String[] programInputs = getProgramInputs(programInputTypes);
         solvedConstraints.add(programInputs);
         // Step 1: Run program on random inputs
