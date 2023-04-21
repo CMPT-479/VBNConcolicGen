@@ -72,4 +72,9 @@ public class UnaryConstraint implements IConstraint {
     public boolean getOriginalEvaluation() {
         return false;
     }
+
+    @Override
+    public boolean hasLineNumber() {
+        return lineNumber != -1;
+    }
 }
