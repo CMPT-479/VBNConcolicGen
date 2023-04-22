@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import vbn.ObjectIO;
 import vbn.solver.VBNRunner;
-import vbn.state.State;
+import vbn.state.GlobalState;
 import vbn.state.constraints.IConstraint;
 import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
@@ -20,11 +20,11 @@ public class ObjectIOTests {
 
     @Test
     final void testWritingAndReadingSymbolListWithExternalDataStore() {
-        State state = new State();
-        state.addSymbol(new BooleanSymbol("123", true));
-        state.addSymbol(new IntSymbol("567", 1));
+        GlobalState globalState = new GlobalState();
+        globalState.addSymbol(new BooleanSymbol("123", true));
+        globalState.addSymbol(new IntSymbol("567", 1));
         String fileName = "symbols.ser";
-        ObjectIO.writeObjectToFile(state.getSymbols(), fileName);
+        ObjectIO.writeObjectToFile(globalState.getSymbols(), fileName);
 
         ArrayList<ISymbol> symbols = (ArrayList<ISymbol>) ObjectIO.readObjectFromFile(fileName);
         Assertions.assertNotNull(symbols);
@@ -38,15 +38,15 @@ public class ObjectIOTests {
 
     @Test
     final void testWritingAndReadingConstraintListWithExternalDataStore() {
-        State state = new State();
+        GlobalState globalState = new GlobalState();
         BooleanSymbol symbol1 = new BooleanSymbol("1", false); // set with random variable
         BooleanSymbol symbol2 = new BooleanSymbol("2", true);
-        state.addSymbol(symbol1);
-        state.addSymbol(symbol2);
-        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false, -1));
+        globalState.addSymbol(symbol1);
+        globalState.addSymbol(symbol2);
+        globalState.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false, -1));
 
         String fileName = "constraints.ser";
-        ObjectIO.writeObjectToFile(state.getConstraints(), fileName);
+        ObjectIO.writeObjectToFile(globalState.getConstraints(), fileName);
 
         Stack<IConstraint> constraints = (Stack<IConstraint>) ObjectIO.readObjectFromFile(fileName);
         Assertions.assertNotNull(constraints);
@@ -101,16 +101,16 @@ public class ObjectIOTests {
 
     @Test
     final void testWritingAndReadingStateWithExternalDataStore() {
-        State state = new State();
+        GlobalState globalState = new GlobalState();
         BooleanSymbol symbol1 = new BooleanSymbol("1", false); // set with random variable
         BooleanSymbol symbol2 = new BooleanSymbol("2", true);
-        state.addSymbol(symbol1);
-        state.addSymbol(symbol2);
-        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false, -1));
+        globalState.addSymbol(symbol1);
+        globalState.addSymbol(symbol2);
+        globalState.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false, -1));
 
-        VBNRunner.insertStateIntoIO(state);
-        State returnedState = VBNRunner.returnStateFromIO();
-        ArrayList<ISymbol> symbols = returnedState.getSymbols();
+        VBNRunner.insertStateIntoIO(globalState);
+        GlobalState returnedGlobalState = VBNRunner.returnStateFromIO();
+        ArrayList<ISymbol> symbols = returnedGlobalState.getSymbols();
 
         Assertions.assertNotNull(symbols);
         System.out.println(symbols);
@@ -119,7 +119,7 @@ public class ObjectIOTests {
             System.out.println("Found symbol from file: " + s.getName() + " " + s.getType() + " " + s.getValue());
         }
 
-        Stack<IConstraint> constraints = returnedState.getConstraints();
+        Stack<IConstraint> constraints = returnedGlobalState.getConstraints();
         Assertions.assertNotNull(constraints);
         System.out.println(constraints);
         for (IConstraint c : constraints) {

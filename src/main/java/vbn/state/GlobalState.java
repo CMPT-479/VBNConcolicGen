@@ -2,6 +2,7 @@ package vbn.state;
 
 import lombok.NonNull;
 import vbn.state.constraints.*;
+import vbn.state.helpers.ComputeValueType;
 import vbn.state.value.*;
 
 import javax.annotation.Nullable;
@@ -11,7 +12,7 @@ import java.util.*;
 /**
  * This class handles all state necessary to solve an equation at a certain point
  */
-public class State implements Serializable {
+public class GlobalState implements Serializable {
     private Throwable error;
 
     private final Map<String, ISymbol> symbols;
@@ -26,13 +27,13 @@ public class State implements Serializable {
      */
     static final boolean DEFAULT_VALUE_REASSIGN_BOOLEAN = false;
 
-    public State() {
+    public GlobalState() {
         super();
         symbols = new HashMap<>();
         constraints = new Stack<>();
     }
 
-    public State(Map<String, ISymbol> symbols, Stack<IConstraint> constraints) {
+    public GlobalState(Map<String, ISymbol> symbols, Stack<IConstraint> constraints) {
         this.symbols = symbols;
         this.constraints = constraints;
     }
@@ -114,7 +115,8 @@ public class State implements Serializable {
      * Creates a Serializable copy of the state, removing the Unknown Symbols
      * @return the state is Serializable
      */
-    public State getSerializeState() {
+    @NonNull
+    public GlobalState getSerializeState() {
         Stack<IConstraint> finalConstraints = new Stack<>();
         Map<String, ISymbol> finalSymbols = new HashMap<>();
 
@@ -139,8 +141,34 @@ public class State implements Serializable {
             }
         }
 
-        return new State(finalSymbols, finalConstraints);
+        return new GlobalState(finalSymbols, finalConstraints);
 
+    }
+
+    public ISymbol createNewSymbol(String varName, Object concreteValue) {
+        ISymbol result;
+        Value.Type valueType = ComputeValueType.getType(concreteValue);
+
+        switch (valueType) {
+            case INT_TYPE:
+                result = new IntSymbol(varName, ((Number) concreteValue).longValue());
+                break;
+            case REAL_TYPE:
+                result = new RealSymbol(varName, ((Number) concreteValue).doubleValue());
+                break;
+            case BOOL_TYPE:
+                result = new BooleanSymbol(varName, (boolean) concreteValue);
+                break;
+            case UNKNOWN:
+                result = new UnknownSymbol(varName, concreteValue);
+                break;
+            default:
+                throw new VBNLibraryRuntimeException("A type was not handled");
+        }
+
+        addSymbol(result);
+
+        return result;
     }
 
     private void processBoolToInt(BinaryConstraint constraint) {
@@ -218,6 +246,7 @@ public class State implements Serializable {
     }
 
     public boolean hasVBNError() {
-        return error instanceof IVBNException;
+        // FIXME: We should somehow detect NullPointersFromVBNOnly
+        return error instanceof IVBNException || error instanceof NullPointerException;
     }
 }

@@ -1,5 +1,5 @@
 import org.junit.Test;
-import vbn.state.State;
+import vbn.state.GlobalState;
 import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
 import vbn.state.constraints.CustomOperand;
@@ -97,7 +97,7 @@ public class ComputeTests {
      */
     @Test
     public void testBinaryConstraintBooleanIntMix_IntThenBool() {
-        State state = new State();
+        GlobalState state = new GlobalState();
         Value left;
         Value right;
         BooleanConstant boolSymbol;
@@ -126,7 +126,7 @@ public class ComputeTests {
     }
     @Test
     public void testBinaryConstraintBooleanIntMix_BoolThenInt() {
-        State state = new State();
+        GlobalState state = new GlobalState();
         Value left;
         Value right;
         BooleanConstant boolSymbol;
