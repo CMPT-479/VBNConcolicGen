@@ -142,10 +142,12 @@ public class Call {
 
         computeConstraints.setEvaluatedToTrue();
 
-        var constraint = computeConstraints.generateFromPushes(lineNumber, globalState.getSymbol(symName));
+        var constraint = computeConstraints.generateFromPushes(lineNumber, globalState.getSymbol(symName), false);
         globalState.pushConstraint(constraint);
 
         if (TESTING_MODE) {
+            System.out.println("Finalize Store");
+            System.out.print("\t");
             System.out.println(constraint);
         }
     }
@@ -155,10 +157,12 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void finalizeIf(int lineNumber) {
-        var constraint = computeConstraints.generateFromPushes(lineNumber, null);
+        var constraint = computeConstraints.generateFromPushes(lineNumber, null, true);
         globalState.pushConstraint(constraint);
 
         if (TESTING_MODE) {
+            System.out.println("Finalize If");
+            System.out.print("\t");
             System.out.println(constraint);
         }
     }

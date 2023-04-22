@@ -22,8 +22,8 @@ public class ComputeTests {
         constraintComputer.pushSymbol(boolY);
         constraintComputer.setOperand(BinaryOperand.AND);
 
-        var result = constraintComputer.generateFromPushes();
-        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.AND, boolY, false);
+        var result = constraintComputer.generateFromPushes(-1, null);
+        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.AND, boolY, false, -1);
         assertEquals(result, groundTruth);
     }
 
@@ -38,7 +38,7 @@ public class ComputeTests {
         constraintComputer.setOperand(CustomOperand.REASSIGN);
 
         var result = constraintComputer.generateFromPushes(0, boolX);
-        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.EQ, boolY, false);
+        var groundTruth = new BinaryConstraint(boolX, BinaryOperand.EQ, boolY, false, -1);
         assertEquals(result, groundTruth);
     }
 
@@ -56,11 +56,11 @@ public class ComputeTests {
         right = new IntSymbol("right", 5);
         operand = BinaryOperand.EQ;
 
-        groundTruth = new BinaryConstraint(left, operand, right, false);
+        groundTruth = new BinaryConstraint(left, operand, right, false, -1);
 
         valueStack.push(left);
         valueStack.push(right);
-        visitor.setValues(valueStack, false, null);
+        visitor.setValues(valueStack, false, -1, null);
         operand.accept(visitor);
         assertEquals(groundTruth, visitor.getGeneratedConstraint());
 
@@ -80,11 +80,11 @@ public class ComputeTests {
         right = new BooleanSymbol("right", false);
         operand = BinaryOperand.GT;
 
-        groundTruth = new BinaryConstraint(left, operand, right, false);
+        groundTruth = new BinaryConstraint(left, operand, right, false, -1);
 
         valueStack.push(left);
         valueStack.push(right);
-        visitor.setValues(valueStack, false, null);
+        visitor.setValues(valueStack, false, -1, null);
         operand.accept(visitor);
 
         assertEquals(groundTruth, visitor.getGeneratedConstraint());
@@ -109,11 +109,11 @@ public class ComputeTests {
         right = new BooleanSymbol("right", true);
         operand = BinaryOperand.EQ;
 
-        groundTruth = new BinaryConstraint(boolSymbol, operand, right, false);
+        groundTruth = new BinaryConstraint(boolSymbol, operand, right, false, -1);
 
         valueStack.push(left);
         valueStack.push(right);
-        visitor.setValues(valueStack, false, null);
+        visitor.setValues(valueStack, false, -1, null);
         operand.accept(visitor);
 
         assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getType());
@@ -138,11 +138,11 @@ public class ComputeTests {
         boolSymbol = new BooleanConstant(true);
         operand = BinaryOperand.EQ;
 
-        groundTruth = new BinaryConstraint(left, operand, boolSymbol, false);
+        groundTruth = new BinaryConstraint(left, operand, boolSymbol, false, -1);
 
         valueStack.push(left);
         valueStack.push(right);
-        visitor.setValues(valueStack, false, null);
+        visitor.setValues(valueStack, false, -1, null);
         operand.accept(visitor);
 
         assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getType());
@@ -171,11 +171,11 @@ public class ComputeTests {
         operand = BinaryOperand.EQ;
         evaluatedResult = true;
 
-        groundTruth = new BinaryConstraint(left, operand, right, evaluatedResult);
+        groundTruth = new BinaryConstraint(left, operand, right, evaluatedResult, -1);
 
         valueStack.push(left);
         valueStack.push(right);
-        visitor.setValues(valueStack, evaluatedResult, null);
+        visitor.setValues(valueStack, evaluatedResult, -1, null);
         operand.accept(visitor);
 
         assertEquals(groundTruth.getOriginalEvaluation(), ((BinaryConstraint) visitor.getGeneratedConstraint()).getOriginalEvaluation());

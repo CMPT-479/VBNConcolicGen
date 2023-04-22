@@ -8,7 +8,6 @@ import vbn.state.value.*;
 import vbn.state.value.IntSymbol;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static vbn.solver.VBNRunner.constraintNegatedMap;
@@ -53,7 +52,7 @@ public class Z3Solver {
         @NonNull Expr leftExpr = handleExprBasedOnValue(ctx, z3ExprMap, binaryConstraint.left);
         @NonNull Expr rightExpr = handleExprBasedOnValue(ctx, z3ExprMap, binaryConstraint.right);
         @NonNull BinaryOperand op = binaryConstraint.op;
-        @Nullable ISymbol assigned = binaryConstraint.assigned;  // optional
+        @Nullable ISymbol assigned = binaryConstraint.assignedSymbol;  // optional
 
         Expr exprToReturn = null;
         switch (op) {
@@ -118,7 +117,7 @@ public class Z3Solver {
                                               @NonNull UnaryConstraint unaryConstraint) {
         @NonNull Expr symbolExpr = handleExprBasedOnValue(ctx, z3ExprMap, unaryConstraint.symbol);
         @NonNull UnaryOperand op = unaryConstraint.op;
-        @Nullable ISymbol assigned = unaryConstraint.assigned; // optional
+        @Nullable ISymbol assigned = unaryConstraint.assignedSymbol; // optional
 
         Expr exprToReturn = null;
 
@@ -150,9 +149,9 @@ public class Z3Solver {
         for (IConstraint constraint : constraintStack) {
             if (constraint instanceof BinaryConstraint) {
                 BinaryConstraint bc = (BinaryConstraint) constraint;
-                if (bc.assigned != null && hsSymbols.contains(bc.assigned.getName())) {
-                    sortedInputSymbols.add(bc.assigned);
-                    hsSymbols.remove(bc.assigned.getName());
+                if (bc.assignedSymbol != null && hsSymbols.contains(bc.assignedSymbol.getName())) {
+                    sortedInputSymbols.add(bc.assignedSymbol);
+                    hsSymbols.remove(bc.assignedSymbol.getName());
                 }
 
                 if (bc.left instanceof ISymbol && hsSymbols.contains(((ISymbol) bc.left).getName())) {
@@ -166,9 +165,9 @@ public class Z3Solver {
                 }
             } else if (constraint instanceof UnaryConstraint) {
                 UnaryConstraint uc = (UnaryConstraint) constraint;
-                if (uc.assigned != null && hsSymbols.contains(uc.assigned.getName())) {
-                    sortedInputSymbols.add(uc.assigned);
-                    hsSymbols.remove(uc.assigned.getName());
+                if (uc.assignedSymbol != null && hsSymbols.contains(uc.assignedSymbol.getName())) {
+                    sortedInputSymbols.add(uc.assignedSymbol);
+                    hsSymbols.remove(uc.assignedSymbol.getName());
                 }
 
                 if (uc.symbol instanceof ISymbol && hsSymbols.contains(((ISymbol) uc.symbol).getName())) {
@@ -223,7 +222,7 @@ public class Z3Solver {
                 throw new VBNSolverRuntimeError("Error, constraint type does not exist");
             }
 
-            if (constraint.hasLineNumber()) {
+            if (constraint.isBranch()) {
                 int constraintLineNumber = constraint.getLineNumber();
                 if (constraintOriginallyNegated.containsKey(constraintLineNumber) && constraintOriginallyNegated.get(constraintLineNumber)) {
                     constraintExpr = negate(ctx, constraintExpr);

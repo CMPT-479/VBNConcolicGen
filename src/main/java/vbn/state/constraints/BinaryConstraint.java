@@ -11,7 +11,7 @@ import java.util.Objects;
 public class BinaryConstraint implements IConstraint {
 
     @Nullable
-    public ISymbol assigned;
+    public ISymbol assignedSymbol;
 
     @NonNull
     public Value left;
@@ -22,25 +22,24 @@ public class BinaryConstraint implements IConstraint {
     @NonNull
     public Value right;
 
-    @NonNull
     public boolean evaluatedResult;
 
     private Integer lineNumber = null;
 
-    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, boolean evaluatedResult) {
-        this.assigned = null;
-        this.left = left;
-        this.op = op;
-        this.right = right;
-        this.evaluatedResult = evaluatedResult;
-    }
+    private Boolean isBranch = false;
 
-    public BinaryConstraint(@NonNull Value left, @NonNull BinaryOperand op, @NonNull Value right, boolean evaluatedResult, @Nullable ISymbol assigned) {
-        this.assigned = assigned;
+    public BinaryConstraint(
+            @NonNull Value left,
+            @NonNull BinaryOperand op,
+            @NonNull Value right,
+            boolean evaluatedResult,
+            int lineNumber) {
         this.left = left;
         this.op = op;
         this.right = right;
         this.evaluatedResult = evaluatedResult;
+        this.lineNumber = lineNumber;
+        this.assignedSymbol = null;
     }
 
     @Override
@@ -50,8 +49,8 @@ public class BinaryConstraint implements IConstraint {
         }
 
         BinaryConstraint otherBinaryConstraint = (BinaryConstraint) obj;
-        if (this.assigned == null || otherBinaryConstraint.assigned == null) {
-            if (this.assigned != otherBinaryConstraint.assigned) {
+        if (this.assignedSymbol == null || otherBinaryConstraint.assignedSymbol == null) {
+            if (this.assignedSymbol != otherBinaryConstraint.assignedSymbol) {
                 return false;
             }
             return Objects.equals(this.left, otherBinaryConstraint.left)
@@ -59,15 +58,20 @@ public class BinaryConstraint implements IConstraint {
                     && this.op == otherBinaryConstraint.op;
         } else {
             return Objects.equals(this.left, otherBinaryConstraint.left)
-                    && Objects.equals(this.assigned, otherBinaryConstraint.assigned)
+                    && Objects.equals(this.assignedSymbol, otherBinaryConstraint.assignedSymbol)
                     && Objects.equals(this.right, otherBinaryConstraint.right)
                     && this.op == otherBinaryConstraint.op;
         }
     }
 
     @Override
-    public boolean hasLineNumber() {
-        return lineNumber != null;
+    public boolean isBranch() {
+        return isBranch;
+    }
+
+    @Override
+    public void setIsBranch(boolean isBranch) {
+        this.isBranch = isBranch;
     }
 
     @Override
@@ -77,23 +81,14 @@ public class BinaryConstraint implements IConstraint {
         }
         return lineNumber;
     }
-    @Override
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
-
-    @Override
-    public void print() {
-        System.out.println(toString());
-    }
 
     @Override
     public String toString() {
         String result;
-        if (assigned == null) {
+        if (assignedSymbol == null) {
             result = "#" + lineNumber + " Binary Constraint{ " + left + " " + op + " " + right + " }";
         } else {
-            result = "#" + lineNumber + " Binary Constraint{ " + assigned + " = " + left + " " + op + " " + right + " }";
+            result = "#" + lineNumber + " Binary Constraint{ " + assignedSymbol + " = " + left + " " + op + " " + right + " }";
         }
         return result;
     }
@@ -101,5 +96,10 @@ public class BinaryConstraint implements IConstraint {
     @Override
     public boolean getOriginalEvaluation() {
         return evaluatedResult;
+    }
+
+    @Override
+    public void setAssignmentSymbol(ISymbol assignedSymbol) {
+        this.assignedSymbol = assignedSymbol;
     }
 }
