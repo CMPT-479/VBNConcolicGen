@@ -86,4 +86,24 @@ public class ExpressionSwitch extends AbstractJimpleValueSwitch<InstrumentResult
         var symbol = StringConstant.v("neg");
         getResult().beforeUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)));
     }
+
+    @Override
+    public void caseInterfaceInvokeExpr(InterfaceInvokeExpr v) {
+        getResult().combine(ExpressionInstrumentUtil.invoke(v, data));
+    }
+
+    @Override
+    public void caseStaticInvokeExpr(StaticInvokeExpr v) {
+        getResult().combine(ExpressionInstrumentUtil.invoke(v, data));
+    }
+
+    @Override
+    public void caseVirtualInvokeExpr(VirtualInvokeExpr v) {
+        getResult().combine(ExpressionInstrumentUtil.invoke(v, data));
+    }
+
+    @Override
+    public void caseDynamicInvokeExpr(DynamicInvokeExpr v) {
+        getResult().combine(ExpressionInstrumentUtil.invoke(v, data));
+    }
 }

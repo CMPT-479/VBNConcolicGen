@@ -15,18 +15,21 @@ public class ExpressionInstrumentUtil {
         if (!invokeMethod.getDeclaringClass().getName().equals(data.mainClass)) return new InstrumentResult();
         var args = expr.getArgs();
         // Push argument in reverse order
-        var argumentSwitch = new PushSwitch(data);
+        var result = new InstrumentResult();
         for (int i = args.size() - 1; i >= 0; i--) {
+            var argumentSwitch = new PushSwitch(data);
             args.get(i).apply(argumentSwitch);
+            result.combine(argumentSwitch.getResult());
         }
         if (expr instanceof InstanceInvokeExpr) {
+            var argumentSwitch = new PushSwitch(data);
             ((InstanceInvokeExpr) expr).getBase().apply(argumentSwitch);
+            result.combine(argumentSwitch.getResult());
         }
         var funBegin = data.runtime.getMethod("void beforeInvokeFunc()").makeRef();
         var funEnd = data.runtime.getMethod("void afterInvokeFunc()").makeRef();
         var beginStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(funBegin));
         var endStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(funEnd));
-        var result = argumentSwitch.getResult();
         result.beforeUnits.add(beginStmt);
         result.afterUnits.add(endStmt);
         return result;

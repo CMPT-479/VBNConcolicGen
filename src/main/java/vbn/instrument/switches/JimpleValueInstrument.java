@@ -6,6 +6,7 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.Constant;
 import soot.jimple.Expr;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import vbn.instrument.InstrumentData;
 import vbn.instrument.InstrumentResult;

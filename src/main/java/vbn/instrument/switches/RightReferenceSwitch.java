@@ -21,6 +21,22 @@ public class RightReferenceSwitch extends AbstractReferenceSwitch {
         ));
     }
 
+    @Override
+    public void defaultCase(Object obj) {
+        if (obj instanceof Constant) {
+            var v = (Constant) obj;
+            var typeSwitch = new ValueTypeSwitch(data, v);
+            v.getType().apply(typeSwitch);
+            getResult().beforeUnits.addAll(typeSwitch.getResult());
+            var caller = Jimple.v().newStaticInvokeExpr(methodWithConstant.makeRef(), typeSwitch.v);
+            getResult().beforeUnits.add(Jimple.v().newInvokeStmt(caller));
+            return;
+        }
+        if (obj instanceof InvokeExpr) {
+            getResult().combine(ExpressionInstrumentUtil.invoke((InvokeExpr) obj, data));
+        }
+    }
+
     void instrument(String id, Value value) {
         var typeSwitch = new ValueTypeSwitch(data, value);
         value.getType().apply(typeSwitch);
