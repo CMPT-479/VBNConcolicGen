@@ -9,8 +9,6 @@ import vbn.state.helpers.ComputeConstraints;
 import vbn.state.helpers.ComputeValueType;
 import vbn.state.value.*;
 
-import javax.annotation.Nullable;
-
 import java.util.Stack;
 
 import static vbn.solver.VBNRunner.insertStateIntoIO;
@@ -20,11 +18,11 @@ import static vbn.state.helpers.ComputeOperand.*;
  *
  */
 public class Call {
-    static State globalState;
 
     static ComputeConstraints computeConstraints;
 
     static boolean TESTING_MODE = false;
+    static LatestState latestState;
 
     /**
      * When the program begins
@@ -32,7 +30,7 @@ public class Call {
     @SuppressWarnings("unused")
     public static void init() {
         // Create new to avoid carried over state
-        globalState = new State();
+        latestState = new LatestState(new GlobalState());
         computeConstraints = new ComputeConstraints();
 
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
@@ -45,7 +43,7 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void pushSym(@NonNull String symName, Object value) {
-        ISymbol result = updateSymbolValueAndInitializeIfNecessary(symName, value);
+        ISymbol result = latestState.getLatestSymbolAndUpdateValue(symName, value);
 
         computeConstraints.pushSymbol(result);
     }
@@ -128,11 +126,11 @@ public class Call {
     }
     /**
      * Store the result of this operand in the constraints
-     * We decided not to update the value of symName, using a strategy of "Update on Use"
-     * @param symName the name of the symbol to store the expression
+     * We decided not to update the concreteValue of varName, using a strategy of "Update on Use"
+     * @param varName the name of the symbol to store the expression
      */
     @SuppressWarnings("unused")
-    public static void finalizeStore(String symName, Object value, int lineNumber) {
+    public static void finalizeStore(String varName, Object concreteValue, int lineNumber) {
         // FIXME: This should be fixed in instrumentation
         if (computeConstraints.isCasting()) {
             return;
@@ -143,15 +141,15 @@ public class Call {
             applyReassignment();
         }
 
-        var symbol = updateSymbolValueAndInitializeIfNecessary(symName, value);
+        var newSymbol = latestState.generateNewSymbolForVariable(varName);
 
-        computeConstraints.setEvaluatedToTrue();
+        var symbol = latestState.getLatestSymbolAndUpdateValue(varName, concreteValue);
 
-        var constraint = computeConstraints.generateFromPushes(lineNumber, globalState.getSymbol(symName), false);
-        globalState.pushConstraint(constraint);
+        var constraint = computeConstraints.generateFromPushes(lineNumber, latestState.getSymbol(varName), false);
+        latestState.pushConstraint(constraint);
 
         if (TESTING_MODE) {
-            System.out.println("Finalize Store");
+            System.out.println("Finalize Store of: " + newSymbol);
             System.out.print("\t");
             System.out.println(constraint);
         }
@@ -163,7 +161,7 @@ public class Call {
     @SuppressWarnings("unused")
     public static void finalizeIf(int lineNumber) {
         var constraint = computeConstraints.generateFromPushes(lineNumber, null, true);
-        globalState.pushConstraint(constraint);
+        latestState.pushConstraint(constraint);
 
         if (TESTING_MODE) {
             System.out.println("Finalize If");
@@ -245,9 +243,9 @@ public class Call {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
 
-        globalState.setError(theError);
+        latestState.setError(theError);
 
-        if (globalState.hasVBNError()) {
+        if (latestState.hasVBNError()) {
             System.out.println("VBN's Runtime Library for the instrumentation failed with an error:");
         }
         else {
@@ -262,43 +260,19 @@ public class Call {
     }
 
 
-    /**
-     * Update the symbol value and initialize it if necessary
-     * @param symName the name of the symbol (used as a unique id)
-     * @param concreteValue the concrete value of the symbol
-     * @return the updated or newly create symbol
-     */
-    private static ISymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object concreteValue) {
-        @Nullable
-        var result = globalState.getSymbolCanBeNull(symName);
-
-        if (result == null) {
-            Value.Type valueType = ComputeValueType.getType(concreteValue);
-
-            switch (valueType) {
-                case INT_TYPE:
-                    result = new IntSymbol(symName, ((Number) concreteValue).longValue());
-                    break;
-                case REAL_TYPE:
-                    result = new RealSymbol(symName, ((Number) concreteValue).doubleValue());
-                    break;
-                case BOOL_TYPE:
-                    result = new BooleanSymbol(symName, (boolean) concreteValue);
-                    break;
-                case UNKNOWN:
-                    result = new UnknownSymbol(symName, concreteValue);
-                    break;
-                default:
-                    throw new VBNLibraryRuntimeException("A type was not handled");
-            }
-
-            globalState.addSymbol(result);
-        }
-        else {
-            globalState.updateSymbolConcreteValue(symName, concreteValue);
-        }
-        return result;
-    }
+//    /**
+//     * Update the symbol value and initialize it if necessary
+//     * @param symName the name of the symbol (used as a unique id)
+//     * @param concreteValue the concrete value of the symbol
+//     * @return the updated or newly create symbol
+//     */
+//    @NonNull
+//    private static ISymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object concreteValue) {
+//        @Nullable
+//        var result = globalState.getSymbolCanBeNull(symName);
+//
+//        return result;
+//    }
 
     /**
      * To run on all terminate functions
@@ -315,7 +289,7 @@ public class Call {
      * Store the state in an external datastore, so it can be accessed by VBN
      */
     private static void pushStateToIO() {
-        insertStateIntoIO(globalState.getSerializeState());
+        insertStateIntoIO(latestState.getSerializeState());
     }
 
     public static void initTestingMode() {
@@ -327,7 +301,7 @@ public class Call {
             throw new VBNLibraryRuntimeException("Only use this function for testing");
         }
 
-        return globalState.getConstraints() == constraints;
+        return latestState.getConstraints() == constraints;
     }
 }
 

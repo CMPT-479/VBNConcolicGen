@@ -233,12 +233,12 @@ public class Z3Solver {
         return ctx.mkNot(expr);
     }
 
-    public static ArrayList<ISymbol> solve(@NonNull State state) {
+    public static ArrayList<ISymbol> solve(@NonNull GlobalState globalState) {
         System.out.println("================ TESTING Z3 SOLVER ================");
         Context ctx = new Context();
         Solver solver = ctx.mkSolver();
 
-        ArrayList<ISymbol> symbols = state.getSymbols();
+        ArrayList<ISymbol> symbols = globalState.getSymbols();
         System.out.println("DEBUGGING INPUT SYMBOLS: " + symbols);
         Map<String, Expr> z3ExprMap = new HashMap<>();
         for (ISymbol sym : symbols) {
@@ -257,7 +257,7 @@ public class Z3Solver {
             }
         }
 
-        Stack<IConstraint> constraintStack = state.getConstraints();
+        Stack<IConstraint> constraintStack = globalState.getConstraints();
         // will need to keep negating the top of the stack and then removing it while going down
         for (IConstraint constraint : constraintStack) {
              System.out.println(constraint);

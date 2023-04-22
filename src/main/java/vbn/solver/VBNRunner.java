@@ -5,7 +5,7 @@ import vbn.ObjectIO;
 import vbn.RandomHandler;
 import vbn.state.IVBNException;
 import vbn.state.constraints.IConstraint;
-import vbn.state.State;
+import vbn.state.GlobalState;
 import vbn.state.value.*;
 
 import java.util.*;
@@ -29,12 +29,12 @@ public class VBNRunner {
         solvedConstraints.clear();
     }
 
-    public static void insertStateIntoIO(State state) {
-        ObjectIO.writeObjectToFile(state.getSymbols(), fileNameSymbols);
-        ObjectIO.writeObjectToFile(state.getConstraints(), fileNameConstraints);
+    public static void insertStateIntoIO(GlobalState globalState) {
+        ObjectIO.writeObjectToFile(globalState.getSymbols(), fileNameSymbols);
+        ObjectIO.writeObjectToFile(globalState.getConstraints(), fileNameConstraints);
     }
 
-    public static State returnStateFromIO() {
+    public static GlobalState returnStateFromIO() {
         @NonNull ArrayList<ISymbol> symbols = (ArrayList<ISymbol>) ObjectIO.readObjectFromFile(fileNameSymbols);
         @NonNull Stack<IConstraint> constraints = (Stack<IConstraint>) ObjectIO.readObjectFromFile(fileNameConstraints);
 
@@ -47,9 +47,9 @@ public class VBNRunner {
         ObjectIO.deleteFile(fileNameSymbols);
         ObjectIO.deleteFile(fileNameConstraints);
 
-        State returnState = new State(symbolMap, constraints);
-        checkStateError(returnState);
-        return returnState;
+        GlobalState returnGlobalState = new GlobalState(symbolMap, constraints);
+        checkStateError(returnGlobalState);
+        return returnGlobalState;
     }
 
     private static String[] getProgramInputs(@NonNull List<IConstant> constants, long randSeed) {
@@ -131,15 +131,15 @@ public class VBNRunner {
         return false;
     }
 
-    private static void checkStateError(State state) {
-        if (state.getError() == null) {
+    private static void checkStateError(GlobalState globalState) {
+        if (globalState.getError() == null) {
             return;
         }
-        
-        if (state.getError() instanceof IVBNException) {
-            throw new VBNSolverRuntimeError(state.getError());
+
+        if (globalState.hasVBNError()) {
+            throw new VBNSolverRuntimeError(globalState.getError());
         } else {
-            state.getError().printStackTrace();
+            globalState.getError().printStackTrace();
         }
     }
 
@@ -156,14 +156,14 @@ public class VBNRunner {
         solvedConstraints.add(programInputs);
         // Step 1: Run program on random inputs
         InstrumentedRunner.runInstrumented(programName, programInputs);
-        @NonNull State state = returnStateFromIO();
-        @NonNull Stack<IConstraint> constraints = state.getConstraints();
+        @NonNull GlobalState globalState = returnStateFromIO();
+        @NonNull Stack<IConstraint> constraints = globalState.getConstraints();
         addConstraintsToNegatedMap(constraints);
         constraints = removeInvalidConstraints(constraints);
         putInitialConstraintPathDirection(constraints);
 
         ArrayList<ISymbol> solved;
-        Z3Solver.solve(state);
+        Z3Solver.solve(globalState);
 
         while (!(constraints.empty())) {
             constraints = removeInvalidConstraints(constraints);
@@ -173,7 +173,7 @@ public class VBNRunner {
                 break;
             }
 
-            solved = Z3Solver.solve(state); // solve for negated end
+            solved = Z3Solver.solve(globalState); // solve for negated end
             programInputs = abstractSymbolListToStringArray(solved, false);
             solvedConstraints.add(programInputs);
 
@@ -181,8 +181,8 @@ public class VBNRunner {
             System.out.println("Solved " + Arrays.toString(abstractSymbolListToStringArray(solved, true)));
             // Step 2: Run program on negated inputs
             InstrumentedRunner.runInstrumented(programName, programInputs);
-            state = returnStateFromIO();
-            constraints = state.getConstraints();
+            globalState = returnStateFromIO();
+            constraints = globalState.getConstraints();
             addConstraintsToNegatedMap(constraints);
         }
     }

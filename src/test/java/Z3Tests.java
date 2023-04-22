@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
 import vbn.solver.Z3Solver;
-import vbn.state.State;
+import vbn.state.GlobalState;
 import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
 import vbn.state.value.ISymbol;
@@ -13,48 +13,48 @@ public class Z3Tests {
     @Test
     final void testZ3SimpleOr() {
         // x or y
-        State state = new State();
-        state.addSymbol(new BooleanSymbol("x", false));  // concrete value doesn't matter
-        state.addSymbol(new BooleanSymbol("y", false));  // concrete value doesn't matter
-        state.pushConstraint(
+        GlobalState globalState = new GlobalState();
+        globalState.addSymbol(new BooleanSymbol("x", false));  // concrete value doesn't matter
+        globalState.addSymbol(new BooleanSymbol("y", false));  // concrete value doesn't matter
+        globalState.pushConstraint(
                 new BinaryConstraint(
-                        state.getSymbol("x"),
+                        globalState.getSymbol("x"),
                         BinaryOperand.OR,
-                        state.getSymbol("y"), false, -1));
+                        globalState.getSymbol("y"), false, -1));
 
-        List<ISymbol> solved = Z3Solver.solve(state);
+        List<ISymbol> solved = Z3Solver.solve(globalState);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
     @Test
     final void testZ3SimpleAnd() {
         // x and y
-        State state = new State();
-        state.addSymbol(new BooleanSymbol("x", false));  // concrete value doesn't matter
-        state.addSymbol(new BooleanSymbol("y", false));  // concrete value doesn't matter
-        state.pushConstraint(
+        GlobalState globalState = new GlobalState();
+        globalState.addSymbol(new BooleanSymbol("x", false));  // concrete value doesn't matter
+        globalState.addSymbol(new BooleanSymbol("y", false));  // concrete value doesn't matter
+        globalState.pushConstraint(
                 new BinaryConstraint(
-                        state.getSymbol("x"),
+                        globalState.getSymbol("x"),
                         BinaryOperand.AND,
-                        state.getSymbol("y"), false, -1));
+                        globalState.getSymbol("y"), false, -1));
 
-        List<ISymbol> solved = Z3Solver.solve(state);
+        List<ISymbol> solved = Z3Solver.solve(globalState);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 
     @Test
     final void testZ3Gt() {
         // x > y
-        State state = new State();
-        state.addSymbol(new IntSymbol("x", 1));  // concrete value doesn't matter
-        state.addSymbol(new IntSymbol("y", 1));  // concrete value doesn't matter
-        state.pushConstraint(
+        GlobalState globalState = new GlobalState();
+        globalState.addSymbol(new IntSymbol("x", 1));  // concrete value doesn't matter
+        globalState.addSymbol(new IntSymbol("y", 1));  // concrete value doesn't matter
+        globalState.pushConstraint(
                 new BinaryConstraint(
-                        state.getSymbol("x"),
+                        globalState.getSymbol("x"),
                         BinaryOperand.GT,
-                        state.getSymbol("y"), false, -1));
+                        globalState.getSymbol("y"), false, -1));
 
-        List<ISymbol> solved = Z3Solver.solve(state);
+        List<ISymbol> solved = Z3Solver.solve(globalState);
         Z3Solver.printSolvedValuesBasedOnList(solved);
     }
 }
