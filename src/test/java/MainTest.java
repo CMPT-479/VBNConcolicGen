@@ -10,6 +10,7 @@ import vbn.solver.VBNRunner;
 
 import java.io.*;
 
+import static vbn.solver.VBNRunner.printAndValidateSolvedConstraints;
 import static vbn.solver.VBNRunner.printSolvedConstraints;
 
 public class MainTest {
@@ -35,7 +36,7 @@ public class MainTest {
     final void basic() {
         VBNRunner.execute("vbn.examples.Test_00_Basic");
         System.out.println("Finished basic test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(1);
     }
 
     @Test
@@ -55,55 +56,55 @@ public class MainTest {
     final void basicIf() {
         VBNRunner.execute("vbn.examples.Test_05_If");
         System.out.println("Finished if test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(2);
     }
 
     @Test
     final void basicIfMultiple() {
         VBNRunner.execute("vbn.examples.Test_06_If_Multiple");
         System.out.println("Finished if multiple test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(4);
     }
 
     @Test
     final void basicIfMultipleDiffTypes() {
         VBNRunner.execute("vbn.examples.Test_07_If_Multiple_Diff_Types");
         System.out.println("Finished if multiple diff types test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(5);
     }
 
     @Test
     final void basicIfValue() {
         VBNRunner.execute("vbn.examples.Test_08_If_Value");
         System.out.println("Finished if value test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(2);
     }
 
     @Test
     final void basicIfDouble() {
         VBNRunner.execute("vbn.examples.Test_09_If_Double");
         System.out.println("Finished if double test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(2);
     }
 
     @Test
     final void basicIfFloat() {
         VBNRunner.execute("vbn.examples.Test_10_If_Float");
         System.out.println("Finished if float test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(2);
     }
     @Test
     final void testUnmanageable() {
         VBNRunner.execute("vbn.examples.Test_11_Unmanageable");
         System.out.println("Finished unmanageable test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(2);
     }
 
     @Test
     final void testIncrement() {
         VBNRunner.execute("vbn.examples.Test_12_Increment");
         System.out.println("Finished increment test");
-        printSolvedConstraints();
+        printAndValidateSolvedConstraints(1);
     }
 
     @Test

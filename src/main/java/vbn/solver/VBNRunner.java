@@ -195,6 +195,14 @@ public class VBNRunner {
         }
     }
 
+    public static boolean printAndValidateSolvedConstraints(int expectedNumberOfSolutions) {
+        printSolvedConstraints();
+        if (expectedNumberOfSolutions != solvedConstraints.size()) {
+            throw new VBNSolverRuntimeError("Expected " + expectedNumberOfSolutions + " solutions, but got " + solvedConstraints.size());
+        }
+        return true;
+    }
+
     public static void printSolvedConstraints() {
         int i = 0;
         for (String[] s : solvedConstraints) {
