@@ -133,12 +133,17 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void finalizeStore(String symName, Object value, int lineNumber) {
-        var symbol = updateSymbolValueAndInitializeIfNecessary(symName, value);
+        // FIXME: This should be fixed in instrumentation
+        if (computeConstraints.isCasting()) {
+            return;
+        }
 
         // Note: this should ideally be in the instrumented code
         if (computeConstraints.isReassignment()) {
             applyReassignment();
         }
+
+        var symbol = updateSymbolValueAndInitializeIfNecessary(symName, value);
 
         computeConstraints.setEvaluatedToTrue();
 

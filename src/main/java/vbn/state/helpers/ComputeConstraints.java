@@ -85,6 +85,10 @@ public class ComputeConstraints {
         return valueStack.size() == 1 && operand == null;
     }
 
+    public boolean isCasting() {
+        return valueStack.size() == 0 && operand == null;
+    }
+
     public void setEvaluatedToTrue() {
         this.evaluatedResult = true;
     }
