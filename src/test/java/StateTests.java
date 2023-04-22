@@ -199,4 +199,72 @@ public class StateTests {
             Call.terminatedWithError(var2);
         }
     }
+
+    @Test
+    public void handleRecast() {
+        Call.initTestingMode();
+        String[] var0 = {"12", "123", "1234", "1234", "1234"};
+        float x = 1;
+        double y = 4;
+        float z = 4;
+        var t = true;
+
+        try {
+            Call.init();
+            Call.popArg("r0", var0);
+            Call.pushSym("r0[0]", var0[0]);
+            String var4;
+            String var10000 = var4 = var0[0];
+            Call.finalizeStore("$r1", var4, 7);
+            float var5 = Float.parseFloat(var10000);
+            Call.popArg("$f0", var5);
+            Call.finalizeReturn("$f0", var5, 7);
+            Call.pushSym("$f0", var5);
+            x = var5;
+            Call.finalizeStore("vbn.examples.Test_10_If_Float.x", x, 7);
+            Call.pushSym("vbn.examples.Test_10_If_Float.x", x);
+            float var10 = x;
+            Float var6 = var10;
+            Call.finalizeStore("$f1", var6, 8);
+            double var1 = (double)var10;
+            Call.finalizeStore("$d0", var1, 8);
+            Call.pushSym("$d0", var1);
+            Call.pushConstant(0.1);
+            Call.apply(" cmpl ");
+            double var13;
+            int var11 = (var13 = var1 - 0.1) == 0.0 ? 0 : (var13 < 0.0 ? -1 : 1);
+            double var14;
+            Byte var7 = Byte.valueOf((byte)((var14 = var1 - 0.1) == 0.0 ? 0 : (var14 < 0.0 ? -1 : 1)));
+            Call.finalizeStore("$b0", var7, 8);
+            int var8 = var11;
+            Call.finalizeStore("$i1", var8, 135);
+            Call.pushSym("$i1", var8);
+            Call.pushConstant(0);
+            Call.apply(" <= ");
+            if (var8 > 0) {
+                Call.pushFalseBranch(8);
+            } else {
+                Call.pushTrueBranch(8);
+            }
+
+            Call.finalizeIf(8);
+            PrintStream var9;
+            PrintStream var12;
+            if (var8 > 0) {
+                Call.pushSym("java.lang.System.out", System.out);
+                var12 = var9 = System.out;
+                Call.finalizeStore("$r3", var9, 9);
+                var12.println("Less than 0.1");
+            } else {
+                Call.pushSym("java.lang.System.out", System.out);
+                var12 = var9 = System.out;
+                Call.finalizeStore("$r2", var9, 11);
+                var12.println("Greater than 0.1");
+            }
+
+            Call.terminatePath(13);
+        } catch (Throwable var3) {
+            Call.terminatedWithError(var3);
+        }
+    }
 }
