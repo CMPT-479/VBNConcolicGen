@@ -96,6 +96,10 @@ public class GlobalState implements Serializable {
         return symbols.get(symbolName);
     }
 
+    public boolean symbolsContainsKey(String symbolName) {
+        return symbols.containsKey(symbolName);
+    }
+
     @NonNull
     public ArrayList<ISymbol> getSymbols() {
         return new ArrayList<>(symbols.values());

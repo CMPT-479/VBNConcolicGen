@@ -94,7 +94,7 @@ public class BinaryConstraint implements IConstraint {
     public String toString() {
         String result;
         if (assignedSymbol == null) {
-            result = "#" + lineNumber + " Binary Constraint{ " + left + " " + op + " " + right + " }";
+            result = "#" + lineNumber + " Binary Constraint{ \t\t " + left + " " + op + " " + right + " }";
         } else {
             result = "#" + lineNumber + " Binary Constraint{ " + assignedSymbol + " = " + left + " " + op + " " + right + " }";
         }

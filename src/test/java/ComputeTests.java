@@ -23,8 +23,9 @@ public class ComputeTests {
         constraintComputer.pushSymbol(boolX);
         constraintComputer.pushSymbol(boolY);
         constraintComputer.setOperand(BinaryOperand.AND);
+        constraintComputer.setEvaluatedToTrue();
 
-        var result = constraintComputer.generateFromPushes(-1, null);
+        var result = constraintComputer.generateBranchFromPushes(-1);
         var groundTruth = new BinaryConstraint(boolX, BinaryOperand.AND, boolY, false, -1);
         assertEquals(result, groundTruth);
     }
@@ -39,7 +40,7 @@ public class ComputeTests {
         constraintComputer.pushSymbol(boolY);
         constraintComputer.setOperand(CustomOperand.REASSIGN);
 
-        var result = constraintComputer.generateFromPushes(0, boolX);
+        var result = constraintComputer.generateAssignmentFromPushes(0, boolX);
         var groundTruth = new BinaryConstraint(boolX, BinaryOperand.EQ, boolY, false, -1);
         assertEquals(result, groundTruth);
     }
@@ -117,7 +118,7 @@ public class ComputeTests {
         state.pushConstraint(initialConstraint);
 
         finalConstraint = state.getConstraints().pop();
-        groundTruth = new BinaryConstraint(left, operand, boolSymbol, false, -1);
+        groundTruth = new BinaryConstraint(boolSymbol, operand, right, false, -1);
 
         assertEquals(groundTruth.left.getType(), ((BinaryConstraint) finalConstraint).left.getType());
         assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) finalConstraint).left.getValue());

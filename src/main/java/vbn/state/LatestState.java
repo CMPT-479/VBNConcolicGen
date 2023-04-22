@@ -29,7 +29,7 @@ public class LatestState implements Serializable {
     /**
      * Generate a new symbol for the latest symbol
      */
-    public String generateNewSymbolForVariable(String varName) {
+    public void generateNewSymbolForVariable(String varName) {
         var currentCounter = latestSymbolCounters.get(varName);
 
         if (currentCounter == null) {
@@ -38,7 +38,6 @@ public class LatestState implements Serializable {
 
         int newValue = currentCounter + 1;
         latestSymbolCounters.put(varName, newValue);
-        return getAppendedKey(varName);
     }
 
     /**
@@ -50,11 +49,18 @@ public class LatestState implements Serializable {
     @NonNull
     public ISymbol getLatestSymbolAndUpdateValue(@NonNull String varName, Object concreteValue) {
         updateLatestSymbol(varName, concreteValue);
-        return getSymbol(varName);
+        return getLatestSymbol(varName);
+    }
+
+    public ISymbol getLatestSymbolAndCreateIfDoesntExist(@NonNull String varName, Object concreteValue) {
+        if (globalState.symbolsContainsKey(getSymbolName(varName))) {
+            return getLatestSymbol(varName);
+        }
+        return createLatestSymbol(varName, concreteValue);
     }
 
     private void updateLatestSymbol(String varName, Object concreteValue) {
-        var latestKey = getAppendedKey(varName);
+        var latestKey = getSymbolName(varName);
         globalState.updateSymbolConcreteValue(latestKey, concreteValue);
 
     }
@@ -65,7 +71,7 @@ public class LatestState implements Serializable {
             latestSymbolCounters.put(varName, 0);
         }
 
-        return globalState.createNewSymbol(getAppendedKey(varName), concreteValue);
+        return globalState.createNewSymbol(getSymbolName(varName), concreteValue);
     }
 
     /**
@@ -75,8 +81,8 @@ public class LatestState implements Serializable {
      */
 
     @NonNull
-    public ISymbol getSymbol(String varName) {
-        return globalState.getSymbol(getAppendedKey(varName));
+    public ISymbol getLatestSymbol(String varName) {
+        return globalState.getSymbol(getSymbolName(varName));
     }
 
 
@@ -86,8 +92,8 @@ public class LatestState implements Serializable {
      * @return the variable name with the appended strings
      */
     @NonNull
-    String getAppendedKey(String varName) {
-        return String.valueOf(latestSymbolCounters.get(varName)) + "__" + varName;
+    public String getSymbolName(String varName) {
+        return varName + "__" + String.valueOf(latestSymbolCounters.get(varName));
     }
 
     /*

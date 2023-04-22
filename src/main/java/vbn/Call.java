@@ -24,6 +24,9 @@ public class Call {
     static boolean TESTING_MODE = false;
     static LatestState latestState;
 
+    static final String finalizeIndentStr = "\t";
+    static final String pushIndentStr = "\t\t";
+
     /**
      * When the program begins
      */
@@ -42,10 +45,16 @@ public class Call {
      * The left operand is pushed first for binary operations.
      */
     @SuppressWarnings("unused")
-    public static void pushSym(@NonNull String symName, Object value) {
-        ISymbol result = latestState.getLatestSymbolAndUpdateValue(symName, value);
+    public static void pushSym(@NonNull String varName, Object value) {
+        ISymbol result = latestState.getLatestSymbolAndCreateIfDoesntExist(varName, value);
 
         computeConstraints.pushSymbol(result);
+
+        if (TESTING_MODE) {
+            System.out.println(finalizeIndentStr + "pushSym " + latestState.getSymbolName(varName));
+            System.out.print(pushIndentStr);
+            System.out.println(result);
+        }
     }
 
     /**
@@ -73,6 +82,12 @@ public class Call {
         }
 
         computeConstraints.pushConstant(constant);
+
+        if (TESTING_MODE) {
+            System.out.println(finalizeIndentStr + "pushConstant ");
+            System.out.print(pushIndentStr);
+            System.out.println(constant);
+        }
     }
 
     /**
@@ -131,27 +146,38 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void finalizeStore(String varName, Object concreteValue, int lineNumber) {
+        @NonNull ISymbol assignmentSymIfExists;
+
         // FIXME: This should be fixed in instrumentation
         if (computeConstraints.isCasting()) {
             return;
         }
-
         // Note: this should ideally be in the instrumented code
         if (computeConstraints.isReassignment()) {
             applyReassignment();
         }
+//        else {
+//            assignmentSymIfExists = latestState.getLatestSymbol(varName);
+//            if (TESTING_MODE) {
+//                System.out.println(finalizeIndentStr + " getLatestSymbol=" + assignmentSymIfExists);
+//            }
+//        }
 
-        var newSymbol = latestState.generateNewSymbolForVariable(varName);
+        assignmentSymIfExists = latestState.getLatestSymbolAndCreateIfDoesntExist(varName, concreteValue);
+        if (TESTING_MODE) {
+            System.out.println(finalizeIndentStr + " getLatestSymbolAndCreateIfDoesntExist=" + assignmentSymIfExists);
+        }
 
-        var symbol = latestState.getLatestSymbolAndUpdateValue(varName, concreteValue);
-
-        var constraint = computeConstraints.generateFromPushes(lineNumber, latestState.getSymbol(varName), false);
+        var constraint = computeConstraints.generateAssignmentFromPushes(lineNumber, assignmentSymIfExists);
         latestState.pushConstraint(constraint);
 
+        latestState.generateNewSymbolForVariable(varName);
+
         if (TESTING_MODE) {
-            System.out.println("Finalize Store of: " + newSymbol);
-            System.out.print("\t");
+            System.out.println("Finalize Store of: " + latestState.getSymbolName(varName));
+            System.out.print(finalizeIndentStr);
             System.out.println(constraint);
+            System.out.println();
         }
     }
 
@@ -160,7 +186,7 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void finalizeIf(int lineNumber) {
-        var constraint = computeConstraints.generateFromPushes(lineNumber, null, true);
+        var constraint = computeConstraints.generateBranchFromPushes(lineNumber);
         latestState.pushConstraint(constraint);
 
         if (TESTING_MODE) {
@@ -247,6 +273,7 @@ public class Call {
 
         if (latestState.hasVBNError()) {
             System.out.println("VBN's Runtime Library for the instrumentation failed with an error:");
+            throw (RuntimeException) theError;
         }
         else {
             System.out.println("System failed with an error:");
@@ -258,21 +285,6 @@ public class Call {
         // Give VBN.run() the state object in order to know the constraints and values
         onAllTerminates();
     }
-
-
-//    /**
-//     * Update the symbol value and initialize it if necessary
-//     * @param symName the name of the symbol (used as a unique id)
-//     * @param concreteValue the concrete value of the symbol
-//     * @return the updated or newly create symbol
-//     */
-//    @NonNull
-//    private static ISymbol updateSymbolValueAndInitializeIfNecessary(@NonNull String symName, Object concreteValue) {
-//        @Nullable
-//        var result = globalState.getSymbolCanBeNull(symName);
-//
-//        return result;
-//    }
 
     /**
      * To run on all terminate functions

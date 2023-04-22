@@ -284,6 +284,8 @@ public class Z3Solver {
                 }
             }
 
+            System.out.println("\t" + constraintExpr);
+
             solver.add(constraintExpr);
         }
         System.out.println("============== SOLVER CONSTRAINTS ==============");
