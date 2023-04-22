@@ -20,11 +20,9 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         // Handle assignment statements
         var left = stmt.getLeftOp();
         var right = stmt.getRightOp();
-        var rightSwitch = new RightReferenceSwitch(data);
+        var result = JimpleValueInstrument.instrument(right, left, data);
         var leftSwitch = new LeftReferenceSwitch(data);
-        right.apply(rightSwitch);
         left.apply(leftSwitch);
-        var result = rightSwitch.getResult();
         if (right instanceof InvokeExpr) {
             var popSwitch = new PopSwitch(data);
             left.apply(popSwitch);
@@ -67,7 +65,7 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         if (!(right instanceof ParameterRef || right instanceof ThisRef)) return;
         var popSwitch = new PopSwitch(data);
         stmt.getLeftOp().apply(popSwitch);
-        instrument(data.bodyBegin, popSwitch.getResult());
+        data.units.insertBefore(popSwitch.getResult().afterUnits, data.bodyBegin);
     }
 
     public void caseReturnStmt(ReturnStmt stmt) {

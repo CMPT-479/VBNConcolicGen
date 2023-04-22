@@ -30,10 +30,6 @@ public class RightReferenceSwitch extends AbstractReferenceSwitch {
             getResult().beforeUnits.addAll(typeSwitch.getResult());
             var caller = Jimple.v().newStaticInvokeExpr(methodWithConstant.makeRef(), typeSwitch.v);
             getResult().beforeUnits.add(Jimple.v().newInvokeStmt(caller));
-            return;
-        }
-        if (obj instanceof InvokeExpr) {
-            getResult().combine(ExpressionInstrumentUtil.invoke((InvokeExpr) obj, data));
         }
     }
 

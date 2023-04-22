@@ -16,6 +16,7 @@ public class ExpressionSwitch extends AbstractJimpleValueSwitch<InstrumentResult
     }
 
     public void caseAddExpr(AddExpr v) {
+        System.out.println("Add expression");
         getResult().combine(ExpressionInstrumentUtil.arithmetic(v, data));
     }
 
@@ -81,7 +82,7 @@ public class ExpressionSwitch extends AbstractJimpleValueSwitch<InstrumentResult
 
     public void caseNegExpr(NegExpr v) {
         var op = v.getOp();
-        setResult(JimpleValueInstrument.instrument(op, null, data));
+        getResult().combine(JimpleValueInstrument.instrument(op, null, data));
         var apply = data.runtime.getMethod("apply", List.of(RefType.v("java.lang.String"))).makeRef();
         var symbol = StringConstant.v("neg");
         getResult().beforeUnits.add(Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(apply, symbol)));
