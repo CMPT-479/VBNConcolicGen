@@ -167,6 +167,8 @@ public class Call {
         computeConstraints.setEvaluatedToFalse();
     }
 
+    public static void finalizeReturn(String symbol, Object value, int lineNumber) {}
+
     /**
      * When the DFS search hits an error, return, etc.
      */
