@@ -37,7 +37,7 @@ public class ComputeTests {
         constraintComputer.pushSymbol(boolY);
         constraintComputer.setOperand(CustomOperand.REASSIGN);
 
-        var result = constraintComputer.generateFromPushes(boolX);
+        var result = constraintComputer.generateFromPushes(0, boolX);
         var groundTruth = new BinaryConstraint(boolX, BinaryOperand.EQ, boolY, false);
         assertEquals(result, groundTruth);
     }

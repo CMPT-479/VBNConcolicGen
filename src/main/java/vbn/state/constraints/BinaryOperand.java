@@ -35,9 +35,10 @@ public enum BinaryOperand implements IOperand {
     GTE,
 
     // Floating Point Comparison
-    CMPL,
-    CMPG,
-    CMP, // Don't know how to handle
+    // FIXME: We approximate floating point comparison with integer comparison
+//    CMPL,
+//    CMPG,
+//    CMP, // Don't know how to handle
 
     ;
 
