@@ -3,6 +3,7 @@ package vbn.solver;
 import lombok.NonNull;
 import vbn.ObjectIO;
 import vbn.RandomHandler;
+import vbn.state.IVBNException;
 import vbn.state.constraints.IConstraint;
 import vbn.state.State;
 import vbn.state.value.*;
@@ -46,7 +47,9 @@ public class VBNRunner {
         ObjectIO.deleteFile(fileNameSymbols);
         ObjectIO.deleteFile(fileNameConstraints);
 
-        return new State(symbolMap, constraints);
+        State returnState = new State(symbolMap, constraints);
+        checkStateError(returnState);
+        return returnState;
     }
 
     private static String[] getProgramInputs(@NonNull List<IConstant> constants) {
@@ -127,6 +130,14 @@ public class VBNRunner {
         return false;
     }
 
+    private static void checkStateError(State state) {
+        if (state.getError() instanceof IVBNException) {
+            throw new VBNSolverRuntimeError(state.getError());
+        } else {
+            state.getError().printStackTrace();
+        }
+    }
+
     public static int execute(String programName) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
@@ -135,11 +146,7 @@ public class VBNRunner {
         String[] programInputs = getProgramInputs(programInputTypes);
         solvedConstraints.add(programInputs);
         // Step 1: Run program on random inputs
-        var exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
-        if (exitCode != 0) {
-            return exitCode;
-        }
-
+        InstrumentedRunner.runInstrumented(programName, programInputs);
         @NonNull State state = returnStateFromIO();
         @NonNull Stack<IConstraint> constraints = state.getConstraints();
         addConstraintsToNegatedMap(constraints);
@@ -164,11 +171,7 @@ public class VBNRunner {
             // printable for debugging
             System.out.println("Solved " + Arrays.toString(abstractSymbolListToStringArray(solved, true)));
             // Step 2: Run program on negated inputs
-            exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
-            if (exitCode != 0) {
-                return exitCode;
-            }
-
+            InstrumentedRunner.runInstrumented(programName, programInputs);
             state = returnStateFromIO();
             constraints = state.getConstraints();
             addConstraintsToNegatedMap(constraints);
