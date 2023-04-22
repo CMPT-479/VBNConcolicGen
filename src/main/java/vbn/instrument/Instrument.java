@@ -41,11 +41,15 @@ public class Instrument extends BodyTransformer {
             unit.apply(statementSwitch);
         }
 
+        data.refresh();
+
         if (method.getSubSignature().equals("void main(java.lang.String[])")) {
             var init = runtime.getMethod("void init()");
             var initStmt = Jimple.v().newInvokeStmt(Jimple.v().newStaticInvokeExpr(init.makeRef()));
             body.getUnits().insertBefore(initStmt, data.bodyBegin);
         }
+
+        data.refresh();
 
         wrapInsideTryCatch(body);
 

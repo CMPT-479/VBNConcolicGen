@@ -19,10 +19,10 @@ public class InstrumentData {
         this.body = body;
         this.runtime = runtime;
         this.mainClass = mainClass;
-        this.bodyBegin = getBodyBegin();
+        refresh();
     }
 
-    private Unit getBodyBegin() {
+    void refresh() {
         var it = units.snapshotIterator();
         Unit begin = body.getUnits().getFirst();
         while (it.hasNext()) {
@@ -33,7 +33,7 @@ public class InstrumentData {
             var right = idStmt.getRightOp();
             if (!(right instanceof ParameterRef || right instanceof ThisRef)) break;
         }
-        return begin;
+        bodyBegin = begin;
     }
 
 }
