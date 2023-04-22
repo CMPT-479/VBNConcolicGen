@@ -18,10 +18,12 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseAssignStmt(AssignStmt stmt) {
         // Handle assignment statements
+
         var left = stmt.getLeftOp();
         var right = stmt.getRightOp();
         var result = JimpleValueInstrument.instrument(right, left, data);
-        var leftSwitch = new LeftReferenceSwitch(data);
+        var lineNumber = ((LineNumberTag) stmt.getTag("LineNumberTag")).getLineNumber();
+        var leftSwitch = new LeftReferenceSwitch(data, lineNumber);
         left.apply(leftSwitch);
         if (right instanceof InvokeExpr) {
             var popSwitch = new PopSwitch(data);
