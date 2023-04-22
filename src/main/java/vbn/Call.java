@@ -127,7 +127,7 @@ public class Call {
      * @param symName the name of the symbol to store the expression
      */
     @SuppressWarnings("unused")
-    public static void finalizeStore(String symName, Object value) {
+    public static void finalizeStore(String symName, Object value, int lineNumber) {
         var symbol = updateSymbolValueAndInitializeIfNecessary(symName, value);
 
         // Note: this should ideally be in the instrumented code
