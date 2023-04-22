@@ -56,7 +56,7 @@ public class ComputeConstraints {
      * Generate constraints based on the calls
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public IConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName) {
+    private IConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName) {
         IConstraint resultingConstraint;
 
         if (operand == null) {
@@ -75,8 +75,16 @@ public class ComputeConstraints {
         return resultingConstraint;
     }
 
-    public IConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName, boolean isBranch) {
-        var constraint = generateFromPushes(lineNumber, assignmentSymName);
+    public IConstraint generateAssignmentFromPushes(int lineNumber, @NonNull final ISymbol assignmentSymName) {
+        // A finalize store constraint is always true
+        setEvaluatedToTrue();
+
+        return generateFromPushes(lineNumber, assignmentSymName);
+    }
+
+    public IConstraint generateBranchFromPushes(int lineNumber) {
+        boolean isBranch = true;
+        var constraint = generateFromPushes(lineNumber, null);
         constraint.setIsBranch(isBranch);
         return constraint;
     }
@@ -99,7 +107,7 @@ public class ComputeConstraints {
 
     public boolean isEvaluatedTrue() {
         if (evaluatedResult == null) {
-            throw new VBNLibraryRuntimeException("Tried fetching evaluation when it was null");
+            throw new VBNLibraryRuntimeException("Tried reading evaluation when it was null. Ensure setEvaluatedToTrue() or setEvaluatedToFalse() was run previously");
         }
 
         return evaluatedResult;
