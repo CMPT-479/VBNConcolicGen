@@ -15,7 +15,19 @@ public class ComputeConstraints {
     private IOperand operand = null;
 
     private final GenerateConstraintVisitor opVisitor = new GenerateConstraintVisitor();
+
+    /**
+     * The result the constraints evaluates to
+     */
     private Boolean evaluatedResult;
+
+
+    /**
+     * When we're casting an int to a bool and don't know what value to give it,
+     * give it this.
+     * TODO: Should we default to false? Or something else?
+     */
+    static final boolean DEFAULT_VALUE_REASSIGN_BOOLEAN = false;
 
     /**
      * Add a symbol to be later used for constraints.
@@ -169,8 +181,7 @@ public class ComputeConstraints {
                 case GTE:
                 case LT:
                 case GT:
-                    // TODO: What should we default this?
-                    assignSym = new BooleanSymbol(assignSym.getName(), false);
+                    assignSym = new BooleanSymbol(assignSym.getName(), DEFAULT_VALUE_REASSIGN_BOOLEAN);
                     break;
 
                 case ADD:
