@@ -52,19 +52,20 @@ public class VBNRunner {
         return returnState;
     }
 
-    private static String[] getProgramInputs(@NonNull List<IConstant> constants) {
+    private static String[] getProgramInputs(@NonNull List<IConstant> constants, long randSeed) {
+        RandomHandler randomHandler = new RandomHandler(randSeed);
         String[] inputs = new String[constants.size()];
         for (int i = 0; i < constants.size(); i++) {
             Value.Type type = constants.get(i).getType();
             switch (type) {
                 case INT_TYPE:
-                    inputs[i] = String.valueOf(RandomHandler.getRandomNumber());
+                    inputs[i] = String.valueOf(randomHandler.getRandomNumber());
                     break;
                 case REAL_TYPE:
-                    inputs[i] = String.valueOf(RandomHandler.getRandomReal());
+                    inputs[i] = String.valueOf(randomHandler.getRandomReal());
                     break;
                 case BOOL_TYPE:
-                    inputs[i] = String.valueOf(RandomHandler.getRandomBoolean());
+                    inputs[i] = String.valueOf(randomHandler.getRandomBoolean());
                     break;
                 case UNKNOWN:
                     throw new VBNSolverRuntimeError("Unknown type as program input");
@@ -142,12 +143,16 @@ public class VBNRunner {
         }
     }
 
-    public static int execute(String programName) {
+    public static void execute(String programName) {
+        execute(programName, System.currentTimeMillis());
+    }
+
+    public static void execute(String programName, long randomSeed) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
         @NonNull List<IConstant> programInputTypes = InputMap.programInputMap.get(programName);
-        String[] programInputs = getProgramInputs(programInputTypes);
+        String[] programInputs = getProgramInputs(programInputTypes, randomSeed);
         solvedConstraints.add(programInputs);
         // Step 1: Run program on random inputs
         InstrumentedRunner.runInstrumented(programName, programInputs);
@@ -180,8 +185,6 @@ public class VBNRunner {
             constraints = state.getConstraints();
             addConstraintsToNegatedMap(constraints);
         }
-
-        return 0;
     }
 
     private static void addConstraintsToNegatedMap(@NonNull Stack<IConstraint> constraints) {
