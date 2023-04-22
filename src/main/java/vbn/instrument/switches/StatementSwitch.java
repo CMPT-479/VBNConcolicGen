@@ -18,17 +18,24 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
 
     public void caseAssignStmt(AssignStmt stmt) {
         // Handle assignment statements
-
         var left = stmt.getLeftOp();
         var right = stmt.getRightOp();
         var result = JimpleValueInstrument.instrument(right, left, data);
         var lineNumber = ((LineNumberTag) stmt.getTag("LineNumberTag")).getLineNumber();
         boolean isReturn = false;
         if (right instanceof InvokeExpr) {
-            var popSwitch = new PopSwitch(data);
-            left.apply(popSwitch);
-            result.combine(popSwitch.getResult());
-            isReturn = true;
+            var invoke = (InvokeExpr) right;
+            if (invoke.getMethod().getDeclaringClass().getName().equals(data.mainClass)) {
+                var popSwitch = new PopSwitch(data);
+                left.apply(popSwitch);
+                result.combine(popSwitch.getResult());
+                isReturn = true;
+            } else {
+                // Black box function
+                var pushSwitch = new RightReferenceSwitch(data);
+                left.apply(pushSwitch);
+                result.afterUnits.addAll(pushSwitch.getResult().beforeUnits);
+            }
         }
         var leftSwitch = new LeftReferenceSwitch(data, lineNumber, isReturn);
         left.apply(leftSwitch);
