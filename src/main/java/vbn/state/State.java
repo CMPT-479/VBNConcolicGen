@@ -87,11 +87,10 @@ public class State implements Serializable {
     }
 
     /**
-     * This EDITS the STATE!!!!!
-     * @return the state that should be Serializable
+     * Creates a Serializable copy of the state, removing the Unknown Symbols
+     * @return the state is Serializable
      */
     public State getSerializeState() {
-        Stack<IConstraint> newConstraints = (Stack<IConstraint>) this.constraints.clone();
         Stack<IConstraint> finalConstraints = new Stack<>();
         Map<String, ISymbol> finalSymbols = new HashMap<>();
 
@@ -101,7 +100,7 @@ public class State implements Serializable {
             }
         });
 
-        for (IConstraint constraint : newConstraints) {
+        for (IConstraint constraint : this.constraints) {
             if (constraint instanceof BinaryConstraint) {
                 BinaryConstraint binConst = (BinaryConstraint) constraint;
                 if (!(binConst.left instanceof UnknownSymbol) && !(binConst.right instanceof UnknownSymbol)) {

@@ -22,9 +22,16 @@ public interface IConstraint extends Serializable {
     void setLineNumber(int lineNumber);
 
     /**
+     * Currently prints the function
+     */
+    @Deprecated
+    void print();
+
+    /**
      * Currently prints
      */
-    void print();
+    @Override
+    String toString();
 
     /**
      * Get the value of the expression, whether it is true or false

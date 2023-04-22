@@ -52,7 +52,7 @@ public class ComputeConstraints {
      * Generate constraints based on the calls
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    public IConstraint generateFromPushes(@Nullable final ISymbol assignmentSymName) {
+    private IConstraint generateFromPushes(@Nullable final ISymbol assignmentSymName) {
         IConstraint resultingConstraint;
 
         if (operand == null) {
@@ -111,7 +111,6 @@ public class ComputeConstraints {
     }
 
     static public class GenerateConstraintVisitor implements IOperandVisitor {
-
         private IConstraint generatedConstraint;
         private ISymbol assignSym;
         private Stack<Value> valueStack;
@@ -136,9 +135,11 @@ public class ComputeConstraints {
             var left = valueStack.pop();
 
             // Jimple converts booleans into an int that is one or zero
-            // We need to convert it back into an boolean
-            right = handleBoolAndIntComparison(left, binOp, right);
-            left = handleBoolAndIntComparison(right, binOp, left);
+            // We need to convert it back into a boolean
+            right = handleConvertIntToBoolForComparison(left, binOp, right);
+            left = handleConvertIntToBoolForComparison(right, binOp, left);
+
+            assignSym = handleConvertIntToBoolForAssignment(assignSym, binOp);
 
             if (right.getType() != left.getType()) {
                 throw new VBNLibraryRuntimeException("The value types are not equal when creating a constraint");
@@ -152,6 +153,40 @@ public class ComputeConstraints {
             }
         }
 
+        private ISymbol handleConvertIntToBoolForAssignment(ISymbol assignSym, BinaryOperand binOp) {
+            if (assignSym == null || assignSym instanceof BooleanSymbol) {
+                return assignSym;
+            }
+
+            switch (binOp) {
+                case EQ:
+                case NEQ:
+
+                case AND:
+                case OR:
+
+                case LTE:
+                case GTE:
+                case LT:
+                case GT:
+                    // TODO: What should we default this?
+                    assignSym = new BooleanSymbol(assignSym.getName(), false);
+                    break;
+
+                case ADD:
+                case MINUS:
+                case MULTIPLY:
+                case DIVIDE:
+                    // Does not need to do anything
+                    break;
+
+                default:
+                    throw new IllegalStateException("Unexpected value: " + binOp);
+            }
+
+            return assignSym;
+        }
+
         /**
          * Jimple converts booleans into an int that is one or zero (e.g. if (BOOL == 0))
          *
@@ -160,7 +195,7 @@ public class ComputeConstraints {
          * @param intSymbol the int symbol to convert to a bool symbol
          * @return the int symbol, potentially converted to a bool symbol
          */
-        private static Value handleBoolAndIntComparison(@NonNull Value boolSymbol, @NonNull BinaryOperand binOp, @NonNull Value intSymbol) {
+        private static Value handleConvertIntToBoolForComparison(@NonNull Value boolSymbol, @NonNull BinaryOperand binOp, @NonNull Value intSymbol) {
             if (boolSymbol instanceof BooleanSymbol && intSymbol instanceof IntConstant) {
                 int leftValue = (int) intSymbol.getValue();
                 if (!(leftValue == 0 || leftValue == 1)) {

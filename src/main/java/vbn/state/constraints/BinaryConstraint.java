@@ -84,11 +84,18 @@ public class BinaryConstraint implements IConstraint {
 
     @Override
     public void print() {
+        System.out.println(toString());
+    }
+
+    @Override
+    public String toString() {
+        String result;
         if (assigned == null) {
-            System.out.println("Binary Constraint line " + lineNumber + " { " + left + " " + op + " " + right + " }");
+            result = "#" + lineNumber + " Binary Constraint{ " + left + " " + op + " " + right + " }";
         } else {
-            System.out.println("Binary Constraint line " + lineNumber + " { " + assigned + " = " + left + " " + op + " " + right + " }");
+            result = "#" + lineNumber + " Binary Constraint{ " + assigned + " = " + left + " " + op + " " + right + " }";
         }
+        return result;
     }
 
     @Override

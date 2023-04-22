@@ -3,12 +3,15 @@ package vbn;
 import lombok.NonNull;
 import vbn.state.*;
 import vbn.state.constraints.CustomOperand;
+import vbn.state.constraints.IConstraint;
 import vbn.state.constraints.IOperand;
 import vbn.state.helpers.ComputeConstraints;
 import vbn.state.helpers.ComputeValueType;
 import vbn.state.value.*;
 
 import javax.annotation.Nullable;
+
+import java.util.Stack;
 
 import static vbn.solver.VBNRunner.insertStateIntoIO;
 import static vbn.state.helpers.ComputeOperand.*;
@@ -20,6 +23,8 @@ public class Call {
     static State globalState;
 
     static ComputeConstraints computeConstraints;
+
+    static boolean TESTING_MODE = false;
 
     /**
      * When the program begins
@@ -135,11 +140,14 @@ public class Call {
             applyReassignment();
         }
 
-        // This constraint is always true
         computeConstraints.setEvaluatedToTrue();
 
-        var constraint = computeConstraints.generateFromPushes(globalState.getSymbol(symName));
+        var constraint = computeConstraints.generateFromPushes(lineNumber, globalState.getSymbol(symName));
         globalState.pushConstraint(constraint);
+
+        if (TESTING_MODE) {
+            System.out.println(constraint);
+        }
     }
 
     /**
@@ -149,6 +157,10 @@ public class Call {
     public static void finalizeIf(int lineNumber) {
         var constraint = computeConstraints.generateFromPushes(lineNumber, null);
         globalState.pushConstraint(constraint);
+
+        if (TESTING_MODE) {
+            System.out.println(constraint);
+        }
     }
 
     /**
@@ -177,7 +189,7 @@ public class Call {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
 
-        pushStateToIO();
+        onAllTerminates();
     }
 
     /**
@@ -231,7 +243,7 @@ public class Call {
         }
 
         // Give VBN.run() the state object in order to know the constraints and values
-        pushStateToIO();
+        onAllTerminates();
     }
 
 
@@ -274,10 +286,33 @@ public class Call {
     }
 
     /**
+     * To run on all terminate functions
+     */
+    private static void onAllTerminates() {
+        if (!TESTING_MODE) {
+            pushStateToIO();
+        }
+
+        TESTING_MODE = false;
+    }
+
+    /**
      * Store the state in an external datastore, so it can be accessed by VBN
      */
     private static void pushStateToIO() {
         insertStateIntoIO(globalState.getSerializeState());
+    }
+
+    public static void initTestingMode() {
+        TESTING_MODE = true;
+    }
+
+    public static boolean constraintsEqual(Stack<IConstraint> constraints) {
+        if (!TESTING_MODE) {
+            throw new VBNLibraryRuntimeException("Only use this function for testing");
+        }
+
+        return globalState.getConstraints() == constraints;
     }
 }
 
