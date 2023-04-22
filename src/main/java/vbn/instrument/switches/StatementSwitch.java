@@ -61,6 +61,7 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
     }
 
     public void caseIdentityStmt(IdentityStmt stmt) {
+        if (data.body.getMethod().isConstructor()) return;
         var right = stmt.getRightOp();
         if (!(right instanceof ParameterRef || right instanceof ThisRef)) return;
         var popSwitch = new PopSwitch(data);
