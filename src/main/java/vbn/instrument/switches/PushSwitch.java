@@ -31,12 +31,13 @@ public class PushSwitch extends AbstractReferenceSwitch {
 
     @Override
     public void defaultCase(Object obj) {
-        if (!(obj instanceof Constant)) return;
-        var v = (Constant) obj;
-        var typeSwitch = new ValueTypeSwitch(data, v);
-        v.getType().apply(typeSwitch);
-        getResult().beforeUnits.addAll(typeSwitch.getResult());
-        var caller = Jimple.v().newStaticInvokeExpr(methodWithConstant.makeRef(), typeSwitch.v);
-        getResult().beforeUnits.add(Jimple.v().newInvokeStmt(caller));
+        if (obj instanceof Constant) {
+            var v = (Constant) obj;
+            var typeSwitch = new ValueTypeSwitch(data, v);
+            v.getType().apply(typeSwitch);
+            getResult().beforeUnits.addAll(typeSwitch.getResult());
+            var caller = Jimple.v().newStaticInvokeExpr(methodWithConstant.makeRef(), typeSwitch.v);
+            getResult().beforeUnits.add(Jimple.v().newInvokeStmt(caller));
+        }
     }
 }
