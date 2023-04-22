@@ -244,7 +244,7 @@ public class Call {
 
             switch (valueType) {
                 case INT_TYPE:
-                    result = new IntSymbol(symName, ((Number) concreteValue).intValue());
+                    result = new IntSymbol(symName, ((Number) concreteValue).longValue());
                     break;
                 case REAL_TYPE:
                     result = new RealSymbol(symName, ((Number) concreteValue).doubleValue());

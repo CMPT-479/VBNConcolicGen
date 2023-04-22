@@ -270,7 +270,7 @@ public class Z3Solver {
                     }
                 } else if (evaluatedValue instanceof IntNum) {
                     IntNum evaluatedValueIntNum = (IntNum) evaluatedValue;
-                    int val = evaluatedValueIntNum.getInt();
+                    long val = evaluatedValueIntNum.getInt64();
                     returnList.add(new IntSymbol(k, val));
                 } else {
                     throw new VBNSolverRuntimeError("Error, evaluatedValue instance of an unhandled class");

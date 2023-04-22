@@ -15,9 +15,9 @@ public class IntSymbol implements ISymbol {
     /**
      * The current concrete value for this symbol
      */
-    private int concreteValue;
+    private long concreteValue;
 
-    public IntSymbol(String varName, int concreteValue) {
+    public IntSymbol(String varName, long concreteValue) {
         this.varName = varName;
         this.concreteValue = concreteValue;
     }
