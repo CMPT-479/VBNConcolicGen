@@ -75,7 +75,7 @@ public class MainTest {
     final void basicIfMultipleDiffTypes() {
         var exitCode = VBNRunner.execute("vbn.examples.Test_07_If_Multiple_Diff_Types");
         Assertions.assertEquals(exitCode, 0);
-        System.out.println("Finished if multiple test");
+        System.out.println("Finished if multiple diff types test");
         printSolvedConstraints();
     }
 
@@ -100,6 +100,13 @@ public class MainTest {
         var exitCode = VBNRunner.execute("vbn.examples.Test_10_If_Float");
         Assertions.assertEquals(exitCode, 0);
         System.out.println("Finished if float test");
+        printSolvedConstraints();
+    }
+    @Test
+    final void testUnmanageable() {
+        var exitCode = VBNRunner.execute("vbn.examples.Test_11_Unmanageable");
+        Assertions.assertEquals(exitCode, 0);
+        System.out.println("Finished unmanageable test");
         printSolvedConstraints();
     }
 

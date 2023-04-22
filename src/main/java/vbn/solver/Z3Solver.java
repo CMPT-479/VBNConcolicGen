@@ -66,6 +66,9 @@ public class Z3Solver {
             case EQ:
                 exprToReturn = ctx.mkEq(leftExpr, rightExpr);
                 break;
+            case NEQ:
+                exprToReturn = ctx.mkNot(ctx.mkEq(leftExpr, rightExpr));
+                break;
             case ADD:
                 exprToReturn = ctx.mkAdd(leftExpr, rightExpr);
                 break;
@@ -251,7 +254,7 @@ public class Z3Solver {
             for (ISymbol s : returnSortedSymbols(symbols, constraintStack)) {
                 // TODO: Only solve for the input variables:
                 k = s.getName();
-                if (k.startsWith("$")) {
+                if (!k.startsWith("vbn")) {
                     continue;
                 }
                 Expr evaluatedValue = model.eval(z3ExprMap.get(k), true);

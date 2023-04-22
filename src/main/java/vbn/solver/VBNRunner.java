@@ -85,7 +85,7 @@ public class VBNRunner {
 
     private static void putInitialConstraintPathDirection(Stack<IConstraint> constraints) {
         for (IConstraint constraint : constraints) {
-            constraintOriginallyNegated.put(constraint.getLineNumber(), constraint.getOriginalEvaluation());
+            constraintOriginallyNegated.put(constraint.getLineNumber(), !constraint.getOriginalEvaluation());
         }
     }
 
@@ -141,19 +141,20 @@ public class VBNRunner {
         }
 
         @NonNull State state = returnStateFromIO();
-        ArrayList<ISymbol> solved;
-
         @NonNull Stack<IConstraint> constraints = state.getConstraints();
         addConstraintsToNegatedMap(constraints);
         constraints = removeInvalidConstraints(constraints);
         putInitialConstraintPathDirection(constraints);
+
+        ArrayList<ISymbol> solved;
+        Z3Solver.solve(state);
 
         while (!(constraints.empty())) {
             constraints = removeInvalidConstraints(constraints);
             boolean negationResults = negateConstraints(constraints);
             if (!negationResults) {
                 System.out.println("No more constraints to negate");
-                return 0;
+                break;
             }
 
             solved = Z3Solver.solve(state); // solve for negated end
@@ -196,6 +197,12 @@ public class VBNRunner {
     }
 
     public static void printConstraintNegationStatus() {
+        System.out.println("STARTING PRINT OF INITIAL CONSTRAINT MAP");
+        for (Map.Entry<Integer, Boolean> entry : constraintOriginallyNegated.entrySet()) {
+            System.out.print(entry.getKey() + ": " + entry.getValue() + ", ");
+            System.out.println();
+        }
+        System.out.println("STARTING PRINT OF CONSTRAINT NEGATION MAP");
         for (Map.Entry<Integer, Boolean> entry : constraintNegatedMap.entrySet()) {
             System.out.print(entry.getKey() + ": " + entry.getValue() + ", ");
             System.out.println();
