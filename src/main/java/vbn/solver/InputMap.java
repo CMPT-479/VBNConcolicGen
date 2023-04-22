@@ -60,6 +60,10 @@ public class InputMap {
                     "vbn.examples.Test_11_Unmanageable",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_12_Increment",
+                    List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT)))
     );
 }

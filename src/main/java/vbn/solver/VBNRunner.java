@@ -114,7 +114,7 @@ public class VBNRunner {
         while (!(constraints.empty())) {
             int lineNumber = constraints.peek().getLineNumber();
             if (!constraintNegatedMap.containsKey(lineNumber)) {
-                throw new RuntimeException("Constraint negated map did not contain the constraint line number");
+                throw new VBNSolverRuntimeError("Constraint negated map did not contain the constraint line number");
             }
 
             if (!constraintNegatedMap.get(lineNumber)) {

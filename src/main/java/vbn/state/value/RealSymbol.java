@@ -35,7 +35,7 @@ public class RealSymbol implements ISymbol, Serializable {
 
     @Override
     public void setValue(Object value) {
-        this.concreteValue = (double) value;
+        this.concreteValue = ((Number) value).doubleValue();
     }
 
     @Override

@@ -17,19 +17,65 @@ import static vbn.solver.VBNRunner.constraintOriginallyNegated;
 
 public class Z3Solver {
 
+    /**
+     * Source: https://stackoverflow.com/a/1657688
+     * @param input
+     * @return convert a real number to a fraction, the first value of ret int array is numerator, second is denominator
+     */
+    private static int[] realToFraction(double input) {
+        int p0 = 1;
+        int q0 = 0;
+        int p1 = (int) Math.floor(input);
+        int q1 = 1;
+        int p2;
+        int q2;
+
+        double r = input - p1;
+        double next_cf;
+        while(true) {
+            r = 1.0 / r;
+            next_cf = Math.floor(r);
+            p2 = (int) (next_cf * p1 + p0);
+            q2 = (int) (next_cf * q1 + q0);
+
+            // Limit the numerator and denominator to be 256 or less
+            if(p2 > 256 || q2 > 256)
+                break;
+
+            // remember the last two fractions
+            p0 = p1;
+            p1 = p2;
+            q0 = q1;
+            q1 = q2;
+
+            r -= next_cf;
+        }
+
+        input = (double) p1 / q1;
+        // hard upper and lower bounds for ratio
+        if(input > 256.0) {
+            p1 = 256;
+            q1 = 1;
+        } else if(input < 1.0 / 256.0) {
+            p1 = 1;
+            q1 = 256;
+        }
+        return new int[] {p1, q1};
+    }
+
     @NonNull
     private static Expr handleConstant(@NonNull Context ctx, @NonNull IConstant constant) {
         if (constant instanceof IntConstant) {
             return ctx.mkInt(((int) constant.getValue()));
         } else if (constant instanceof RealConstant) {
-//            return ctx.mkReal(((RealConstant) constant).value);
-            throw new RuntimeException("RealConstant cannot be handled");
+            int[] fraction = realToFraction(((Number) constant.getValue()).doubleValue());
+            return ctx.mkReal(fraction[0], fraction[1]);
         } else if (constant instanceof BooleanConstant) {
             return ctx.mkBool(((BooleanConstant) constant).value);
         } else if (constant instanceof UnknownConstant) {
-            throw new RuntimeException("UnknownConstant cannot be handled");
+            throw new VBNSolverRuntimeError("UnknownConstant cannot be handled");
         } else {
-            throw new RuntimeException("Did not expect to reach this location in handleConstant");
+            throw new VBNSolverRuntimeError("Did not expect to reach this location in handleConstant");
         }
     }
 
@@ -41,7 +87,7 @@ public class Z3Solver {
         } else if (value instanceof IConstant) {
             return handleConstant(ctx, (IConstant) value);
         } else {
-            throw new RuntimeException("Unable to handle value of unknown instance type");
+            throw new VBNSolverRuntimeError("Unable to handle value of unknown instance type");
         }
     }
 
@@ -175,7 +221,7 @@ public class Z3Solver {
                     hsSymbols.remove(((ISymbol) uc.symbol).getName());
                 }
             } else {
-                throw new RuntimeException("Error, constraint not handled");
+                throw new VBNSolverRuntimeError("Error, constraint not handled");
             }
         }
 
@@ -203,6 +249,9 @@ public class Z3Solver {
                 case BOOL_TYPE:
                     z3ExprMap.put(sym.getName(), ctx.mkBoolConst(sym.getName()));
                     break;
+                case REAL_TYPE:
+                    z3ExprMap.put(sym.getName(), ctx.mkRealConst(sym.getName()));
+                    break;
                 default:
                     throw new VBNSolverRuntimeError("Error, symbol " + sym.getType() + " wasn't of expected type");
             }
@@ -229,7 +278,7 @@ public class Z3Solver {
                 }
 
                 if (!constraintNegatedMap.containsKey(constraintLineNumber)) {
-                    throw new RuntimeException("Constraint doesn't have its line number inside the constraint negated map");
+                    throw new VBNSolverRuntimeError("Constraint doesn't have its line number inside the constraint negated map");
                 } else if (constraintNegatedMap.get(constraintLineNumber)) {
                     constraintExpr = negate(ctx, constraintExpr);
                 }
@@ -273,14 +322,18 @@ public class Z3Solver {
                     IntNum evaluatedValueIntNum = (IntNum) evaluatedValue;
                     long val = evaluatedValueIntNum.getInt64();
                     returnList.add(new IntSymbol(k, val));
+                }else if (evaluatedValue instanceof RatNum) {
+                    RatNum evaluatedValueIntNum = (RatNum) evaluatedValue;
+                    double val = (double) evaluatedValueIntNum.getNumerator().getInt64() / evaluatedValueIntNum.getDenominator().getInt64();
+                    returnList.add(new RealSymbol(k, val));
                 } else {
-                    throw new VBNSolverRuntimeError("Error, evaluatedValue instance of an unhandled class");
+                    throw new VBNSolverRuntimeError("Error, evaluatedValue instance of an unhandled class " + evaluatedValue.getClass());
                 }
             }
         } else if (status == Status.UNSATISFIABLE) {
-            System.out.println("Path constraint is unsatisfiable");
+            throw new VBNSolverRuntimeError("Path constraint is unsatisfiable");
         } else {
-            System.out.println("Solver did not return a satisfying assignment");
+            throw new VBNSolverRuntimeError("Solver did not return a satisfying assignment");
         }
 
         // Dispose of solver instance
