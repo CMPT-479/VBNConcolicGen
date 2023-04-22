@@ -107,4 +107,9 @@ public class ExpressionSwitch extends AbstractJimpleValueSwitch<InstrumentResult
     public void caseDynamicInvokeExpr(DynamicInvokeExpr v) {
         getResult().combine(ExpressionInstrumentUtil.invoke(v, data));
     }
+
+    @Override
+    public void caseSpecialInvokeExpr(SpecialInvokeExpr v) {
+        getResult().combine(ExpressionInstrumentUtil.invoke(v, data));
+    }
 }
