@@ -1,31 +1,22 @@
 package vbn.state.constraints;
 
 import vbn.state.VBNLibraryRuntimeException;
+import vbn.state.value.ISymbol;
 
 import java.io.Serializable;
 
 public interface IConstraint extends Serializable {
 
-    boolean hasLineNumber();
+    boolean isBranch();
+
+    void setIsBranch(boolean isBranch);
 
     /**
      * Get the "line number" where the constraint was in Jimple
      * (Implemented manually in instrumentation using a counter)
      * @return the "line number"
      */
-    int getLineNumber() throws VBNLibraryRuntimeException;
-
-    /**
-     * Set the line number
-     * @param lineNumber a unique id per constraint
-     */
-    void setLineNumber(int lineNumber);
-
-    /**
-     * Currently prints the function
-     */
-    @Deprecated
-    void print();
+    int getLineNumber();
 
     /**
      * Currently prints
@@ -38,4 +29,9 @@ public interface IConstraint extends Serializable {
      * @return whether constraint evaluated to true
      */
     boolean getOriginalEvaluation();
+
+    /**
+     * Set the symbol this constraint is being assigned to
+     */
+    void setAssignmentSymbol(ISymbol symbol);
 }

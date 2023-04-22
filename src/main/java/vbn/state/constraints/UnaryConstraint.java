@@ -1,7 +1,6 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
-import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.value.ISymbol;
 import vbn.state.value.Value;
 
@@ -10,7 +9,7 @@ import java.util.Objects;
 
 public class UnaryConstraint implements IConstraint {
     @Nullable
-    public ISymbol assigned;
+    public ISymbol assignedSymbol;
 
     @NonNull
     public UnaryOperand op;
@@ -20,17 +19,19 @@ public class UnaryConstraint implements IConstraint {
 
     public boolean evaluatedResult;
 
-    private Integer lineNumber = null;
+    private int lineNumber;
+    private Boolean isBranch;
 
-    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, boolean evaluatedResult) {
-        this.assigned = null;
+    public UnaryConstraint(
+            @NonNull UnaryOperand op,
+            @NonNull Value symbol,
+            boolean evaluatedResult,
+            int lineNumber) {
         this.symbol = symbol;
         this.op = op;
-    }
-    public UnaryConstraint(@NonNull UnaryOperand op, @NonNull Value symbol, boolean evaluatedResult, @Nullable ISymbol assigned) {
-        this.assigned = assigned;
-        this.symbol = symbol;
-        this.op = op;
+        this.evaluatedResult = evaluatedResult;
+        this.lineNumber = lineNumber;
+        this.assignedSymbol = null;
     }
 
     @Override
@@ -40,49 +41,41 @@ public class UnaryConstraint implements IConstraint {
         }
 
         UnaryConstraint otherUnaryConstraint = (UnaryConstraint) obj;
-        if (this.assigned == null || otherUnaryConstraint.assigned == null) {
-            if (this.assigned != otherUnaryConstraint.assigned) {
+        if (this.assignedSymbol == null || otherUnaryConstraint.assignedSymbol == null) {
+            if (this.assignedSymbol != otherUnaryConstraint.assignedSymbol) {
                 return false;
             }
             return Objects.equals(this.symbol, otherUnaryConstraint.symbol)
                     && this.op == otherUnaryConstraint.op;
         } else {
             return Objects.equals(this.symbol, otherUnaryConstraint.symbol)
-                    && Objects.equals(this.assigned, otherUnaryConstraint.assigned)
+                    && Objects.equals(this.assignedSymbol, otherUnaryConstraint.assignedSymbol)
                     && this.op == otherUnaryConstraint.op;
         }
     }
 
     @Override
-    public boolean hasLineNumber() {
-        return lineNumber != null;
+    public boolean isBranch() {
+        return isBranch;
+    }
+
+    @Override
+    public void setIsBranch(boolean isBranch) {
+        this.isBranch = isBranch;
     }
 
     @Override
     public int getLineNumber() {
-        if (lineNumber == null) {
-            throw new VBNLibraryRuntimeException("The line number is not set. Check hasLineNumber before running");
-        }
         return lineNumber;
-    }
-
-    @Override
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
-
-    @Override
-    public void print() {
-        System.out.println(toString());
     }
 
     @Override
     public String toString() {
         String result;
-        if (assigned == null) {
+        if (assignedSymbol == null) {
             result = "#" + lineNumber + " Binary Constraint{ " + op + " " + symbol + " }";
         } else {
-            result = "#" + lineNumber + " Binary Constraint{ " + assigned + " = " + op + " " + symbol + " }";
+            result = "#" + lineNumber + " Binary Constraint{ " + assignedSymbol + " = " + op + " " + symbol + " }";
         }
         return result;
     }
@@ -90,5 +83,10 @@ public class UnaryConstraint implements IConstraint {
     @Override
     public boolean getOriginalEvaluation() {
         return evaluatedResult;
+    }
+
+    @Override
+    public void setAssignmentSymbol(ISymbol assignedSymbol) {
+        this.assignedSymbol = assignedSymbol;
     }
 }

@@ -1,6 +1,4 @@
 import org.junit.jupiter.api.Test;
-import vbn.Call;
-import vbn.solver.VBNRunner;
 import vbn.solver.Z3Solver;
 import vbn.state.State;
 import vbn.state.constraints.BinaryConstraint;
@@ -9,7 +7,6 @@ import vbn.state.value.ISymbol;
 import vbn.state.value.BooleanSymbol;
 import vbn.state.value.IntSymbol;
 
-import java.io.PrintStream;
 import java.util.List;
 
 public class Z3Tests {
@@ -23,7 +20,7 @@ public class Z3Tests {
                 new BinaryConstraint(
                         state.getSymbol("x"),
                         BinaryOperand.OR,
-                        state.getSymbol("y"), false));
+                        state.getSymbol("y"), false, -1));
 
         List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
@@ -39,7 +36,7 @@ public class Z3Tests {
                 new BinaryConstraint(
                         state.getSymbol("x"),
                         BinaryOperand.AND,
-                        state.getSymbol("y"), false));
+                        state.getSymbol("y"), false, -1));
 
         List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);
@@ -55,7 +52,7 @@ public class Z3Tests {
                 new BinaryConstraint(
                         state.getSymbol("x"),
                         BinaryOperand.GT,
-                        state.getSymbol("y"), false));
+                        state.getSymbol("y"), false, -1));
 
         List<ISymbol> solved = Z3Solver.solve(state);
         Z3Solver.printSolvedValuesBasedOnList(solved);

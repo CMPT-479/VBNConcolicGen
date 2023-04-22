@@ -43,7 +43,7 @@ public class ObjectIOTests {
         BooleanSymbol symbol2 = new BooleanSymbol("2", true);
         state.addSymbol(symbol1);
         state.addSymbol(symbol2);
-        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false));
+        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false, -1));
 
         String fileName = "constraints.ser";
         ObjectIO.writeObjectToFile(state.getConstraints(), fileName);
@@ -106,7 +106,7 @@ public class ObjectIOTests {
         BooleanSymbol symbol2 = new BooleanSymbol("2", true);
         state.addSymbol(symbol1);
         state.addSymbol(symbol2);
-        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false));
+        state.pushConstraint(new BinaryConstraint(symbol1, BinaryOperand.AND, symbol2, false, -1));
 
         VBNRunner.insertStateIntoIO(state);
         State returnedState = VBNRunner.returnStateFromIO();

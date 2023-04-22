@@ -96,7 +96,7 @@ public class VBNRunner {
     private static Stack<IConstraint> removeInvalidConstraints(@NonNull Stack<IConstraint> constraints) {
         Stack<IConstraint> validConstraints = new Stack<>();
         for (IConstraint constraint : constraints) {
-            if (constraint.hasLineNumber()) {
+            if (constraint.isBranch()) {
                 validConstraints.push(constraint);
             }
         }
@@ -186,7 +186,7 @@ public class VBNRunner {
 
     private static void addConstraintsToNegatedMap(@NonNull Stack<IConstraint> constraints) {
         for (@NonNull IConstraint constraint : constraints) {
-            if (!constraint.hasLineNumber()) {
+            if (!constraint.isBranch()) {
                 continue;
             }
             if (!(constraintNegatedMap.containsKey(constraint.getLineNumber()))) {

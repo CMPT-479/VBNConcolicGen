@@ -64,14 +64,14 @@ public class ComputeConstraints {
      * Generate constraints based on the calls
      * @param assignmentSymName The symbol name to assign the constraints to.
      */
-    private IConstraint generateFromPushes(@Nullable final ISymbol assignmentSymName) {
+    public IConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName) {
         IConstraint resultingConstraint;
 
         if (operand == null) {
             throw new VBNLibraryRuntimeException("The operator must be set before generating constraint from pushes");
         }
 
-        opVisitor.setValues(valueStack, isEvaluatedTrue(), assignmentSymName);
+        opVisitor.setValues(valueStack, isEvaluatedTrue(), lineNumber, assignmentSymName);
         operand.accept(opVisitor);
 
         // Values are copied in set values
@@ -83,19 +83,10 @@ public class ComputeConstraints {
         return resultingConstraint;
     }
 
-    public IConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName) {
-        var constraint = generateFromPushes(assignmentSymName);
-        constraint.setLineNumber(lineNumber);
+    public IConstraint generateFromPushes(int lineNumber, @Nullable final ISymbol assignmentSymName, boolean isBranch) {
+        var constraint = generateFromPushes(lineNumber, assignmentSymName);
+        constraint.setIsBranch(isBranch);
         return constraint;
-    }
-
-    /**
-     * Generate constraints based on the calls
-     *
-     * @return the newly created constraint
-     */
-    public IConstraint generateFromPushes() {
-        return generateFromPushes(null);
     }
 
     public boolean isReassignment() {
@@ -110,10 +101,6 @@ public class ComputeConstraints {
         this.evaluatedResult = false;
     }
 
-    private boolean evaluatedResultIsNull() {
-        return evaluatedResult == null;
-    }
-
     public boolean isEvaluatedTrue() {
         if (evaluatedResult == null) {
             throw new VBNLibraryRuntimeException("Tried fetching evaluation when it was null");
@@ -125,6 +112,8 @@ public class ComputeConstraints {
     static public class GenerateConstraintVisitor implements IOperandVisitor {
         private IConstraint generatedConstraint;
         private ISymbol assignSym;
+
+        private int lineNumber;
         private Stack<Value> valueStack;
         private boolean evaluatedResult;
 
@@ -134,10 +123,11 @@ public class ComputeConstraints {
          * @param evaluatedResult the eval result of the constraint
          * @param assignSym the assignment name (if it exists)
          */
-        public void setValues(@NonNull Stack<Value> valueStack, @NonNull Boolean evaluatedResult, @Nullable ISymbol assignSym) {
+        public void setValues(@NonNull Stack<Value> valueStack, @NonNull Boolean evaluatedResult, int lineNumber, @Nullable ISymbol assignSym) {
             this.assignSym = assignSym;
             this.valueStack = (Stack<Value>) valueStack.clone();
             this.evaluatedResult = evaluatedResult;
+            this.lineNumber = lineNumber;
         }
 
         public void visit(@NonNull BinaryOperand binOp) throws IncorrectNumberOfValuesException {
@@ -157,11 +147,10 @@ public class ComputeConstraints {
                 throw new VBNLibraryRuntimeException("The value types are not equal when creating a constraint");
             }
 
-            if (assignSym == null) {
-                generatedConstraint = new BinaryConstraint(left, binOp, right, evaluatedResult);
-            }
-            else {
-                generatedConstraint = new BinaryConstraint(left, binOp, right, evaluatedResult, assignSym);
+            generatedConstraint = new BinaryConstraint(left, binOp, right, evaluatedResult, lineNumber);
+
+            if (assignSym != null) {
+                generatedConstraint.setAssignmentSymbol(assignSym);
             }
         }
 
@@ -224,11 +213,10 @@ public class ComputeConstraints {
             assertNumberOfValuesEqual(1);
 
             var symbol = valueStack.pop();
-            if (assignSym == null) {
-                generatedConstraint = new UnaryConstraint(unOp, symbol, evaluatedResult);
-            }
-            else {
-                generatedConstraint = new UnaryConstraint(unOp, symbol, evaluatedResult, assignSym);
+            generatedConstraint = new UnaryConstraint(unOp, symbol, evaluatedResult, lineNumber);
+
+            if (assignSym != null) {
+                generatedConstraint.setAssignmentSymbol(assignSym);
             }
         }
 
@@ -246,7 +234,7 @@ public class ComputeConstraints {
                     assertNumberOfValuesEqual(1);
 
                     var symbol = valueStack.pop();
-                    generatedConstraint = new BinaryConstraint(assignSym, BinaryOperand.EQ, symbol, true);
+                    generatedConstraint = new BinaryConstraint(assignSym, BinaryOperand.EQ, symbol, true, lineNumber);
                     break;
 
                 default:
