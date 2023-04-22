@@ -21,14 +21,6 @@ public class ComputeConstraints {
      */
     private Boolean evaluatedResult;
 
-
-    /**
-     * When we're casting an int to a bool and don't know what value to give it,
-     * give it this.
-     * TODO: Should we default to false? Or something else?
-     */
-    static final boolean DEFAULT_VALUE_REASSIGN_BOOLEAN = false;
-
     /**
      * Add a symbol to be later used for constraints.
      * Left goes first.
@@ -136,77 +128,11 @@ public class ComputeConstraints {
             var right = valueStack.pop();
             var left = valueStack.pop();
 
-            // Jimple converts booleans into an int that is one or zero
-            // We need to convert it back into a boolean
-            right = handleConvertIntToBoolForComparison(left, binOp, right);
-            left = handleConvertIntToBoolForComparison(right, binOp, left);
-
-            assignSym = handleConvertIntToBoolForAssignment(assignSym, binOp);
-
-            if (right.getType() != left.getType()) {
-                throw new VBNLibraryRuntimeException("The value types are not equal when creating a constraint");
-            }
-
             generatedConstraint = new BinaryConstraint(left, binOp, right, evaluatedResult, lineNumber);
 
             if (assignSym != null) {
                 generatedConstraint.setAssignmentSymbol(assignSym);
             }
-        }
-
-        private ISymbol handleConvertIntToBoolForAssignment(ISymbol assignSym, BinaryOperand binOp) {
-            if (assignSym == null || assignSym instanceof BooleanSymbol) {
-                return assignSym;
-            }
-
-            switch (binOp) {
-                case EQ:
-                case NEQ:
-
-                case AND:
-                case OR:
-
-                case LTE:
-                case GTE:
-                case LT:
-                case GT:
-                    assignSym = new BooleanSymbol(assignSym.getName(), DEFAULT_VALUE_REASSIGN_BOOLEAN);
-                    break;
-
-                case ADD:
-                case MINUS:
-                case MULTIPLY:
-                case DIVIDE:
-                    // Does not need to do anything
-                    break;
-
-                default:
-                    throw new IllegalStateException("Unexpected value: " + binOp);
-            }
-
-            return assignSym;
-        }
-
-        /**
-         * Jimple converts booleans into an int that is one or zero (e.g. if (BOOL == 0))
-         *
-         * @param boolSymbol the boolean symbol
-         * @param binOp the operation to confirm is equal
-         * @param intSymbol the int symbol to convert to a bool symbol
-         * @return the int symbol, potentially converted to a bool symbol
-         */
-        private static Value handleConvertIntToBoolForComparison(@NonNull Value boolSymbol, @NonNull BinaryOperand binOp, @NonNull Value intSymbol) {
-            if (boolSymbol instanceof BooleanSymbol && intSymbol instanceof IntConstant) {
-                int leftValue = (int) intSymbol.getValue();
-                if (!(leftValue == 0 || leftValue == 1)) {
-                    throw new VBNLibraryRuntimeException("The int value handled must be 0 or 1 when converting to bool");
-                }
-                if (!(binOp == BinaryOperand.EQ)) {
-                    throw new VBNLibraryRuntimeException("The operator must be 'equal to' when converting ");
-                }
-                intSymbol = new BooleanConstant(leftValue == 1);
-            }
-            return intSymbol;
         }
 
         public void visit(@NonNull UnaryOperand unOp) throws IncorrectNumberOfValuesException {
@@ -256,11 +182,8 @@ public class ComputeConstraints {
          * @throws IncorrectNumberOfValuesException If invalid
          */
         private void assertNumberOfValuesEqual(final int expectedVars) throws IncorrectNumberOfValuesException {
-            if (valueStack.size() < expectedVars) {
-                throw new IncorrectNumberOfValuesException("Need exactly " + expectedVars + " operand. Found less than " + expectedVars + ".");
-            }
-            if (valueStack.size() > expectedVars) {
-                throw new IncorrectNumberOfValuesException("Need exactly " + expectedVars + " operand. Found more than " + expectedVars + ".");
+            if (valueStack.size() != expectedVars) {
+                throw new IncorrectNumberOfValuesException("Need exactly " + expectedVars + " operand. Found " + valueStack.size() + " values");
             }
         }
     }

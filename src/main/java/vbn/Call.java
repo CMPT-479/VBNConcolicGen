@@ -171,6 +171,7 @@ public class Call {
      * Run when the if condition evaluated to TRUE
      * @param lineNumber the line number of the if condition
      */
+    @SuppressWarnings("unused")
     public static void pushTrueBranch(int lineNumber) {
         computeConstraints.setEvaluatedToTrue();
     }
@@ -179,10 +180,12 @@ public class Call {
      * Run when the if condition evaluated to FALSE
      * @param lineNumber the line number of the if condition
      */
+    @SuppressWarnings("unused")
     public static void pushFalseBranch(int lineNumber) {
         computeConstraints.setEvaluatedToFalse();
     }
 
+    @SuppressWarnings("unused")
     public static void finalizeReturn(String symbol, Object value, int lineNumber) {}
 
     /**
@@ -199,6 +202,7 @@ public class Call {
     /**
      * Trigger before involving a function
      */
+    @SuppressWarnings("unused")
     public static void beforeInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
@@ -207,19 +211,23 @@ public class Call {
     /**
      * Trigger after involving a function
      */
+    @SuppressWarnings("unused")
     public static void afterInvokeFunc() {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
     }
 
+    @SuppressWarnings("unused")
     public static void pushArg(String symbol, Object value) {
 
     }
 
+    @SuppressWarnings("unused")
     public static void pushArgConst(Object value) {
 
     }
 
+    @SuppressWarnings("unused")
     public static void popArg(String symbol, Object value) {
 
     }
@@ -227,6 +235,7 @@ public class Call {
     /**
      * After the program is completed
      */
+    @SuppressWarnings("unused")
     public static void terminatedWithError(Throwable theError) {
         String name = new Object(){}.getClass().getEnclosingMethod().getName();
         System.out.println("From " + name);
@@ -235,16 +244,13 @@ public class Call {
 
         if (globalState.hasVBNError()) {
             System.out.println("VBN's Runtime Library for the instrumentation failed with an error:");
-            System.out.println("----------------------------------------------------------------------");
-            theError.printStackTrace();
-            System.out.println("----------------------------------------------------------------------");
         }
         else {
             System.out.println("System failed with an error:");
-            System.out.println("----------------------------------------------------------------------");
-            theError.printStackTrace();
-            System.out.println("----------------------------------------------------------------------");
         }
+        System.out.println("----------------------------------------------------------------------");
+        theError.printStackTrace();
+        System.out.println("----------------------------------------------------------------------");
 
         // Give VBN.run() the state object in order to know the constraints and values
         onAllTerminates();

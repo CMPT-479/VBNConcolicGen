@@ -1,7 +1,9 @@
 import org.junit.Test;
+import vbn.state.State;
 import vbn.state.constraints.BinaryConstraint;
 import vbn.state.constraints.BinaryOperand;
 import vbn.state.constraints.CustomOperand;
+import vbn.state.constraints.IConstraint;
 import vbn.state.helpers.ComputeConstraints;
 import vbn.state.value.*;
 
@@ -95,42 +97,44 @@ public class ComputeTests {
      */
     @Test
     public void testBinaryConstraintBooleanIntMix_IntThenBool() {
-        var visitor = new ComputeConstraints.GenerateConstraintVisitor();
-        Stack<Value> valueStack = new Stack<>();
+        State state = new State();
         Value left;
         Value right;
         BooleanConstant boolSymbol;
         BinaryOperand operand;
-        BinaryConstraint groundTruth;
 
-        // Right is the constant
-        left = new IntConstant(0);
-        boolSymbol = new BooleanConstant(false);
-        right = new BooleanSymbol("right", true);
+        BinaryConstraint groundTruth;
+        BinaryConstraint initialConstraint;
+        IConstraint finalConstraint;
+
+        // Left is the constant
+        left = new IntConstant(1);
+        right = new BooleanSymbol("left", true);
+        boolSymbol = new BooleanConstant(true);
         operand = BinaryOperand.EQ;
 
-        groundTruth = new BinaryConstraint(boolSymbol, operand, right, false, -1);
+        initialConstraint = new BinaryConstraint(left, operand, right, false, -1);
+        state.pushConstraint(initialConstraint);
 
-        valueStack.push(left);
-        valueStack.push(right);
-        visitor.setValues(valueStack, false, -1, null);
-        operand.accept(visitor);
+        finalConstraint = state.getConstraints().pop();
+        groundTruth = new BinaryConstraint(left, operand, boolSymbol, false, -1);
 
-        assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getType());
-        assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getValue());
-        assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getType());
-        assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getValue());
-
+        assertEquals(groundTruth.left.getType(), ((BinaryConstraint) finalConstraint).left.getType());
+        assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) finalConstraint).left.getValue());
+        assertEquals(groundTruth.right.getType(), ((BinaryConstraint) finalConstraint).right.getType());
+        assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) finalConstraint).right.getValue());
     }
     @Test
     public void testBinaryConstraintBooleanIntMix_BoolThenInt() {
-        var visitor = new ComputeConstraints.GenerateConstraintVisitor();
-        Stack<Value> valueStack = new Stack<>();
+        State state = new State();
         Value left;
         Value right;
         BooleanConstant boolSymbol;
         BinaryOperand operand;
+
         BinaryConstraint groundTruth;
+        BinaryConstraint initialConstraint;
+        IConstraint finalConstraint;
 
         // Left is the constant
         left = new BooleanSymbol("left", true);
@@ -138,17 +142,22 @@ public class ComputeTests {
         boolSymbol = new BooleanConstant(true);
         operand = BinaryOperand.EQ;
 
+        initialConstraint = new BinaryConstraint(left, operand, right, false, -1);
+        state.pushConstraint(initialConstraint);
+
+        finalConstraint = state.getConstraints().pop();
         groundTruth = new BinaryConstraint(left, operand, boolSymbol, false, -1);
 
-        valueStack.push(left);
-        valueStack.push(right);
-        visitor.setValues(valueStack, false, -1, null);
-        operand.accept(visitor);
+        assertEquals(groundTruth.left.getType(), ((BinaryConstraint) finalConstraint).left.getType());
+        assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) finalConstraint).left.getValue());
+        assertEquals(groundTruth.right.getType(), ((BinaryConstraint) finalConstraint).right.getType());
+        assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) finalConstraint).right.getValue());
 
-        assertEquals(groundTruth.left.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getType());
-        assertEquals(groundTruth.left.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).left.getValue());
-        assertEquals(groundTruth.right.getType(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getType());
-        assertEquals(groundTruth.right.getValue(), ((BinaryConstraint) visitor.getGeneratedConstraint()).right.getValue());
+    }
+
+    @Test
+    public void testAssignmentSymbolIsIntWhenItShouldBeBoolean() {
+        // TODO: Test that this works properly
     }
 
     /**
