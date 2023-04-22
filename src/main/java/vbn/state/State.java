@@ -14,6 +14,18 @@ import java.util.*;
 public class State implements Serializable {
     private Throwable error;
 
+    private final Map<String, ISymbol> symbols;
+
+    private final Stack<IConstraint> constraints;
+
+
+    /**
+     * When we're casting an int to a bool and don't know what value to give it,
+     * give it this.
+     * TODO: Should we default to false? Or something else?
+     */
+    static final boolean DEFAULT_VALUE_REASSIGN_BOOLEAN = false;
+
     public State() {
         super();
         symbols = new HashMap<>();
@@ -25,15 +37,19 @@ public class State implements Serializable {
         this.constraints = constraints;
     }
 
-    private final Map<String, ISymbol> symbols;
-
-    private final Stack<IConstraint> constraints;
-
     /**
      * Push a general constraint
      * @param constraint the constraint to add the constraint stack
      */
     public void pushConstraint(IConstraint constraint) {
+        if (constraint instanceof BinaryConstraint) {
+            processBoolToInt((BinaryConstraint) constraint);
+
+            if (!((BinaryConstraint) constraint).valuesTypesAreValid()) {
+                throw new VBNLibraryRuntimeException("The value types are not equal when creating a constraint");
+            }
+        }
+
         constraints.push(constraint);
     }
 
@@ -42,6 +58,14 @@ public class State implements Serializable {
      * @param symbol the symbol object to add
      */
     public void addSymbol(ISymbol symbol) {
+        symbols.put(symbol.getName(), symbol);
+    }
+
+    /**
+     * Actually handles setting the symbol
+     * @param symbol the symbol to set
+     */
+    private void addSymbolFinal(ISymbol symbol) {
         symbols.put(symbol.getName(), symbol);
     }
 
@@ -117,6 +141,72 @@ public class State implements Serializable {
 
         return new State(finalSymbols, finalConstraints);
 
+    }
+
+    private void processBoolToInt(BinaryConstraint constraint) {
+
+        // Jimple converts booleans into an int that is one or zero
+        // We need to convert it back into a boolean
+        constraint.right = handleConvertIntToBoolForComparison(constraint.left, constraint.op, constraint.right);
+        constraint.left = handleConvertIntToBoolForComparison(constraint.right, constraint.op, constraint.left);
+
+        constraint.assignedSymbol = handleConvertIntToBoolForAssignment(constraint.assignedSymbol, constraint.op);
+    }
+
+    private ISymbol handleConvertIntToBoolForAssignment(ISymbol assignSym, BinaryOperand binOp) {
+        if (assignSym == null || assignSym instanceof BooleanSymbol) {
+            return assignSym;
+        }
+
+        switch (binOp) {
+            case EQ:
+            case NEQ:
+
+            case AND:
+            case OR:
+
+            case LTE:
+            case GTE:
+            case LT:
+            case GT:
+                assignSym = new BooleanSymbol(assignSym.getName(), DEFAULT_VALUE_REASSIGN_BOOLEAN);
+                addSymbolFinal(assignSym);
+                break;
+
+            case ADD:
+            case MINUS:
+            case MULTIPLY:
+            case DIVIDE:
+                // Does not need to do anything
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + binOp);
+        }
+
+        return assignSym;
+    }
+
+    /**
+     * Jimple converts booleans into an int that is one or zero (e.g. if (BOOL == 0))
+     *
+     * @param boolSymbol the boolean symbol
+     * @param binOp the operation to confirm is equal
+     * @param intSymbol the int symbol to convert to a bool symbol
+     * @return the int symbol, potentially converted to a bool symbol
+     */
+    private static Value handleConvertIntToBoolForComparison(@NonNull Value boolSymbol, @NonNull BinaryOperand binOp, @NonNull Value intSymbol) {
+        if (boolSymbol instanceof BooleanSymbol && intSymbol instanceof IntConstant) {
+            int leftValue = (int) intSymbol.getValue();
+            if (!(leftValue == 0 || leftValue == 1)) {
+                throw new VBNLibraryRuntimeException("The int value handled must be 0 or 1 when converting to bool");
+            }
+            if (!(binOp == BinaryOperand.EQ)) {
+                throw new VBNLibraryRuntimeException("The operator must be 'equal to' when converting ");
+            }
+            intSymbol = new BooleanConstant(leftValue == 1);
+        }
+        return intSymbol;
     }
 
     public void setError(Throwable error) {

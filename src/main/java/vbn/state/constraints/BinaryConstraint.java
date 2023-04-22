@@ -42,6 +42,14 @@ public class BinaryConstraint implements IConstraint {
         this.assignedSymbol = null;
     }
 
+    /**
+     * Used when validating values
+     * @return true if the values are valid
+     */
+    public boolean valuesTypesAreValid() {
+        return left.getType() == right.getType();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof BinaryConstraint)) {
