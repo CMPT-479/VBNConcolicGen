@@ -1,17 +1,16 @@
 package vbn.instrument.switches;
 
 import soot.RefType;
+import soot.Value;
 import soot.jimple.*;
 import vbn.instrument.InstrumentData;
 import vbn.instrument.InstrumentResult;
 
 import java.util.List;
 
-public class ExpressionSwitch extends AbstractJimpleValueSwitch<InstrumentResult> {
-    public InstrumentData data;
-
+public class ExpressionSwitch extends AbstractSwitch {
     public ExpressionSwitch(InstrumentData data) {
-        this.data = data;
+        super(data);
         setResult(new InstrumentResult());
     }
 

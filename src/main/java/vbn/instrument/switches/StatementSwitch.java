@@ -23,14 +23,17 @@ public class StatementSwitch extends AbstractStmtSwitch<Object> {
         var result = JimpleValueInstrument.instrument(right, left, data);
         var lineNumber = ((LineNumberTag) stmt.getTag("LineNumberTag")).getLineNumber();
         boolean isReturn = false;
-        if (right instanceof InvokeExpr) {
-            var invoke = (InvokeExpr) right;
-            if (invoke.getMethod().getDeclaringClass().getName().equals(data.mainClass)) {
-                var popSwitch = new PopSwitch(data);
-                left.apply(popSwitch);
-                result.combine(popSwitch.getResult());
-                isReturn = true;
-            } else {
+        if (right instanceof InvokeExpr || right instanceof LengthExpr || right instanceof NewArrayExpr) {
+            if (right instanceof InvokeExpr) {
+                var invoke = (InvokeExpr) right;
+                if (invoke.getMethod().getDeclaringClass().getName().equals(data.mainClass)) {
+                    var popSwitch = new PopSwitch(data);
+                    left.apply(popSwitch);
+                    result.combine(popSwitch.getResult());
+                    isReturn = true;
+                }
+            }
+            if (!isReturn) {
                 // Black box function
                 var pushSwitch = new RightReferenceSwitch(data);
                 left.apply(pushSwitch);

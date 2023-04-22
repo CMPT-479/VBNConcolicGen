@@ -2,6 +2,7 @@ package vbn.instrument.switches;
 
 import soot.RefType;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.*;
 import vbn.instrument.InstrumentData;
 import vbn.instrument.InstrumentResult;
@@ -33,9 +34,6 @@ public class ExpressionInstrumentUtil {
         result.beforeUnits.add(beginStmt);
         result.afterUnits.add(endStmt);
         return result;
-    }
-
-    public static void length(LengthExpr expr, InstrumentData data) {
     }
 
     public static InstrumentResult arithmetic(BinopExpr expr, InstrumentData data) {
@@ -79,5 +77,4 @@ public class ExpressionInstrumentUtil {
         result.beforeUnits.add(applyStmt);
         return result;
     }
-
 }
