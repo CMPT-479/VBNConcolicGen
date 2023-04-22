@@ -55,7 +55,11 @@ public class InputMap {
             Map.entry(
                     "vbn.examples.Test_10_If_Float",
                     List.of(
-                            new RealConstant(DEFAULT_REAL_CONSTANT)))
-
+                            new RealConstant(DEFAULT_REAL_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_11_Unmanageable",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT)))
     );
 }

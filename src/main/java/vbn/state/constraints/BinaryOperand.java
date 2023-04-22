@@ -10,6 +10,7 @@ import vbn.state.helpers.IncorrectNumberOfValuesException;
 public enum BinaryOperand implements IOperand {
     // Both Boolean and Numbers
     EQ,
+    NEQ,
 
     // Boolean Operators
     AND,

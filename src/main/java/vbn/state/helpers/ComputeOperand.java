@@ -17,6 +17,7 @@ public class ComputeOperand {
             Map.entry("&&", BinaryOperand.AND),
             Map.entry("||", BinaryOperand.OR),
             Map.entry("==", BinaryOperand.EQ),
+            Map.entry("!=", BinaryOperand.NEQ),
 
             Map.entry("+", BinaryOperand.ADD),
             Map.entry("-", BinaryOperand.MINUS),
