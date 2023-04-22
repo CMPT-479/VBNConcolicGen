@@ -163,6 +163,8 @@ public class Call {
 //            }
 //        }
 
+        latestState.generateNewSymbolForVariable(varName);
+
         assignmentSymIfExists = latestState.getLatestSymbolAndCreateIfDoesntExist(varName, concreteValue);
         if (TESTING_MODE) {
             System.out.println(finalizeIndentStr + " getLatestSymbolAndCreateIfDoesntExist=" + assignmentSymIfExists);
@@ -170,8 +172,6 @@ public class Call {
 
         var constraint = computeConstraints.generateAssignmentFromPushes(lineNumber, assignmentSymIfExists);
         latestState.pushConstraint(constraint);
-
-        latestState.generateNewSymbolForVariable(varName);
 
         if (TESTING_MODE) {
             System.out.println("Finalize Store of: " + latestState.getSymbolName(varName));

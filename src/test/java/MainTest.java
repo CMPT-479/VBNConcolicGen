@@ -115,8 +115,9 @@ public class MainTest {
 
     @Test
     final void basicFunction() {
-        final String[] args = new String[] {"vbn.examples.Test_08_Function"};
-        soot.Main.main(args);
+        VBNRunner.execute("vbn.examples.Test_13_Function");
+        System.out.println("Finished increment test");
+        printAndValidateSolvedConstraints(16);
     }
 
 }
