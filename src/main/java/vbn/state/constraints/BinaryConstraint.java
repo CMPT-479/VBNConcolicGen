@@ -22,7 +22,6 @@ public class BinaryConstraint implements IConstraint {
     @NonNull
     public Value right;
 
-    @NonNull
     public boolean evaluatedResult;
 
     private Integer lineNumber = null;

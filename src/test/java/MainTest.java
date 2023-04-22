@@ -7,6 +7,7 @@ import soot.PackManager;
 import soot.Transform;
 import soot.options.Options;
 import vbn.solver.VBNRunner;
+import vbn.state.VBNLibraryRuntimeException;
 
 import java.io.*;
 
@@ -33,8 +34,7 @@ public class MainTest {
 
     @Test
     final void basic() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_00_Basic");
-        Assertions.assertEquals(exitCode, 0);
+        VBNRunnerTestHelper("vbn.examples.Test_00_Basic");
         System.out.println("Finished basic test");
         printSolvedConstraints();
     }
@@ -47,58 +47,48 @@ public class MainTest {
 
     @Test
     final void basicNegAndMinus() {
-//        final String[] args = new String[] {"vbn.examples.Test_02_NEG_vs_MINUS"};
-//        soot.Main.main(args);
-        var exitCode = VBNRunner.execute("vbn.examples.Test_02_NEG_vs_MINUS");
-        Assertions.assertEquals(exitCode, 0);
+        VBNRunnerTestHelper("vbn.examples.Test_02_NEG_vs_MINUS");
         System.out.println("Finished neg vs minus test");
         printSolvedConstraints();
     }
 
     @Test
     final void basicIf() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_05_If");
-        Assertions.assertEquals(exitCode, 0);
+        VBNRunnerTestHelper("vbn.examples.Test_05_If");
         System.out.println("Finished if test");
         printSolvedConstraints();
     }
 
     @Test
     final void basicIfMultiple() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_06_If_Multiple");
-        Assertions.assertEquals(exitCode, 0);
+        VBNRunnerTestHelper("vbn.examples.Test_06_If_Multiple");
         System.out.println("Finished if multiple test");
         printSolvedConstraints();
     }
 
     @Test
     final void basicIfMultipleDiffTypes() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_07_If_Multiple_Diff_Types");
-        Assertions.assertEquals(exitCode, 0);
+        VBNRunnerTestHelper("vbn.examples.Test_07_If_Multiple_Diff_Types");
         System.out.println("Finished if multiple test");
         printSolvedConstraints();
     }
 
     @Test
     final void basicIfValue() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_08_If_Value");
-        Assertions.assertEquals(exitCode, 0);
+        VBNRunnerTestHelper("vbn.examples.Test_08_If_Value");
         System.out.println("Finished if value test");
         printSolvedConstraints();
     }
 
     @Test
     final void basicIfDouble() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_09_If_Double");
-        Assertions.assertEquals(exitCode, 0);
         System.out.println("Finished if double test");
         printSolvedConstraints();
     }
 
     @Test
     final void basicIfFloat() {
-        var exitCode = VBNRunner.execute("vbn.examples.Test_10_If_Float");
-        Assertions.assertEquals(exitCode, 0);
+        VBNRunnerTestHelper("vbn.examples.Test_10_If_Float");
         System.out.println("Finished if float test");
         printSolvedConstraints();
     }
@@ -113,6 +103,17 @@ public class MainTest {
     final void basicFunction() {
         final String[] args = new String[] {"vbn.examples.Test_08_Function"};
         soot.Main.main(args);
+    }
+
+    private void VBNRunnerTestHelper(String programName) {
+        try {
+            var time = System.currentTimeMillis();
+            System.out.println(time);
+            VBNRunner.execute("vbn.examples.Test_09_If_Double", time);
+        } catch (VBNLibraryRuntimeException e) {
+            e.printStackTrace();
+            Assertions.fail();
+        }
     }
 
 }

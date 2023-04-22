@@ -3,17 +3,24 @@ package vbn;
 import java.util.Random;
 
 public class RandomHandler {
-    static Random random = new Random(System.currentTimeMillis());
 
-    public static int getRandomNumber() {
+    long seed;
+    Random random;
+
+    public RandomHandler(long seed) {
+        this.seed = seed;
+        this.random = new Random(this.seed);
+    }
+
+    public int getRandomNumber() {
         return random.nextInt();
     }
 
-    public static boolean getRandomBoolean() {
+    public boolean getRandomBoolean() {
         return random.nextBoolean();
     }
 
-    public static double getRandomReal() {
+    public double getRandomReal() {
         return random.nextDouble();
     }
 }

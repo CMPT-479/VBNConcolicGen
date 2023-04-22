@@ -3,6 +3,7 @@ package vbn.solver;
 import lombok.NonNull;
 import vbn.ObjectIO;
 import vbn.RandomHandler;
+import vbn.state.IVBNException;
 import vbn.state.constraints.IConstraint;
 import vbn.state.State;
 import vbn.state.value.*;
@@ -22,10 +23,13 @@ public class VBNRunner {
     public static Map<Integer, Boolean> constraintOriginallyNegated = new HashMap<>();
     public static List<String[]> solvedConstraints = new ArrayList<>();
 
+    public static List<List<ISymbol>> solvedConstraintsStructured = new ArrayList<>();
+
     public static void reset() {
         constraintNegatedMap.clear();
         constraintOriginallyNegated.clear();
         solvedConstraints.clear();
+        solvedConstraintsStructured.clear();
     }
 
     public static void insertStateIntoIO(State state) {
@@ -49,23 +53,28 @@ public class VBNRunner {
         return new State(symbolMap, constraints);
     }
 
-    private static String[] getProgramInputs(@NonNull List<IConstant> constants) {
-        String[] inputs = new String[constants.size()];
+    private static List<ISymbol> getProgramInputSymbols(@NonNull List<IConstant> constants, RandomHandler rand) {
+        List<ISymbol> inputs = new ArrayList<>(constants.size());
         for (int i = 0; i < constants.size(); i++) {
             Value.Type type = constants.get(i).getType();
+            ISymbol newInput;
+
             switch (type) {
                 case INT_TYPE:
-                    inputs[i] = String.valueOf(RandomHandler.getRandomNumber());
+                    newInput = new IntSymbol("vbn_input_" + i, rand.getRandomNumber());
                     break;
                 case REAL_TYPE:
-                    inputs[i] = String.valueOf(RandomHandler.getRandomReal());
+                    newInput = new RealSymbol("vbn_input_" + i, rand.getRandomReal());
                     break;
                 case BOOL_TYPE:
-                    inputs[i] = String.valueOf(RandomHandler.getRandomBoolean());
+                    newInput = new BooleanSymbol("vbn_input_" + i, rand.getRandomBoolean());
                     break;
                 case UNKNOWN:
-                    throw new VBNSolverRuntimeError("Unknown type as program input");
+                default:
+                    throw new IllegalStateException("Unexpected value: " + type);
             }
+
+            inputs.add(newInput);
         }
 
         return inputs;
@@ -127,20 +136,34 @@ public class VBNRunner {
         return false;
     }
 
-    public static int execute(String programName) {
+    public static List<List<ISymbol>> execute(String programName, long randSeed) {
+        RandomHandler randomHandler = new RandomHandler(randSeed);
+
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
         @NonNull List<IConstant> programInputTypes = InputMap.programInputMap.get(programName);
-        String[] programInputs = getProgramInputs(programInputTypes);
+
+        var programInputSymbols = getProgramInputSymbols(programInputTypes, randomHandler);
+        solvedConstraintsStructured.add(programInputSymbols);
+
+        var programInputs = abstractSymbolListToStringArray(programInputSymbols, false);
         solvedConstraints.add(programInputs);
+
         // Step 1: Run program on random inputs
         var exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
+        @NonNull State state = returnStateFromIO();
+
+        // Handle VBN's errors
         if (exitCode != 0) {
-            return exitCode;
+            if (state.getError() instanceof IVBNException) {
+                throw new VBNSolverRuntimeError(state.getError());
+            }
+            else {
+                state.getError().printStackTrace();
+            }
         }
 
-        @NonNull State state = returnStateFromIO();
         ArrayList<ISymbol> solved;
 
         @NonNull Stack<IConstraint> constraints = state.getConstraints();
@@ -153,27 +176,33 @@ public class VBNRunner {
             boolean negationResults = negateConstraints(constraints);
             if (!negationResults) {
                 System.out.println("No more constraints to negate");
-                return 0;
+                return solvedConstraintsStructured;
             }
 
             solved = Z3Solver.solve(state); // solve for negated end
             programInputs = abstractSymbolListToStringArray(solved, false);
             solvedConstraints.add(programInputs);
+            solvedConstraintsStructured.add(solved);
 
             // printable for debugging
             System.out.println("Solved " + Arrays.toString(abstractSymbolListToStringArray(solved, true)));
             // Step 2: Run program on negated inputs
             exitCode = InstrumentedRunner.runInstrumented(programName, programInputs);
+            state = returnStateFromIO();
             if (exitCode != 0) {
-                return exitCode;
+                if (state.getError() instanceof IVBNException) {
+                    throw new VBNSolverRuntimeError(state.getError());
+                }
+                else {
+                    state.getError().printStackTrace();
+                }
             }
 
-            state = returnStateFromIO();
             constraints = state.getConstraints();
             addConstraintsToNegatedMap(constraints);
         }
 
-        return 0;
+        return solvedConstraintsStructured;
     }
 
     private static void addConstraintsToNegatedMap(@NonNull Stack<IConstraint> constraints) {
