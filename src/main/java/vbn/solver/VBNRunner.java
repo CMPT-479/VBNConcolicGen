@@ -131,6 +131,10 @@ public class VBNRunner {
     }
 
     private static void checkStateError(State state) {
+        if (state.getError() == null) {
+            return;
+        }
+        
         if (state.getError() instanceof IVBNException) {
             throw new VBNSolverRuntimeError(state.getError());
         } else {
