@@ -38,7 +38,7 @@ public class KSenTests {
     @Test
     final void ksenLinear() {
         VBNRunner.execute("vbn.ksen_tests.Linear");
-        printAndValidateSolvedConstraints(3);
+        printAndValidateSolvedConstraints(4);
     }
 
     @Test

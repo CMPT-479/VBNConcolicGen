@@ -5,6 +5,7 @@ import vbn.state.value.IConstant;
 import vbn.state.value.IntConstant;
 import vbn.state.value.RealConstant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +64,10 @@ public class InputMap {
                             new IntConstant(DEFAULT_INT_CONSTANT))),
             Map.entry(
                     "vbn.examples.Test_12_Increment",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_13_Function",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT))),
             Map.entry(
