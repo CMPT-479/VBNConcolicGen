@@ -20,6 +20,7 @@ public class LatestState implements Serializable {
      * Used to create a unique symbol every time it is necessary
      */
     int symbol_counter = 0;
+    private int constraintNumber = 0;
 
     public LatestState(GlobalState globalState) {
         this.globalState = globalState;
@@ -101,7 +102,9 @@ public class LatestState implements Serializable {
      */
 
     public void pushConstraint(IConstraint constraint) {
+        constraint.setConstraintNumber(constraintNumber);
         globalState.pushConstraint(constraint);
+        constraintNumber++;
     }
 
     public void setError(Throwable theError) {

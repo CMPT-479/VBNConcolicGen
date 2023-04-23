@@ -1,6 +1,7 @@
 package vbn.state.constraints;
 
 import lombok.NonNull;
+import vbn.state.VBNLibraryRuntimeException;
 import vbn.state.value.ISymbol;
 import vbn.state.value.Value;
 
@@ -19,8 +20,10 @@ public class UnaryConstraint implements IConstraint {
 
     public boolean evaluatedResult;
 
-    private int lineNumber;
+    private final int lineNumber;
     private Boolean isBranch;
+
+    private Integer constraintNumber = null;
 
     public UnaryConstraint(
             @NonNull UnaryOperand op,
@@ -56,7 +59,7 @@ public class UnaryConstraint implements IConstraint {
     }
 
     @Override
-    public boolean isBranch() {
+    public @NonNull Boolean isBranch() {
         return isBranch;
     }
 
@@ -65,9 +68,17 @@ public class UnaryConstraint implements IConstraint {
         this.isBranch = isBranch;
     }
 
+
     @Override
-    public int getLineNumber() {
-        return lineNumber;
+    public long getUniqueId() {
+        if (constraintNumber == null) {
+            throw new VBNLibraryRuntimeException("The constraint number is not set. This is required to generate a unique id.");
+        }
+
+        long result = 0;
+        result = (long) lineNumber << 32;
+        result = result & (long) constraintNumber;
+        return result;
     }
 
     @Override
@@ -89,5 +100,10 @@ public class UnaryConstraint implements IConstraint {
     @Override
     public void setAssignmentSymbol(ISymbol assignedSymbol) {
         this.assignedSymbol = assignedSymbol;
+    }
+
+    @Override
+    public void setConstraintNumber(int constraintNumber) {
+        this.constraintNumber = constraintNumber;
     }
 }

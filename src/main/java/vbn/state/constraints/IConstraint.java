@@ -1,13 +1,13 @@
 package vbn.state.constraints;
 
-import vbn.state.VBNLibraryRuntimeException;
+import lombok.NonNull;
 import vbn.state.value.ISymbol;
 
 import java.io.Serializable;
 
 public interface IConstraint extends Serializable {
 
-    boolean isBranch();
+    @NonNull Boolean isBranch();
 
     void setIsBranch(boolean isBranch);
 
@@ -16,7 +16,7 @@ public interface IConstraint extends Serializable {
      * (Implemented manually in instrumentation using a counter)
      * @return the "line number"
      */
-    int getLineNumber();
+    long getUniqueId();
 
     /**
      * Currently prints
@@ -34,4 +34,6 @@ public interface IConstraint extends Serializable {
      * Set the symbol this constraint is being assigned to
      */
     void setAssignmentSymbol(ISymbol symbol);
+
+    void setConstraintNumber(int constraintNumber);
 }

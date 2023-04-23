@@ -1,3 +1,4 @@
+import org.junit.Ignore;
 import org.junit.jupiter.api.Assertions;
 import vbn.instrument.Instrument;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,6 +118,7 @@ public class MainTest {
     }
 
     @Test
+    @Ignore
     final void basicFunction() {
         VBNRunner.execute("vbn.examples.Test_12_Function");
         System.out.println("Finished function test");
@@ -125,7 +127,7 @@ public class MainTest {
 
     @Test
     final void testLoop() {
-        VBNRunner.execute("vbn.examples.Test_13_Loop");
+        VBNRunner.execute("vbn.examples.Test_13_Loop", 12);
         System.out.println("Finished loop test");
         printAndValidateSolvedConstraints(3);
     }

@@ -156,12 +156,6 @@ public class Call {
         if (computeConstraints.isReassignment()) {
             applyReassignment();
         }
-//        else {
-//            assignmentSymIfExists = latestState.getLatestSymbol(varName);
-//            if (TESTING_MODE) {
-//                System.out.println(finalizeIndentStr + " getLatestSymbol=" + assignmentSymIfExists);
-//            }
-//        }
 
         latestState.generateNewSymbolForVariable(varName);
 

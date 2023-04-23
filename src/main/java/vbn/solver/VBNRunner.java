@@ -3,7 +3,6 @@ package vbn.solver;
 import lombok.NonNull;
 import vbn.ObjectIO;
 import vbn.RandomHandler;
-import vbn.state.IVBNException;
 import vbn.state.constraints.IConstraint;
 import vbn.state.GlobalState;
 import vbn.state.value.*;
@@ -17,10 +16,10 @@ public class VBNRunner {
 
     // false represents not negated, true negated
     // these keep track of our personally negated branches when we try to explore every branch
-    public static Map<Integer, Boolean> constraintNegatedMap = new HashMap<>();
+    public static Map<Long, Boolean> constraintNegatedMap = new HashMap<Long, Boolean>();
 
     // this is the original negations upon the initial run (if we go down a false branch)
-    public static Map<Integer, Boolean> constraintOriginallyNegated = new HashMap<>();
+    public static Map<Long, Boolean> constraintOriginallyNegated = new HashMap<Long, Boolean>();
     public static List<String[]> solvedConstraints = new ArrayList<>();
 
     public static void reset() {
@@ -89,7 +88,7 @@ public class VBNRunner {
 
     private static void putInitialConstraintPathDirection(Stack<IConstraint> constraints) {
         for (IConstraint constraint : constraints) {
-            constraintOriginallyNegated.put(constraint.getLineNumber(), !constraint.getOriginalEvaluation());
+            constraintOriginallyNegated.put(constraint.getUniqueId(), !constraint.getOriginalEvaluation());
         }
     }
 
@@ -113,7 +112,7 @@ public class VBNRunner {
         printConstraintNegationStatus();
 
         while (!(constraints.empty())) {
-            int lineNumber = constraints.peek().getLineNumber();
+            long lineNumber = constraints.peek().getUniqueId();
             if (!constraintNegatedMap.containsKey(lineNumber)) {
                 throw new VBNSolverRuntimeError("Constraint negated map did not contain the constraint line number");
             }
@@ -195,8 +194,8 @@ public class VBNRunner {
             if (!constraint.isBranch()) {
                 continue;
             }
-            if (!(constraintNegatedMap.containsKey(constraint.getLineNumber()))) {
-                constraintNegatedMap.put(constraint.getLineNumber(), false);
+            if (!(constraintNegatedMap.containsKey(constraint.getUniqueId()))) {
+                constraintNegatedMap.put(constraint.getUniqueId(), false);
             }
         }
     }
@@ -219,12 +218,12 @@ public class VBNRunner {
 
     public static void printConstraintNegationStatus() {
         System.out.println("STARTING PRINT OF INITIAL CONSTRAINT MAP");
-        for (Map.Entry<Integer, Boolean> entry : constraintOriginallyNegated.entrySet()) {
+        for (Map.Entry<Long, Boolean> entry : constraintOriginallyNegated.entrySet()) {
             System.out.print(entry.getKey() + ": " + entry.getValue() + ", ");
             System.out.println();
         }
         System.out.println("STARTING PRINT OF CONSTRAINT NEGATION MAP");
-        for (Map.Entry<Integer, Boolean> entry : constraintNegatedMap.entrySet()) {
+        for (Map.Entry<Long, Boolean> entry : constraintNegatedMap.entrySet()) {
             System.out.print(entry.getKey() + ": " + entry.getValue() + ", ");
             System.out.println();
         }
