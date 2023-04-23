@@ -47,4 +47,11 @@ public class KSenTests {
         printAndValidateSolvedConstraints(3);
     }
 
+    @Test
+    final void testUnmanageable() {
+        VBNRunner.execute("vbn.ksen_tests.Unmanageable");
+        System.out.println("Finished unmanageable test");
+        printAndValidateSolvedConstraints(2);
+    }
+
 }

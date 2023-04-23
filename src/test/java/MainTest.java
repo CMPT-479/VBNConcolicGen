@@ -41,8 +41,9 @@ public class MainTest {
 
     @Test
     final void basicArray() {
-        final String[] args = new String[] {"vbn.examples.Test_01_Array"};
-        soot.Main.main(args);
+        VBNRunner.execute("vbn.examples.Test_01_Array");
+        System.out.println("Finished array test");
+        printAndValidateSolvedConstraints(1);
     }
 
     @Test
@@ -50,6 +51,20 @@ public class MainTest {
         VBNRunner.execute("vbn.examples.Test_02_NEG_vs_MINUS");
         System.out.println("Finished neg vs minus test");
         printSolvedConstraints();
+    }
+
+    @Test
+    final void basicClass() {
+        VBNRunner.execute("vbn.examples.Test_03_Class");
+        System.out.println("Finished class test");
+        printAndValidateSolvedConstraints(1);
+    }
+
+    @Test
+    final void basicCast() {
+        VBNRunner.execute("vbn.examples.Test_04_Cast");
+        System.out.println("Finished cast test");
+        printAndValidateSolvedConstraints(1);
     }
 
     @Test
@@ -93,36 +108,24 @@ public class MainTest {
         System.out.println("Finished if float test");
         printAndValidateSolvedConstraints(2);
     }
-    @Test
-    final void testUnmanageable() {
-        VBNRunner.execute("vbn.examples.Test_11_Unmanageable");
-        System.out.println("Finished unmanageable test");
-        printAndValidateSolvedConstraints(2);
-    }
 
     @Test
     final void testIncrement() {
-        VBNRunner.execute("vbn.examples.Test_12_Increment");
+        VBNRunner.execute("vbn.examples.Test_11_Increment");
         System.out.println("Finished increment test");
         printAndValidateSolvedConstraints(1);
     }
 
     @Test
-    final void basicClass() {
-        final String[] args = new String[] {"vbn.examples.Test_03_Class"};
-        soot.Main.main(args);
-    }
-
-    @Test
     final void basicFunction() {
-        VBNRunner.execute("vbn.examples.Test_13_Function");
+        VBNRunner.execute("vbn.examples.Test_12_Function");
         System.out.println("Finished function test");
         printAndValidateSolvedConstraints(16);
     }
 
     @Test
     final void testLoop() {
-        VBNRunner.execute("vbn.examples.Test_14_Loop");
+        VBNRunner.execute("vbn.examples.Test_13_Loop");
         System.out.println("Finished loop test");
         printAndValidateSolvedConstraints(3);
     }

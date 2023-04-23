@@ -1,6 +1,6 @@
 package vbn.examples;
 
-public class Test_12_Increment {
+public class Test_11_Increment {
     static int x;
 
     public static void main(String[] args) {

@@ -3,7 +3,6 @@ package vbn.examples;
 public class Test_03_Class {
     public int x;
     public int y;
-    public static int z = 3;
 
     public static void main(String[] args) {
         Test_03_Class object = new Test_03_Class();
