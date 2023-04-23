@@ -116,8 +116,15 @@ public class MainTest {
     @Test
     final void basicFunction() {
         VBNRunner.execute("vbn.examples.Test_13_Function");
-        System.out.println("Finished increment test");
+        System.out.println("Finished function test");
         printAndValidateSolvedConstraints(16);
+    }
+
+    @Test
+    final void testLoop() {
+        VBNRunner.execute("vbn.examples.Test_14_Loop");
+        System.out.println("Finished loop test");
+        printAndValidateSolvedConstraints(3);
     }
 
 }

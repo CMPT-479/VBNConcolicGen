@@ -71,6 +71,10 @@ public class InputMap {
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT))),
             Map.entry(
+                    "vbn.examples.Test_14_Loop",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
                     "vbn.ksen_tests.If",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
