@@ -24,9 +24,11 @@ public class BinaryConstraint implements IConstraint {
 
     public boolean evaluatedResult;
 
-    private Integer lineNumber = null;
+    private final int lineNumber;
 
-    private Boolean isBranch = false;
+    private Boolean isBranch = null;
+
+    private Integer constraintNumber = null;
 
     public BinaryConstraint(
             @NonNull Value left,
@@ -73,7 +75,7 @@ public class BinaryConstraint implements IConstraint {
     }
 
     @Override
-    public boolean isBranch() {
+    public @NonNull Boolean isBranch() {
         return isBranch;
     }
 
@@ -83,21 +85,37 @@ public class BinaryConstraint implements IConstraint {
     }
 
     @Override
-    public int getLineNumber() {
-        if (lineNumber == null) {
-            throw new VBNLibraryRuntimeException("The line number is not set. Check hasLineNumber before running");
+    public long getUniqueId() {
+        if (constraintNumber == null) {
+            throw new VBNLibraryRuntimeException("The constraint number is not set. This is required to generate a unique id.");
         }
-        return lineNumber;
+
+        long result = 0;
+        result = result | ((long) lineNumber << 32);
+        result = result | (long) constraintNumber;
+        return result;
     }
 
     @Override
     public String toString() {
-        String result;
-        if (assignedSymbol == null) {
-            result = "#" + lineNumber + " Binary Constraint{ \t\t " + left + " " + op + " " + right + " }";
-        } else {
-            result = "#" + lineNumber + " Binary Constraint{ " + assignedSymbol + " = " + left + " " + op + " " + right + " }";
+        String result = "";
+        if (isBranch()) {
+            result += "Br#";
         }
+        else {
+            result += "id#";
+        }
+
+        result += getUniqueId() + " Binary Constraint{ ";
+
+        if (assignedSymbol == null) {
+            result += "\t\t";
+        } else {
+            result += assignedSymbol + " = ";
+        }
+
+        result += left + " " + op + " " + right + " }";
+        
         return result;
     }
 
@@ -109,5 +127,10 @@ public class BinaryConstraint implements IConstraint {
     @Override
     public void setAssignmentSymbol(ISymbol assignedSymbol) {
         this.assignedSymbol = assignedSymbol;
+    }
+
+    @Override
+    public void setConstraintNumber(int constraintNumber) {
+        this.constraintNumber = constraintNumber;
     }
 }

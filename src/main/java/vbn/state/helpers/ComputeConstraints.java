@@ -76,10 +76,14 @@ public class ComputeConstraints {
     }
 
     public IConstraint generateAssignmentFromPushes(int lineNumber, @NonNull final ISymbol assignmentSymName) {
+        boolean isBranch = false;
+
         // A finalize store constraint is always true
         setEvaluatedToTrue();
+        var constraint = generateFromPushes(lineNumber, assignmentSymName);
+        constraint.setIsBranch(isBranch);
 
-        return generateFromPushes(lineNumber, assignmentSymName);
+        return constraint;
     }
 
     public IConstraint generateBranchFromPushes(int lineNumber) {

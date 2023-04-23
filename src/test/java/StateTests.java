@@ -3,7 +3,7 @@ import vbn.Call;
 
 import java.io.PrintStream;
 
-public class GlobalStateTests {
+public class StateTests {
     @Test
     public void basicTest__If_Basic() {
         Call.initTestingMode();

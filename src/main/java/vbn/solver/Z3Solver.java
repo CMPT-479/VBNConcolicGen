@@ -272,7 +272,7 @@ public class Z3Solver {
             }
 
             if (constraint.isBranch()) {
-                int constraintLineNumber = constraint.getLineNumber();
+                long constraintLineNumber = constraint.getUniqueId();
                 if (constraintOriginallyNegated.containsKey(constraintLineNumber) && constraintOriginallyNegated.get(constraintLineNumber)) {
                     constraintExpr = negate(ctx, constraintExpr);
                 }
