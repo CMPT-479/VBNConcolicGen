@@ -1,6 +1,6 @@
 package vbn.examples;
 
-public class Test_14_Loop {
+public class Test_13_Loop {
     static int x;
 
     public static void main(String[] args) {

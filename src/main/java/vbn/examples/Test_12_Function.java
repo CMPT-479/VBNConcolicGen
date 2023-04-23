@@ -1,6 +1,6 @@
 package vbn.examples;
 
-public class Test_13_Function {
+public class Test_12_Function {
 
     public static int f(int x, int y) {
         if (x < y) {

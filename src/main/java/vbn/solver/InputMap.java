@@ -22,11 +22,20 @@ public class InputMap {
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT))),
             Map.entry(
+                    "vbn.examples.Test_01_Array",
+                    new ArrayList<>()),
+            Map.entry(
                     "vbn.examples.Test_02_NEG_vs_MINUS",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new BooleanConstant(DEFAULT_BOOL_CONSTANT))),
+            Map.entry(
+                    "vbn.examples.Test_03_Class",
+                    new ArrayList<>()),
+            Map.entry(
+                    "vbn.examples.Test_04_Cast",
+                    new ArrayList<>()),
             Map.entry(
                     "vbn.examples.Test_05_If",
                     List.of(
@@ -58,20 +67,15 @@ public class InputMap {
                     List.of(
                             new RealConstant(DEFAULT_REAL_CONSTANT))),
             Map.entry(
-                    "vbn.examples.Test_11_Unmanageable",
-                    List.of(
-                            new IntConstant(DEFAULT_INT_CONSTANT),
-                            new IntConstant(DEFAULT_INT_CONSTANT))),
-            Map.entry(
-                    "vbn.examples.Test_12_Increment",
+                    "vbn.examples.Test_11_Increment",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT))),
             Map.entry(
-                    "vbn.examples.Test_13_Function",
+                    "vbn.examples.Test_12_Function",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT))),
             Map.entry(
-                    "vbn.examples.Test_14_Loop",
+                    "vbn.examples.Test_13_Loop",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT))),
             Map.entry(
@@ -89,6 +93,11 @@ public class InputMap {
                     "vbn.ksen_tests.Nonlinear",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.ksen_tests.Unmanageable",
+                    List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT)))
     );

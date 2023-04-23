@@ -22,8 +22,8 @@ public class GlobalStateTests {
             Call.finalizeReturn("$i0", var3, 7);
             Call.pushSym("$i0", var3);
             x = var3;
-            Call.finalizeStore("vbn.examples.Test_12_Increment.x", x, 7);
-            Call.pushSym("vbn.examples.Test_12_Increment.x", x);
+            Call.finalizeStore("vbn.examples.Test_11_Increment.x", x, 7);
+            Call.pushSym("vbn.examples.Test_11_Increment.x", x);
             var3 = x;
             Call.finalizeStore("$i1", var3, 8);
             Call.pushSym("$i1", var3);
@@ -33,7 +33,7 @@ public class GlobalStateTests {
             Call.finalizeStore("$i2", var3, 8);
             Call.pushSym("$i2", var3);
             x = var3;
-            Call.finalizeStore("vbn.examples.Test_12_Increment.x", x, 8);
+            Call.finalizeStore("vbn.examples.Test_11_Increment.x", x, 8);
             Call.terminatePath(9);
         } catch (Throwable var1) {
             Call.terminatedWithError(var1);
@@ -287,8 +287,8 @@ public class GlobalStateTests {
             Call.finalizeStore("$i0", var3, 7);
             Call.pushSym("$i0", var3);
             x = var3;
-            Call.finalizeStore("vbn.examples.Test_12_Increment.x", x, 7);
-            Call.pushSym("vbn.examples.Test_12_Increment.x", x);
+            Call.finalizeStore("vbn.examples.Test_11_Increment.x", x, 7);
+            Call.pushSym("vbn.examples.Test_11_Increment.x", x);
             var3 = x;
             Call.finalizeStore("$i1", var3, 8);
             Call.pushSym("$i1", var3);
@@ -298,7 +298,7 @@ public class GlobalStateTests {
             Call.finalizeStore("$i2", var3, 8);
             Call.pushSym("$i2", var3);
             x = var3;
-            Call.finalizeStore("vbn.examples.Test_12_Increment.x", x, 8);
+            Call.finalizeStore("vbn.examples.Test_11_Increment.x", x, 8);
             Call.terminatePath(9);
         } catch (Throwable var1) {
             Call.terminatedWithError(var1);
