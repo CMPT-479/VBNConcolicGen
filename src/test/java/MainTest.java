@@ -127,9 +127,9 @@ public class MainTest {
 
     @Test
     final void testLoop() {
-        VBNRunner.execute("vbn.examples.Test_13_Loop", 12);
+        VBNRunner.execute("vbn.examples.Test_13_Loop", 12, 10);
         System.out.println("Finished loop test");
-        printAndValidateSolvedConstraints(3);
+        printAndValidateSolvedConstraints(11);
     }
 
 }

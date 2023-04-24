@@ -143,10 +143,10 @@ public class VBNRunner {
     }
 
     public static void execute(String programName) {
-        execute(programName, System.currentTimeMillis());
+        execute(programName, System.currentTimeMillis(), 10);
     }
 
-    public static void execute(String programName, long randomSeed) {
+    public static void execute(String programName, long randomSeed, int max_depth) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
@@ -162,9 +162,11 @@ public class VBNRunner {
         putInitialConstraintPathDirection(constraints);
 
         ArrayList<ISymbol> solved;
-        Z3Solver.solve(globalState);
+//        Z3Solver.solve(globalState);
 
-        while (!(constraints.empty())) {
+        int max_depth_counter = max_depth;
+        while (!(constraints.empty()) && max_depth_counter-- > 0) {
+
             constraints = removeInvalidConstraints(constraints);
             boolean negationResults = negateConstraints(constraints);
             if (!negationResults) {
@@ -172,7 +174,11 @@ public class VBNRunner {
                 break;
             }
 
-            solved = Z3Solver.solve(globalState); // solve for negated end
+            try {
+                solved = Z3Solver.solve(globalState); // solve for negated end
+            } catch (VBNSolverUnsatisfiableRuntimeError error) {
+                continue;
+            }
             programInputs = abstractSymbolListToStringArray(solved, false);
             solvedConstraints.add(programInputs);
 
