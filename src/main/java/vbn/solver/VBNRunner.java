@@ -188,7 +188,10 @@ public class VBNRunner {
     }
 
     private static void addConstraintsToNegatedMap(@NonNull Stack<IConstraint> constraints) {
-        for (@NonNull IConstraint constraint : constraints) {
+        for (IConstraint constraint : constraints) {
+            if (constraint == null) {
+                continue;
+            }
             if (!constraint.isBranch()) {
                 continue;
             }
