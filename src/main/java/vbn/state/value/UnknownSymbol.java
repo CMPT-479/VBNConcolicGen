@@ -51,4 +51,13 @@ public class UnknownSymbol implements ISymbol, IUnknownValue, Serializable {
         UnknownSymbol otherSymbol = (UnknownSymbol) obj;
         return Objects.equals(this.varName, otherSymbol.varName) && this.getType() == otherSymbol.getType();
     }
+
+    @Override
+    public String toString() {
+        var result = "UnknownSym {";
+        result += "name: " + getName();
+        result += ", con_val: " + getValue().toString();
+        result += "}";
+        return result;
+    }
 }
