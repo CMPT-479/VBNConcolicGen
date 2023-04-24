@@ -8,7 +8,7 @@ public class Test_13_Loop {
         int xPlus1 = x + 1;
         int sum = 0;
 
-        for (int i = x; i < xPlus1; i++) {
+        for (int i = 0; i < xPlus1; i++) {
             sum = sum + i;
         }
 //        for (int i = 0; i < 10; i++) {

@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 import vbn.Call;
+import vbn.examples.Test_03_Class;
 
 import java.io.PrintStream;
 
@@ -379,6 +380,56 @@ public class StateTests {
         System.out.println("===========================================================");
         for (var constraint : constraints) {
             System.out.println(constraint);
+        }
+    }
+
+    @Test
+    public void functionClass() {
+        Call.initTestingMode();
+
+        String[] var0 = {"12", "123", "1234", "1234", "1234"};
+        int x = 1;
+
+        try {
+            Call.init();
+            Call.popArg("r2", var0);
+            Test_03_Class var1 = new Test_03_Class();
+            Call.finalizeStore("$r0", var1, 8);
+            Call.pushArg("$r0", var1);
+            Call.beforeInvokeFunc();
+//            var1.<init>();
+            Call.afterInvokeFunc();
+            Call.pushConstant(2);
+            var1.x = 2;
+            Call.finalizeStore("$r0.x", var1.x, 9);
+            Call.pushConstant(4);
+            var1.y = 4;
+            Call.finalizeStore("$r0.y", var1.y, 10);
+            Call.pushSym("java.lang.System.out", System.out);
+            PrintStream var3;
+            PrintStream var10000 = var3 = System.out;
+            Call.finalizeStore("$r1", var3, 11);
+            Call.pushSym("$r0.x", var1.x);
+            int var4 = var1.x;
+            Call.finalizeStore("$i2", var4, 11);
+            Call.pushSym("$r0.y", var1.y);
+            int var6 = var1.y;
+            Call.finalizeStore("$i0", var6, 11);
+            Call.pushConstant(2);
+            Call.pushSym("$i0", var6);
+            Call.apply(" * ");
+            var6 = 2 * var6;
+            Call.finalizeStore("$i1", var6, 11);
+            Call.pushSym("$i2", var4);
+            Call.pushSym("$i1", var6);
+            Call.apply(" + ");
+            int var10001 = var4 + var6;
+            Integer var5 = var4 + var6;
+            Call.finalizeStore("$i3", var5, 11);
+            var10000.println(var10001);
+            Call.terminatePath(12);
+        } catch (Throwable var2) {
+            Call.terminatedWithError(var2);
         }
     }
 }
