@@ -3,6 +3,7 @@ import vbn.Call;
 
 import java.io.PrintStream;
 
+@SuppressWarnings({"unused", "DataFlowIssue", "ConstantValue", "IfStatementWithIdenticalBranches", "UnnecessaryBoxing", "UnnecessaryLocalVariable", "CaughtExceptionImmediatelyRethrown"})
 public class StateTests {
     @Test
     public void basicTest__If_Basic() {
