@@ -131,6 +131,19 @@ public class InputMap {
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.crest_tests.Structure",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.crest_tests.Function",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.crest_tests.CFG",
+                    List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT)))
     );
 }

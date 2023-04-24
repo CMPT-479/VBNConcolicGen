@@ -50,4 +50,22 @@ public class CrestTests {
         VBNRunner.execute("vbn.crest_tests.UniformTest");
         printAndValidateSolvedConstraints(5);
     }
+
+    @Test
+    final void crestStructure() {
+        VBNRunner.execute("vbn.crest_tests.Structure");
+        printAndValidateSolvedConstraints(2);
+    }
+
+    @Test
+    final void crestFunction() {
+        VBNRunner.execute("vbn.crest_tests.Function");
+        printAndValidateSolvedConstraints(2);
+    }
+
+    @Test
+    final void crestCFG() {
+        VBNRunner.execute("vbn.crest_tests.CFG");
+        printAndValidateSolvedConstraints(0);
+    }
 }
