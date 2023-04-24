@@ -1,0 +1,57 @@
+(declare-fun y__0 () Int)
+(declare-fun y__1 () Int)
+(declare-fun X () Int)
+(declare-fun z__1 () Int)
+(declare-fun xPlus1 () Int)
+(declare-fun b__1 () Int)
+(declare-fun b__2 () Int)
+(declare-fun c__1 () Int)
+(assert (= y__1 y__0))              OK  y__1 == y__0
+(assert (= X y__1))                 OK: X == y__1
+(assert (= z__1 X))                 OK: z__1 == X
+(assert (= xPlus1 (+ z__1 1)))      OK: xPlus1 == z__1 + 1
+(assert (= b__1 X))                 OK: b__1 == X
+(assert (not (>= b__1 xPlus1)))     NOT-OK: b__1 < X + 1   <--- This needs to increment
+(assert (= b__2 (+ b__1 1)))        OK: b__2 == b__1 + 1
+(assert (not (>= b__2 xPlus1)))     OK: b__2 < xPlus1
+(assert (= c__1 X))                 OK: c__1 == X
+
+
+
+
+
+(declare-fun $i0__0 () Int)
+(declare-fun $i0__1 () Int)
+(declare-fun vbn.examples.Test_13_Loop.x__1 () Int)
+(declare-fun $i1__1 () Int)
+(declare-fun i2__1 () Int)
+(declare-fun i4__1 () Int)
+(declare-fun i4__2 () Int)
+(declare-fun $i3__1 () Int)
+(assert (= $i0__1 $i0__0))
+(assert (= vbn.examples.Test_13_Loop.x__1 $i0__1))
+(assert (= $i1__1 vbn.examples.Test_13_Loop.x__1))
+(assert (= i2__1 (+ $i1__1 1)))
+(assert (= i4__1 vbn.examples.Test_13_Loop.x__1))
+(assert (not (>= i4__1 i2__1)))
+(assert (= i4__2 (+ i4__1 1)))
+(assert (not (>= i4__2 i2__1)))
+(assert (= $i3__1 vbn.examples.Test_13_Loop.x__1))
+
+(declare-fun $i0__0 () Int)
+(declare-fun $i0__1 () Int)
+(declare-fun vbn.examples.Test_13_Loop.x__1 () Int)
+(declare-fun $i1__1 () Int)
+(declare-fun XPlus1 () Int)
+(declare-fun i4__1 () Int)
+(declare-fun i4__2 () Int)
+(declare-fun $i3__1 () Int)
+(assert (= $i0__1 $i0__0))
+(assert (= vbn.examples.Test_13_Loop.x__1 $i0__1))
+(assert (= $i1__1 vbn.examples.Test_13_Loop.x__1))
+(assert (= XPlus1 (+ $i1__1 1)))
+(assert (= i4__1 vbn.examples.Test_13_Loop.x__1))
+(assert (not (>= i4__1 XPlus1)))
+(assert (= i4__2 (+ i4__1 1)))
+(assert (not (>= i4__2 XPlus1)))
+(assert (= $i3__1 vbn.examples.Test_13_Loop.x__1))

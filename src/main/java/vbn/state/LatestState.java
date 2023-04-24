@@ -53,7 +53,7 @@ public class LatestState implements Serializable {
         return getLatestSymbol(varName);
     }
 
-    public ISymbol getLatestSymbolAndCreateIfDoesntExist(@NonNull String varName, Object concreteValue) {
+    public ISymbol updateOrCreateSymbol(@NonNull String varName, Object concreteValue) {
         if (globalState.symbolsContainsKey(getSymbolName(varName))) {
             return getLatestSymbol(varName);
         }

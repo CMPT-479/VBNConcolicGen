@@ -46,7 +46,7 @@ public class Call {
      */
     @SuppressWarnings("unused")
     public static void pushSym(@NonNull String varName, Object value) {
-        ISymbol result = latestState.getLatestSymbolAndCreateIfDoesntExist(varName, value);
+        ISymbol result = latestState.updateOrCreateSymbol(varName, value);
 
         computeConstraints.pushSymbol(result);
 
@@ -159,7 +159,7 @@ public class Call {
 
         latestState.generateNewSymbolForVariable(varName);
 
-        assignmentSymIfExists = latestState.getLatestSymbolAndCreateIfDoesntExist(varName, concreteValue);
+        assignmentSymIfExists = latestState.updateOrCreateSymbol(varName, concreteValue);
         if (TESTING_MODE) {
             System.out.println(finalizeIndentStr + " getLatestSymbolAndCreateIfDoesntExist=" + assignmentSymIfExists);
         }
@@ -177,6 +177,7 @@ public class Call {
 
     /**
      * Store the result of this operand in the constraints
+     * aka Finalize Branch
      */
     @SuppressWarnings("unused")
     public static void finalizeIf(int lineNumber) {
@@ -206,20 +207,6 @@ public class Call {
     @SuppressWarnings("unused")
     public static void pushFalseBranch(int lineNumber) {
         computeConstraints.setEvaluatedToFalse();
-    }
-
-    @SuppressWarnings("unused")
-    public static void finalizeReturn(String symbol, Object value, int lineNumber) {}
-
-    /**
-     * When the DFS search hits an error, return, etc.
-     */
-    @SuppressWarnings("unused")
-    public static void terminatePath(int lineNumber) {
-        String name = new Object(){}.getClass().getEnclosingMethod().getName();
-        System.out.println("From " + name);
-
-        onAllTerminates();
     }
 
     /**
@@ -253,6 +240,20 @@ public class Call {
     @SuppressWarnings("unused")
     public static void popArg(String symbol, Object value) {
 
+    }
+
+    @SuppressWarnings("unused")
+    public static void finalizeReturn(String symbol, Object value, int lineNumber) {}
+
+    /**
+     * When the DFS search hits an error, return, etc.
+     */
+    @SuppressWarnings("unused")
+    public static void terminatePath(int lineNumber) {
+        String name = new Object(){}.getClass().getEnclosingMethod().getName();
+        System.out.println("From " + name);
+
+        onAllTerminates();
     }
 
     /**
