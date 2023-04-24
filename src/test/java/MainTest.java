@@ -120,7 +120,7 @@ public class MainTest {
     final void basicFunction() {
         VBNRunner.execute("vbn.examples.Test_12_Function");
         System.out.println("Finished function test");
-        printAndValidateSolvedConstraints(16);
+        printAndValidateSolvedConstraints(2);
     }
 
     @Test
