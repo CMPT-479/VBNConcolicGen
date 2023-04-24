@@ -1,15 +1,32 @@
-# Java Automatic Unit Test Generation
+# VBNConcolicGen: Java Automatic Unit Test Generation
 Unit testing provides the foundation of the Testing pyramid in
 traditional approaches and requires a lot of resources to create
 and maintain the test suite. We aim to automate the process to
-save resources (and avoid tedious work) using symbolic execution frameworks.
+save resources (and avoid tedious work) concolic execution.
+
+Concolic execution (concrete + symbolic) has been used by
+Sen et al. to generate unit tests for both C and Java programs
+through CUTE and jCUTE respectively. Those libraries were
+written almost 20 years ago, with older dependencies. This
+project aims to recreate portions of the CUTE library using
+dependencies and versions of Java. This project recreation
+will be substituting Sen et al.’s jCUTE usage of JDK 1.4 with
+JDK 1.11, and will use Z3 as the SMT solver, offered by
+Microsoft Research, rather than lp_solve.
+
+Heavily inspired by CUTE and jCUTE.
+
+## Components
+- Instrumentation
+- Runtime Library
+- Concolic Runner
+- Constraint Solver
+
 ## Dependencies
-- Java 1.8 (Any JDK should be fine,
-  though this project has currently been set up with Amazon Corretto 8)
+- Java 1.11
 - Maven
 - JUnit
 - Z3, used by many symbolic execution modules
-- JavaParser
 - Soot
 
 ## Contributors
