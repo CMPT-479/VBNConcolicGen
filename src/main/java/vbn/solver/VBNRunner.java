@@ -146,7 +146,7 @@ public class VBNRunner {
         execute(programName, System.currentTimeMillis(), 10);
     }
 
-    public static void execute(String programName, long randomSeed, int max_depth) {
+    public static void execute(String programName, long randomSeed, int max_iterations) {
         // programInputs shouldn't be necessary, we should be able to generate these automatically the first time
         final String[] args = new String[] {programName};
         soot.Main.main(args);
@@ -164,8 +164,8 @@ public class VBNRunner {
         ArrayList<ISymbol> solved;
 //        Z3Solver.solve(globalState);
 
-        int max_depth_counter = max_depth;
-        while (!(constraints.empty()) && max_depth_counter-- > 0) {
+        int max_iterations_counter = max_iterations;
+        while (!(constraints.empty()) && max_iterations_counter-- > 0) {
 
             constraints = removeInvalidConstraints(constraints);
             boolean negationResults = negateConstraints(constraints);
@@ -177,6 +177,7 @@ public class VBNRunner {
             try {
                 solved = Z3Solver.solve(globalState); // solve for negated end
             } catch (VBNSolverUnsatisfiableRuntimeError error) {
+                System.out.println("Constraints are UNSATISFIABLE");
                 continue;
             }
             programInputs = abstractSymbolListToStringArray(solved, false);
