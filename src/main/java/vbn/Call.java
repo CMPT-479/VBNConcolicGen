@@ -246,7 +246,8 @@ public class Call {
     public static void finalizeReturn(String symbol, Object value, int lineNumber) {}
 
     /**
-     * When the DFS search hits an error, return, etc.
+     * When the DFS search returns normally
+     * aka terminateNormally()
      */
     @SuppressWarnings("unused")
     public static void terminatePath(int lineNumber) {
