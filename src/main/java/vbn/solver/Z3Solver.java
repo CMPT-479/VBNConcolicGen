@@ -333,7 +333,7 @@ public class Z3Solver {
                 }
             }
         } else if (status == Status.UNSATISFIABLE) {
-            throw new VBNSolverRuntimeError("Path constraint is unsatisfiable");
+            throw new VBNSolverUnsatisfiableRuntimeError("Path constraint is unsatisfiable");
         } else {
             throw new VBNSolverRuntimeError("Solver did not return a satisfying assignment");
         }

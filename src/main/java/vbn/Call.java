@@ -303,7 +303,7 @@ public class Call {
         TESTING_MODE = true;
     }
 
-    public static @NonNull Stack<IConstraint> getConstraints() {
+    public static Stack<IConstraint> getConstraints() {
         if (!TESTING_MODE) {
             throw new VBNLibraryRuntimeException("Only use this function for testing");
         }

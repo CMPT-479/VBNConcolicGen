@@ -11,7 +11,7 @@
 (assert (= z__1 X))                 OK: z__1 == X
 (assert (= xPlus1 (+ z__1 1)))      OK: xPlus1 == z__1 + 1
 (assert (= b__1 X))                 OK: b__1 == X
-(assert (not (>= b__1 xPlus1)))     NOT-OK: b__1 < X + 1   <--- This needs to increment
+(assert (not (>= b__1 xPlus1)))     ERROR: b__1 < X + 1   <--- This needs to increment
 (assert (= b__2 (+ b__1 1)))        OK: b__2 == b__1 + 1
 (assert (not (>= b__2 xPlus1)))     OK: b__2 < xPlus1
 (assert (= c__1 X))                 OK: c__1 == X
@@ -55,3 +55,12 @@
 (assert (= i4__2 (+ i4__1 1)))
 (assert (not (>= i4__2 XPlus1)))
 (assert (= $i3__1 vbn.examples.Test_13_Loop.x__1))
+
+
+
+
+
+
+
+
+
