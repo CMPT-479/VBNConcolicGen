@@ -114,7 +114,7 @@ public class MainTest {
     final void testIncrement() {
         VBNRunner.execute("vbn.examples.Test_11_Increment");
         System.out.println("Finished increment test");
-        printAndValidateSolvedConstraints(1);
+        printAndValidateSolvedConstraints(2);
     }
 
     @Test
