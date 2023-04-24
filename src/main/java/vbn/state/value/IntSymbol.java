@@ -53,6 +53,10 @@ public class IntSymbol implements ISymbol {
 
     @Override
     public String toString() {
-        return "IntSymbol {name: " + getName() + ", concrete_value: " + getValue().toString() + "}";
+        var result = "IntSymbol {";
+        result += "name: " + getName();
+        result += ", con_val: " + getValue().toString();
+        result += "}";
+        return result;
     }
 }

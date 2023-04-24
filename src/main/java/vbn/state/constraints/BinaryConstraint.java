@@ -106,15 +106,20 @@ public class BinaryConstraint implements IConstraint {
             result += "id#";
         }
 
-        result += getUniqueId() + " Binary Constraint{ ";
+        result += constraintNumber + "/L#" + lineNumber;
+        result += " BinConstr{ ";
 
         if (assignedSymbol == null) {
-            result += "\t\t";
+            result += "\t\t ";
         } else {
             result += assignedSymbol + " = ";
         }
 
-        result += left + " " + op + " " + right + " }";
+        result += left + " " + op + " " + right;
+        if (isBranch) {
+            result += getOriginalEvaluation() ? ", IS_TRUE" : ", IS_FALSE";
+        }
+        result += " }";
         
         return result;
     }

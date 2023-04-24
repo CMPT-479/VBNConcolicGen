@@ -54,6 +54,10 @@ public class BooleanSymbol implements ISymbol {
 
     @Override
     public String toString() {
-        return "BooleanSymbol {name: " + getName() + ", concrete_value: " + getValue().toString() + "}";
+        var result = "BoolSymbol {";
+        result += "name: " + getName();
+        result += ", con_val: " + getValue().toString();
+        result += "}";
+        return result;
     }
 }

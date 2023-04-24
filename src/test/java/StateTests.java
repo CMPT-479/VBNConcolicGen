@@ -304,4 +304,81 @@ public class StateTests {
             Call.terminatedWithError(var1);
         }
     }
+
+    @Test
+    public void testLoops() {
+        Call.initTestingMode();
+
+        String[] var0 = {"12", "123", "1234", "1234", "1234"};
+        int x = 1;
+
+        try {
+            Call.init();
+            Call.popArg("r0", var0);
+            Call.pushSym("r0[0]", var0[0]);
+            String var3;
+            String var10000 = var3 = var0[0];
+            Call.finalizeStore("$r1", var3, 7);
+            int var4 = Integer.parseInt(var10000);
+            Call.pushSym("$i0", var4);
+            Call.finalizeStore("$i0", var4, 7);
+            Call.pushSym("$i0", var4);
+            x = var4;
+            Call.finalizeStore("vbn.examples.Test_13_Loop.x", x, 7);
+            Call.pushSym("vbn.examples.Test_13_Loop.x", x);
+            var4 = x;
+            Call.finalizeStore("$i1", var4, 8);
+            Call.pushSym("$i1", var4);
+            Call.pushConstant(1);
+            Call.apply(" + ");
+            ++var4;
+            Call.finalizeStore("i2", var4, 8);
+            Call.pushSym("vbn.examples.Test_13_Loop.x", x);
+            int var1 = x;
+            Call.finalizeStore("i4", var1, 11);
+
+            while(true) {
+                Call.pushSym("i4", var1);
+                Call.pushSym("i2", var4);
+                Call.apply(" >= ");
+                if (var1 < var4) {
+                    Call.pushFalseBranch(11);
+                } else {
+                    Call.pushTrueBranch(11);
+                }
+
+                Call.finalizeIf(11);
+                if (var1 >= var4) {
+                    Call.pushSym("java.lang.System.out", System.out);
+                    PrintStream var5;
+                    PrintStream var7 = var5 = System.out;
+                    Call.finalizeStore("$r2", var5, 17);
+                    Call.pushSym("vbn.examples.Test_13_Loop.x", x);
+                    int var10001 = x;
+                    Integer var6 = var10001;
+                    Call.finalizeStore("$i3", var6, 17);
+                    var7.println(var10001);
+                    Call.terminatePath(18);
+                    break;
+                }
+
+                Call.pushSym("i4", var1);
+                Call.pushConstant(1);
+                Call.apply(" + ");
+                ++var1;
+                Call.finalizeStore("i4", var1, 11);
+            }
+        } catch (Throwable var2) {
+//            Call.terminatedWithError(var2);
+            throw var2;
+        }
+
+        Call.initTestingMode();
+        var constraints = Call.getConstraints();
+
+        System.out.println("===========================================================");
+        for (var constraint : constraints) {
+            System.out.println(constraint);
+        }
+    }
 }
