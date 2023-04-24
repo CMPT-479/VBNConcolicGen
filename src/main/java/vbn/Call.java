@@ -302,12 +302,12 @@ public class Call {
         TESTING_MODE = true;
     }
 
-    public static boolean constraintsEqual(Stack<IConstraint> constraints) {
+    public static @NonNull Stack<IConstraint> getConstraints() {
         if (!TESTING_MODE) {
             throw new VBNLibraryRuntimeException("Only use this function for testing");
         }
 
-        return latestState.getConstraints() == constraints;
+        return latestState.getSerializeState().getConstraints();
     }
 }
 
