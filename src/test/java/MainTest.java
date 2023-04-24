@@ -127,9 +127,10 @@ public class MainTest {
 
     @Test
     final void testLoop() {
-        VBNRunner.execute("vbn.examples.Test_13_Loop", 12, 10);
+        int max_depth = 10;
+        VBNRunner.execute("vbn.examples.Test_13_Loop", 12, max_depth);
         System.out.println("Finished loop test");
-        printAndValidateSolvedConstraints(11);
+        printAndValidateSolvedConstraints(max_depth + 1);
     }
 
 }
