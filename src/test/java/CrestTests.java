@@ -11,7 +11,7 @@ import java.io.File;
 
 import static vbn.solver.VBNRunner.printAndValidateSolvedConstraints;
 
-public class KSenTests {
+public class CrestTests {
     @BeforeEach
     final void initializeSoot() {
         G.reset();
@@ -30,42 +30,24 @@ public class KSenTests {
     }
 
     @Test
-    final void ksenIf() {
-        VBNRunner.execute("vbn.ksen_tests.If");
+    final void crestUnary() {
+        VBNRunner.execute("vbn.crest_tests.Unary");
+        printAndValidateSolvedConstraints(2);
+    }
+    @Test
+    final void crestMath() {
+        VBNRunner.execute("vbn.crest_tests.Math");
+        printAndValidateSolvedConstraints(2);
+    }
+    @Test
+    final void crestSimple() {
+        VBNRunner.execute("vbn.crest_tests.Simple");
         printAndValidateSolvedConstraints(2);
     }
 
     @Test
-    final void ksenLinear() {
-        VBNRunner.execute("vbn.ksen_tests.Linear");
-        printAndValidateSolvedConstraints(4);
+    final void crestUniform() {
+        VBNRunner.execute("vbn.crest_tests.UniformTest");
+        printAndValidateSolvedConstraints(5);
     }
-
-    @Test
-    final void ksenNonlinear() {
-        VBNRunner.execute("vbn.ksen_tests.Nonlinear");
-        printAndValidateSolvedConstraints(3);
-    }
-
-    @Test
-    final void testUnmanageable() {
-        VBNRunner.execute("vbn.ksen_tests.Unmanageable");
-        System.out.println("Finished unmanageable test");
-        printAndValidateSolvedConstraints(2);
-    }
-
-    @Test
-    final void testTestme() {
-        VBNRunner.execute("vbn.ksen_tests.Testme");
-        System.out.println("Finished testme test");
-        printAndValidateSolvedConstraints(3);
-    }
-
-    @Test
-    final void testInterfaceTest() {
-        VBNRunner.execute("vbn.ksen_tests.InterfaceTest");
-        System.out.println("Finished interfacetest test");
-        printAndValidateSolvedConstraints(2);
-    }
-
 }

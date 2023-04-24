@@ -32,6 +32,7 @@ public class UnaryConstraint implements IConstraint {
         this.evaluatedResult = evaluatedResult;
         this.lineNumber = lineNumber;
         this.assignedSymbol = null;
+        this.isBranch = false;
     }
 
     @Override

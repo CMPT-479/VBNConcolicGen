@@ -99,6 +99,38 @@ public class InputMap {
                     "vbn.ksen_tests.Unmanageable",
                     List.of(
                             new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.ksen_tests.Testme",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.ksen_tests.InterfaceTest",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.crest_tests.Unary",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.crest_tests.Math",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.crest_tests.Simple",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT))),
+            Map.entry(
+                    "vbn.crest_tests.UniformTest",
+                    List.of(
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
+                            new IntConstant(DEFAULT_INT_CONSTANT),
                             new IntConstant(DEFAULT_INT_CONSTANT)))
     );
 }
